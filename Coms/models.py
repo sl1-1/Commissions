@@ -179,6 +179,15 @@ class Commission(models.Model):
     def details_submitted(self):
         return bool(self.detail_set.count())
 
+    @property
+    def expired(self):
+        expiry = self.date + timedelta(minutes=self.queue.expire)
+        if expiry < now():
+            return True
+        else:
+            return False
+
+
 
 class Contact(models.Model):
     def __unicode__(self):

@@ -57,6 +57,9 @@ class ContactFormset(BaseInlineFormSet):
 def view(request, pk):
     context = {}
     commission = get_object_or_404(models.Commission, pk=pk)
+    if commission.expired:
+        if commission.queue.is_full or commission.queue.ended:
+            return redirect('Coms:Detail:TooSlow', pk=pk)
     if request.POST:
         if commission.locked:
             return redirect('Coms:Detail:Done', pk=pk)
@@ -96,6 +99,10 @@ def view(request, pk):
     context.update(csrf(request))
     return render_to_response('Coms/Entry/DetailForm.html', RequestContext(request, context))
 
+class TooSlow(DetailView):
+    model = models.Commission
+    template_name = 'Coms/TooSlow.html'
+
 
 class Done(DetailView):
     model = models.Commission
@@ -112,4 +119,5 @@ class Done(DetailView):
 urls = [
     url(r'^(?P<pk>[\w\-]*?)/$', view, name='View'),
     url(r'^(?P<pk>[\w\-]*?)/success/$', Done.as_view(), name='Done'),
+    url(r'^(?P<pk>[\w\-]*?)/TooSlow/$', TooSlow.as_view(), name='TooSlow'),
 ]
