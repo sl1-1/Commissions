@@ -1,0 +1,166 @@
+{% extends "ComAdmin/Queues.html" %}
+{% load static %}
+{% block scripts %}
+    <script src="{% static 'Coms/ajax.js' %}"></script>
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <link rel="stylesheet"
+          href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="col-md-12 well">
+                    <div class="form-group">
+                        <label class="control-label" for="queue-name">
+                            Name
+                        </label>
+                        <br/>
+                        <span id="queue-name">{{ queue.name }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-date">
+                            Date published
+                        </label>
+                        <br/>
+                        <span id="queue-date">{{ queue.date }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-type">
+                            Types
+                        </label>
+                        <ul id="queue-type" class="list-unstyled">
+                            {% for item in queue.types.all %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-size">
+                            Sizes
+                        </label>
+                        <ul id="queue-size" class="list-unstyled">
+                            {% for item in queue.sizes.all %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-characters">
+                            Max characters
+                        </label>
+                        <br/>
+                        <span id="queue-characters">{{ queue.max_characters }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-cost">
+                            Character cost
+                        </label>
+                        <br/>
+                        <span id="queue-cost">{{ queue.character_cost }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-extras">
+                            Extras
+                        </label>
+                        <ul id="queue-extras" class="list-unstyled">
+                            {% for item in queue.extras.all %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-max">
+                            Max commissions in queue
+                        </label>
+                        <br/>
+                        <span id="queue-max">{{ queue.max_commissions_in_queue }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-max-per">
+                            Max commissions per person
+                        </label>
+                        <br/>
+                        <span id="queue-max-per">{{ queue.max_commissions_per_person }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="expire">
+                            Submission Expiry Time
+                        </label>
+                        <br/>
+                        <span id="expire">{{ queue.expire }} minutes</span>
+                    </div>
+                    {% if queue.end %}
+                        <div class="form-group">
+                            <label class="control-label" for="end">
+                                Closes on
+                            </label>
+                            <br/>
+                            <span id="queue-max-per">{{ queue.end|date:"N, d, Y" }} at {{ queue.end|time:"P" }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label class="control-label" for="hidden">
+                            Hidden
+                        </label>
+                        <br/>
+                        <span id="queue-max-per">{{ queue.hidden|yesno|title }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="closed">
+                            Closed
+                        </label>
+                        <br/>
+                        <span id="queue-max-per">{{ queue.ended|yesno|title }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-edit">
+                            Edit Queue
+                        </label>
+                        <br/>
+                        <a class="btn btn-default" href="{% url 'Admin:Queue:ModifyQueue' queue.id %}"
+                           id="queue-edit">
+                            Edit
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">
+                            Lock Queue
+                        </label>
+                        <br/>
+
+                        <div class="btn-group">
+                            <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id %}">
+                                <i class="fa fa-lock"></i>
+                            </a>
+                            <button type="button" class="btn btn-default" disabled>
+                                &nbsp;
+                            </button>
+                            <a class="btn btn-default" href="{% url 'Admin:Queue:UnlockQueue' queue.id %}">
+                                <i class="fa fa-unlock"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 ">
+                <div class="col-md-12 well">
+                    {% load django_tables2 %}
+                    {% render_table table "table.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="detail-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="detail-content">
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

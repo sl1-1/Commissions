@@ -1,0 +1,21 @@
+{% extends "Base.html" %}
+
+{% block breadcrumbs %}
+    {{ block.super }} » <a href="{% url 'Admin:Queue:ShowQueues' %}">Queues</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center well">
+                {% load django_tables2 %}
+                {% render_table table "table.html" %}
+                <br/>
+                <a href="{% url 'Admin:Queue:Create' %}">
+                    <button type="button" class="btn btn-default">Add Queue</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

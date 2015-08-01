@@ -1,0 +1,177 @@
+{% extends "Base.html" %}
+{% load bootstrap3 %}
+{% load django_markdown %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="col-md-12 well">
+                    <div class="form-group">
+                        <label class="control-label" for="user-{{ object.id }}">
+                            Username
+                        </label>
+                        <br/>
+                                                <span id="user-{{ object.id }}">
+                                                    {{ object.com.user.username }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="date-{{ object.id }}">
+                            Date submitted
+                        </label>
+                        <br/>
+                            <span id="date-{{ object.id }}">
+                                                    {{ object.date }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="type-{{ object.id }}">
+                            Type
+                        </label>
+                        <br/>
+                                                <span id="type-{{ object.id }}">
+                                                    {{ object.type }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="size-{{ object.id }}">
+                            Size
+                        </label>
+                        <br/>
+                                                <span id="size-{{ object.id }}">
+                                                    {{ object.size }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="characters-{{ object.id }}">
+                            Characters
+                        </label>
+                        <br/>
+                                                <span id="characters-{{ object.id }}">
+                                                    {{ object.number_of_Characters }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"
+                               for="extras-{{ object.id }}">
+                            Extras
+                        </label>
+                        <br/>
+                        <ul id="extras-{{ object.id }}">
+                            {% for item in object.extras.all %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="primarycontact-{{ object.id }}">
+                            Primary Contact
+                        </label>
+                        <br/>
+                        {% if primary %}
+                            <a href="mailto:{{ primary }}">{{ primary }}</a>
+                        {% else %}
+                            <ul id="primarycontact-{{ object.id }}">
+                                {% for item in object.contacts.all %}
+                                    {% if item.primary %}
+                                        <li>
+                                            {{ item }}
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ item.get_profile }}" target="_blank">
+                                                        View Profile
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ item.get_message }}" target="_blank">
+                                                        Send Message
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <br/>
+                                        </li>
+                                    {% endif %}
+                                {% empty %}
+                                    <li>{{ object.com.user.username }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    {% if object.contacts.all|length > 1 or primary %}
+                        <div class="form-group">
+                            <label class="control-label" for="contacts-{{ object.id }}">
+                                Additional Contacts
+                            </label>
+                            <br/>
+                            <ul id="contacts-{{ object.id }}">
+                                {% for item in object.contacts.all %}
+                                    {% if not item.primary %}
+                                        <li>
+                                            {{ item }}
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ item.get_profile }}" target="_blank">
+                                                        View Profile
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ item.get_message }}" target="_blank">
+                                                        Send Message
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <br/>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label class="control-label" for="paypal-{{ object.id }}">
+                            Paypal
+                        </label>
+                        <br/>
+                                                <span id="paypal-{{ object.id }}">
+                                                    {{ object.paypal }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="status">
+                            Status
+                        </label>
+                        <br/>
+                                                <span id="status">
+                                                    {{ object.com.get_status_display }}
+                                                </span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="paymentstatus">
+                            Payment Status
+                        </label>
+                        <br/>
+                                                <span id="paymentstatus">
+                                                    {{ object.com.get_paid_display }}
+                                                </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-12 well">
+                    <div style="word-wrap: break-word;">
+                        {{ object.details|markdown_safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function gotoPage(select) {
+            window.location = select.value;
+        }
+
+    </script>
+
+{% endblock %}

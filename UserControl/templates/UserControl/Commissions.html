@@ -1,0 +1,51 @@
+{% extends "Base.html" %}
+{% load bootstrap3 %}
+{% load django_markdown %}
+{% block title %} Commission Entry Form: {{ queue.name }} {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    {% for key, queue in commissions.items %}
+                        {% if queue.coms %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading-{{ key }}">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ key }}"
+                                       aria-expanded="true" aria-controls="collapseOne">
+                                        {{ queue.name }} - {{ queue.date }}
+                                    </a>
+                                </h4>
+                            </div>
+                        </div>
+                        <div id="{{ key }}" class="panel-collapse collapse" role="tabpanel"
+                             aria-labelledby="heading-{{ key }}">
+                            <ul class="list-group">
+                                {% for commission in queue.coms %}
+                                    <li class="list-group-item">
+                                        <a role="button" class="btn btn-default modal-action btn-block"
+                                           data-target="detail-content"
+                                           data-url="{% url 'Coms:Ajax:DetailView' commission.id %}"
+                                           id="detail-{{ commission.id }}">
+                                            Submitted on {{ commission.date }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="detail-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="detail-content">
+            </div>
+        </div>
+    </div>
+{% endblock %}

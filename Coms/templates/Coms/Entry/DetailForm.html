@@ -1,0 +1,116 @@
+{% extends "Base.html" %}
+{% load static %}
+{% load bootstrap3 %}
+{% load django_markdown %}
+{% load thumbnail %}
+{% block scripts %}
+    <script src="{% static 'DetailFormScripts.js' %}" type="text/javascript"></script>
+    {% markdown_media %}
+{% endblock %}
+{% block title %} Commission Details for {{ Commission.user }} {{ Commission.date }} {% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <form method="post" class="form-horizontal" action="{% url 'Coms:Detail:View' Commission.id %} ">
+            <div class="row">
+                <div class="col-xs-12 col-s-12 col-md-2 col-l-2 ">
+                    <div class="col-md-12 well">
+                        <div class="height-600">
+                            {% csrf_token %}
+                            {% bootstrap_field form.type %}
+                            {% bootstrap_field form.size %}
+                            {% bootstrap_field form.extras %}
+                            {% bootstrap_field form.number_of_Characters %}
+                            {% bootstrap_field form.paypal %}
+                            <div class="form-group">
+                                <input class="" type="checkbox" id="paypalisemail" onchange="paypalemail()"/>
+                                <label class="control-label" for="paypalisemail">My paypal is the same as my
+                                    email</label>
+                                <input id="email" type="hidden" value="{{ request.user.email }}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-s-12 col-md-3 col-l-2">
+                    <div class="col-md-12 well">
+                        <div class="height-600">
+                            <div class="scrollbox">
+                                {{ contactformset.management_form }}
+                                {% for contact in contactformset %}
+                                    {% bootstrap_form contact %}
+                                    <hr style="margin:0;"/>
+                                {% endfor %}
+                                <div id="form_set">
+                                </div>
+                            </div>
+                            <input class="form-control" type="button" value="Add Another Contact" id="add_more">
+
+                            <div class="form-group">
+                                <label for="PC">Primary Contact:</label>
+                                <select class="form-control" id="PC" name="PC" onblur="setContact()">
+                                    <option value="">---------</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-s-12 col-md-4 col-l-4">
+                    <div class="col-md-12 well">
+                        <div class="height-600">
+                            {% bootstrap_field form.details %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-s-12 col-md-2 col-l-2">
+                    <div class="col-md-12 well">
+                        <div class="height-600">
+                            <label class="control-label" for="characterlist">Characters</label>
+                            <div class="scrollbox" style="overflow: auto;" id="characterlist">
+                            </div>
+                            <div>
+                                <br/>
+                                <button class="btn btn-default btn-block" type="button" id="addcharacterbutton"
+                                        title="Add Character">
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 text-center" style="float:none;display:block;margin: auto;padding:10px">
+                    {% if not Commission.locked %}
+                        <input class="form-control" type="submit" name="submit" id="submit"/>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+
+        function start() {
+            getOption();
+            paypalemail();
+            {% if Commission.locked %}
+                disableForm();
+            {% endif %}
+        }
+
+        window.onload = start();
+        $('#add_more').click(function () {
+            var totalform = $('#id_contact_set-TOTAL_FORMS');
+            var form_idx = totalform.val();
+            if (form_idx <= 4) {
+                $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+                totalform.val(parseInt(form_idx) + 1);
+            }
+
+        });
+
+        $(':checkbox').click(getOption);
+
+    </script>
+    <div id="empty_form" style="display:none;height: 0">
+        {% bootstrap_form contactformset.empty_form %}
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "Base.html" %}
+{% load static %}
+{% load bootstrap3 %}
+{% block title %}{{ title }}{% endblock %}
+{% block content_title %}<h1>{{ title }}</h1>{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 well col-md-offset-4">
+                <p>A validation email has been sent to {{ new_user.email }}</p>
+                {%  if next %}
+                <a href="{{next}}">Go back to where you where before all this</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

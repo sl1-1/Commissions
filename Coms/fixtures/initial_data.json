@@ -1,0 +1,111 @@
+[
+  {
+    "model": "Coms.ContactMethod",
+    "pk": 1,
+    "fields": {
+      "name": "Email",
+      "description": "Email"
+    }
+  },
+  {
+    "model": "Coms.ContactMethod",
+    "pk": 2,
+    "fields": {
+      "name": "Furaffinity",
+      "message_url": "http://www.furaffinity.net/newpm/{username}",
+      "profile_url": "http://www.furaffinity.net/user/{username}",
+      "description": "Furaffinity.net Notes"
+    }
+  },
+  {
+    "model": "Coms.ContactMethod",
+    "pk": 3,
+    "fields": {
+      "name": "Weasyl",
+      "message_url": "https://www.weasyl.com/notes/compose?recipient={username}",
+      "profile_url": "https://www.weasyl.com/~{username}",
+      "description": "Weasyl Message"
+    }
+  },
+  {
+    "model": "Coms.Size",
+    "pk": 1,
+    "fields": {
+      "name": "Head Shot",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Size",
+    "pk": 2,
+    "fields": {
+      "name": "Bust",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Size",
+    "pk": 3,
+    "fields": {
+      "name": "Full Body",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Type",
+    "pk": 1,
+    "fields": {
+      "name": "Sketch",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Type",
+    "pk": 2,
+    "fields": {
+      "name": "Monochrome Sketch",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Type",
+    "pk": 3,
+    "fields": {
+      "name": "Colour Sketch",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Extra",
+    "pk": 1,
+    "fields": {
+      "name": "No Reference Image",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Extra",
+    "pk": 2,
+    "fields": {
+      "name": "Background",
+      "price": 0.00,
+      "description": ""
+    }
+  },
+  {
+    "model": "Coms.Extra",
+    "pk": 3,
+    "fields": {
+      "name": "Character Design",
+      "price": 0.00,
+      "description": ""
+    }
+  }
+]

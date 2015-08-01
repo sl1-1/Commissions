@@ -1,0 +1,9 @@
+<span style="display:none">{{record.locked}}</span>
+<button type="button" class="btn btn-default action-btn btn-block" data-id="{{ record.id }}" data-target="lock-{{ record.id }}"
+        data-url="{% url 'Admin:Queue:LockCommission' record.id %}" id="lock-{{ record.id }}">
+    {% if record.locked %}
+        <i class="fa fa-lock content" style="pointer-events: none" data-order="1"></i>
+    {% else %}
+        <i class="fa fa-unlock content" style="pointer-events: none" data-order="0"></i>
+    {% endif %}
+</button>

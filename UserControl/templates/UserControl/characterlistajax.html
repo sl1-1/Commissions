@@ -1,0 +1,14 @@
+{% load thumbnail %}
+{% for character in characters %}
+    {% thumbnail character.img "400" crop="noop" as im %}
+        <a class="character" id="{{ character.id }}" data-name="{{ character.name }}">
+            <div class="panel panel-default" style="pointer-events: none">
+                <div class="panel-body" style="pointer-events: none">
+                    <img src="{{ im.url }}" class="img-responsive"
+                         style="pointer-events: none" alt="character.name">
+                </div>
+                <div class="panel-footer">{{ character.name }}</div>
+            </div>
+        </a>
+    {% endthumbnail %}
+{% endfor %}

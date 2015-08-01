@@ -1,0 +1,35 @@
+{% extends "Base.html" %}
+{% load static %}
+{% load bootstrap3 %}
+{% load thumbnail %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 well col-md-offset-1">
+                {% for character in characters %}
+                    <div class="col-md-2">
+                    {% thumbnail character.img "400" crop="noop" as im %}
+                        <a href="{% url 'UserControl:Character' character.id %}">
+                            <div class="panel panel-default">
+                                <div class="panel-body" >
+                                    <img src="{{ im.url }}" class="img-responsive">
+                                </div>
+                                <div class="panel-footer">
+                                    {{ character.name }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endthumbnail %}
+                    </div>
+                {% endfor %}
+            </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <a class="btn btn-default" href="{% url 'UserControl:CharacterUpload' %}">Add</a>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}
