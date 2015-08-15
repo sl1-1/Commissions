@@ -14,7 +14,7 @@ def view(request, pk):
         return render_to_response('Coms/Entry/EnterForm.html', RequestContext(request, context))
     if queue.user_submission_count(request.user) >= queue.max_commissions_per_person:
         context['error'] = "You have exceeded the amount of slots you may have\n"
-    elif request.POST and not queue.is_full and not queue.ended:
+    elif request.POST and not queue.is_full and not queue.ended and request.user.is_active:
         obj = models.Commission(queue=queue, user=request.user)
         obj.save()
         return redirect('Coms:Detail:View', pk=obj.id)

@@ -97,6 +97,10 @@
                             You must <a href="{% url 'Auth:login' %}?next={% url 'Coms:Enter:View' pk %}">Login</a>
                             or <a href="{% url 'Auth:register' %}?next={% url 'Coms:Enter:View' pk %}">Register</a>
                         </h3>
+                    {% elif not request.user.is_active %}
+                        <h3>
+                            Your account has been disabled.
+                        </h3>
                     {% else %}
                         {% if error %}
                             <h3>{{ error }}</h3>

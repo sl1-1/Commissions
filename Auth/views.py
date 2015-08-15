@@ -5,6 +5,7 @@ from django.template.context_processors import csrf
 from django.contrib.auth.models import User
 from django.forms import EmailField
 from django.contrib.auth import authenticate, login
+from django.forms import ValidationError
 
 
 class MyUserCreationForm(UserCreationForm):
@@ -15,7 +16,10 @@ class MyUserCreationForm(UserCreationForm):
         fields = {'username', 'email'}
 
     def clean_email(self):
-        print(self.cleaned_data.get('email'))
+        email = self.cleaned_data.get('email')
+        if email and User.objects.filter(email=email).count() > 0:
+            raise ValidationError(u'This email address is already registered.')
+        return email
 
 
 def register(request):
