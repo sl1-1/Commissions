@@ -74,7 +74,7 @@ class CreateQueueView(CreateView):
     model = models.AdminQueue
     template_name = 'ComAdmin/Create.html'
     fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
-              'character_cost', 'max_commissions_in_queue',  'max_commissions_per_person', 'expire', 'end',
+              'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
               'closed', 'hidden')
 
 
@@ -82,7 +82,7 @@ class ModifyQueueView(UpdateView):
     model = models.AdminQueue
     template_name = 'ComAdmin/Create.html'
     fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
-              'character_cost', 'max_commissions_in_queue',  'max_commissions_per_person', 'expire', 'end',
+              'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
               'closed', 'hidden')
 
 

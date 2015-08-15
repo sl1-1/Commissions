@@ -99,6 +99,7 @@ def view(request, pk):
     context.update(csrf(request))
     return render_to_response('Coms/Entry/DetailForm.html', RequestContext(request, context))
 
+
 class TooSlow(DetailView):
     model = models.Commission
     template_name = 'Coms/TooSlow.html'

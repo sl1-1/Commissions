@@ -118,6 +118,8 @@ class Queue(models.Model):
 
     @property
     def ended(self):
+        if self.max_commissions_in_queue == 0:
+            return True
         if self.closed:
             return True
         elif self.end is not None and self.end < now():
@@ -186,7 +188,6 @@ class Commission(models.Model):
             return True
         else:
             return False
-
 
 
 class Contact(models.Model):

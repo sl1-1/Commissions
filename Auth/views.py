@@ -14,6 +14,9 @@ class MyUserCreationForm(UserCreationForm):
         model = User
         fields = {'username', 'email'}
 
+    def clean_email(self):
+        print(self.cleaned_data.get('email'))
+
 
 def register(request):
     context = {}
