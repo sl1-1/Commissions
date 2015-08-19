@@ -92,7 +92,8 @@ def view(request, pk):
     form.fields['type'].queryset = commission.queue.types
     form.fields['size'].queryset = commission.queue.sizes
     form.fields['extras'].queryset = commission.queue.extras
-    form.fields['number_of_Characters'].widget = NumberInput(attrs={'min': '1', 'max': commission.queue.max_characters})
+    form.fields['number_of_Characters'].widget = NumberInput(attrs={'step': 1, 'min': '1',
+                                                                    'max': commission.queue.max_characters})
     form.fields['number_of_Characters'].max_value = commission.queue.max_characters
     context.update({'form': form, 'contactformset': contactformset, 'Commission': commission})
     context['characters'] = UserControl.models.Character.objects.filter(user=request.user).all()
