@@ -12,5 +12,6 @@ urlpatterns = patterns('',
                        url(r'^admin/', include('ComAdmin.urls', namespace='Admin')),
                        url(r'^djangoadmin/', include(admin.site.urls)),
                        url('^markdown/', include('django_markdown.urls')),
+                       url(r'^tz_detect/', include('tz_detect.urls')),
                        ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + \
     static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
