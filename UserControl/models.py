@@ -26,6 +26,15 @@ class Character(models.Model):
     description = models.TextField(max_length=10000)
     img = models.ImageField(upload_to=ref_name)
     date = models.DateTimeField(auto_now=True)
+    friendlyid = models.CharField(max_length=110)
 
     def get_absolute_url(self):
         return reverse('UserControl:Character', args=[self.id])
+
+    def create_friendly(self):
+        count = Character.objects.filter(user=self.user).filter(name=self.name).count()
+        return "{}~{}".format(self.name, count)
+
+    def save(self, *args, **kwargs):
+        self.friendlyid = self.create_friendly()
+        super(Character, self).save(*args, **kwargs)
