@@ -114,7 +114,7 @@ class Done(DetailView):
         context = super(Done, self).get_context_data(**kwargs)
         # noinspection PyUnresolvedReferences
         com = get_object_or_404(models.Commission, pk=self.kwargs['pk'])
-        context['object'] = com.detail_set.order_by('-date').first()
+        context['commission'] = com.detail_set.order_by('-date').first()
         return context
 
 
