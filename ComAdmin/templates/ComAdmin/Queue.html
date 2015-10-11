@@ -147,8 +147,23 @@
             </div>
             <div class="col-md-8 ">
                 <div class="col-md-12 well">
-                    {% load django_tables2 %}
-                    {% render_table table "table.html" %}
+                    <table class="table table-compact table-bordered table-hover" id="commissiontable">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Submitted</th>
+                            <th>Details Submitted</th>
+                            <th>Status</th>
+                            <th>Paid</th>
+                            <th>Locked</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colspan="10">Nothing Here :(</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -161,6 +176,108 @@
         </div>
     </div>
 
+    <script>
+        function render_name(data, type, full, meta) {
+            if (full['details_submitted']) {
+                var btn = document.createElement("button");
+                btn.className = "btn btn-default modal-action btn-block";
+                btn.setAttribute('data-url', "/ajax/detail/" + full['latest_detail']);
+                btn.setAttribute('id', "detail-" + full['latest_detail']);
+                btn.setAttribute('data-target', 'detail-content');
+                btn.appendChild(document.createTextNode(full['user']));
+                var wrapper = document.createElement('wrap');
+                wrapper.appendChild(btn);
+                return wrapper.innerHTML;
+            }
+            else {
+                return '<p class="text-center">' + data + '</p>';
+            }
+        }
+        function render_detail(data, type, full, meta) {
+            if (data == true) {
+                return '<i class="fa fa-check"></i>'
+            }
+            else {
+                return '<i class="fa fa-close"></i>'
+            }
+        }
+        function render_lock(data, type, full, meta) {
+            var btn = document.createElement("button");
+            btn.className = "btn btn-default btn-block lock-button";
+            btn.setAttribute('id', "lock-" + full['latest_detail']);
+            btn.setAttribute('data-id', full['id']);
+            var icon = document.createElement("i");
+            if (data == true) {
+                icon.className = "fa fa-lock";
+            }
+            else {
+                icon.className = "fa fa-unlock";
+            }
+            btn.appendChild(icon);
+            var wrapper = document.createElement('wrap');
+            wrapper.appendChild(btn);
+            return wrapper.innerHTML;
+        }
 
+        $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex, object) {
+                    if (!$('#showexpired').is(":checked")) {
+                        return !object['expired'];
+                    }
+                    else {
+                        return true
+                    }
+                });
+
+        $(document).ready(function () {
+            var table = $('#commissiontable')
+                    .on('order.dt', function () {
+                        register_events();
+                    })
+                    .on('search.dt', function () {
+                        register_events();
+                    })
+                    .on('page.dt', function () {
+                        register_events();
+                    })
+                    .DataTable({
+                        "columnDefs": [{
+                            "targets": 0,
+                            "data": "user",
+                            "render": render_name
+                        },
+                            {
+                                "targets": 2,
+                                "data": "details_submitted",
+                                "render": render_detail
+                            },
+                            {
+                                "targets": 5,
+                                "data": "user",
+                                "render": render_lock
+                            }
+                        ],
+                        "sAjaxDataProp": "",
+                        "dom": "<'row'<'col-sm-4'l><'col-sm-4 toolbar'><'col-sm-4'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                        "aoColumns": [
+                            {"mData": "user"},
+                            {"mData": "date"},
+                            {"mData": "details_submitted"},
+                            {"mData": "status_display"},
+                            {"mData": "paid_display"},
+                            {"mData": "locked"}
+                        ],
+                        "ajax": '{% url 'Admin:Queue:JsonQueue' queue.id %}?format=json'
+                    });
+            $("div.toolbar").html('Show Expired <input class="form-control" type="checkbox" id="showexpired"/>');
+            $('#showexpired').click(function () {
+                table.draw();
+            });
+
+
+        });
+    </script>
 
 {% endblock %}

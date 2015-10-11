@@ -2,40 +2,41 @@ from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
 
 from ComAdmin import views
-import Coms.models as models
+
+from models import AdminType, AdminSize, AdminExtra
 
 # Types Admin
 typeurls = [
-    url(r'^type/create/$', login_required(views.CreateOptionView.as_view(model=models.Type)),
+    url(r'^type/create/$', login_required(views.CreateOptionView.as_view(model=AdminType)),
         name='Create'),
-    url(r'^type/modify/(?P<pk>\d+)/$', login_required(views.ModifyOptionView.as_view(model=models.Type)),
+    url(r'^type/(?P<pk>\d+)/$', login_required(views.ModifyOptionView.as_view(model=AdminType)),
         name='Modify'),
-    url(r'^type/delete/(?P<pk>\d+)/$', login_required(views.DeleteOptionView.as_view(model=models.Type)),
+    url(r'^type/(?P<pk>\d+)/delete/$', login_required(views.DeleteOptionView.as_view(model=AdminType)),
         name='Delete'),
-    url(r'^type/$', login_required(views.OptionView.as_view(model=models.Type)),
+    url(r'^type/$', login_required(views.OptionView.as_view(model=AdminType)),
         name='Show'),
 ]
 
 # Sizes Admin
 sizeurls = [
-    url(r'^size/create/$', login_required(views.CreateOptionView.as_view(model=models.Size)),
+    url(r'^size/create/$', login_required(views.CreateOptionView.as_view(model=AdminSize)),
         name='Create'),
-    url(r'^size/modify/(?P<pk>\d+)/$', login_required(views.ModifyOptionView.as_view(model=models.Size)),
+    url(r'^size/modify/(?P<pk>\d+)/$', login_required(views.ModifyOptionView.as_view(model=AdminSize)),
         name='Modify'),
-    url(r'^size/delete/(?P<pk>\d+)/$', login_required(views.DeleteOptionView.as_view(model=models.Size)),
+    url(r'^size/delete/(?P<pk>\d+)/$', login_required(views.DeleteOptionView.as_view(model=AdminSize)),
         name='Delete'),
-    url(r'^size/$', login_required(views.OptionView.as_view(model=models.Size)),
+    url(r'^size/$', login_required(views.OptionView.as_view(model=AdminSize)),
         name='Show'), ]
 
 # Extras Admin
 extraurls = [
-    url(r'^extra/create/$', login_required(views.CreateOptionView.as_view(model=models.Extra)),
+    url(r'^extra/create/$', login_required(views.CreateOptionView.as_view(model=AdminExtra)),
         name='Create'),
-    url(r'^extra/modify/(?P<pk>\d+)/$', login_required(views.ModifyOptionView.as_view(model=models.Extra)),
+    url(r'^extra/modify/(?P<pk>\d+)/$', login_required(views.ModifyOptionView.as_view(model=AdminExtra)),
         name='Modify'),
-    url(r'^extra/delete/(?P<pk>\d+)/$', login_required(views.DeleteOptionView.as_view(model=models.Extra)),
+    url(r'^extra/delete/(?P<pk>\d+)/$', login_required(views.DeleteOptionView.as_view(model=AdminExtra)),
         name='Delete'),
-    url(r'^extra/$', login_required(views.OptionView.as_view(model=models.Extra)),
+    url(r'^extra/$', login_required(views.OptionView.as_view(model=AdminExtra)),
         name='Show'),
 ]
 
@@ -51,6 +52,7 @@ queueurls = [
 
     url(r'queue/$', login_required(views.QueuesView.as_view()), name='ShowQueues'),
     url(r'^queue/(?P<pk>[\w\-]*?)/view$', login_required(views.queueview), name='ShowQueue'),
+    url(r'^queue/(?P<pk>[\w\-]*?)/json$', login_required(views.CommissionList.as_view()), name='JsonQueue'),
     url(r'^queue/(?P<pk>[\w\-]*?)/lock/$', login_required(views.lockqueue), name='LockQueue'),
     url(r'^queue/(?P<pk>[\w\-]*?)/unlock/$', login_required(views.unlockqueue), name='UnlockQueue'),
     url(r'^queue/(?P<pk>[\w\-]*?)/modify/$', login_required(views.ModifyQueueView.as_view()), name='ModifyQueue'),
@@ -60,8 +62,6 @@ queueurls = [
 
 urlpatterns = patterns('',
                        url(r'^$', login_required(views.Index.as_view()), name='Index'),
-                       url(r'^(?P<name>[a-z]*)/[\w\-/]*?success$', views.adminredirect,
-                           name='AdminRedirect'),
                        url(r'^', include(queueurls, namespace="Queue")),
                        url(r'^', include(typeurls, namespace="Type")),
                        url(r'^', include(sizeurls, namespace="Size")),

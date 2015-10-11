@@ -1,9 +1,25 @@
-<span style="display:none">{{record.locked}}</span>
-<button type="button" class="btn btn-default action-btn btn-block" data-id="{{ record.id }}" data-target="lock-{{ record.id }}"
-        data-url="{% url 'Admin:Queue:LockCommission' record.id %}" id="lock-{{ record.id }}">
-    {% if record.locked %}
-        <i class="fa fa-lock content" style="pointer-events: none" data-order="1"></i>
+<td class="content">
+    {% if object.details_submitted %}
+        <button type="button" class="btn btn-default modal-action btn-block"
+                data-target="detail-content"
+                data-url="{% url 'Coms:Ajax:DetailView' object.latest_detail %}"
+                id="detail-{{ object.latest_detail }}">{{ object.user }}</button>
     {% else %}
-        <i class="fa fa-unlock content" style="pointer-events: none" data-order="0"></i>
+        <p class="text-center">{{ object.user }}</p>
     {% endif %}
-</button>
+</td>
+<td class="content">{{ object.date }}</td>
+<td class="content" data-order="{{ object.details_submitted }}">
+    <i class="fa fa-{{ object.details_submitted|yesno:"check,close" }}"></i>
+</td>
+<td class="content" data-order="{{ object.status }}">{{ object.get_status_display }}</td>
+<td class="content" data-order="{{ object.paid }}">{{ object.get_paid_display }}</td>
+<td class="content" data-order="{{ object.locked }}">
+    <button type="button" class="btn btn-default action-btn btn-block"
+            data-id="{{ object.id }}" data-target="com-{{ object.id }}"
+            data-url="{% url 'Admin:Queue:LockCommission' object.id %}"
+            id="lock-button-{{ object.id }}">
+        <i class="fa fa-{{ object.locked|yesno:"lock,unlock" }}"
+           style="pointer-events: none"></i>
+    </button>
+</td>

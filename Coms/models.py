@@ -184,10 +184,17 @@ class Commission(models.Model):
     @property
     def expired(self):
         expiry = self.date + timedelta(minutes=self.queue.expire)
-        if expiry < now():
+        if expiry < now() and not self.details_submitted:
             return True
         else:
             return False
+
+    @property
+    def latest_detail(self):
+        try:
+            return self.detail_set.order_by('-date').first().id
+        except AttributeError:
+            return None
 
 
 class Contact(models.Model):

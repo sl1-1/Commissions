@@ -1,4 +1,4 @@
-{% extends "ComAdmin/Options.html" %}
+{% extends "Base.html" %}
 {% load bootstrap3 %}
 {% block title %}
     {{ request.resolver_match.namespaces.2 }}: {{ object.name }} {% if object.price %} - ${{ object.price }}{% endif %}

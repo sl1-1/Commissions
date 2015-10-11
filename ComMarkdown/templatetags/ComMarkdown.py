@@ -7,13 +7,13 @@ from markdown.util import etree
 
 import markdown
 
-from UserControl import models as UserModels
+from UserControl import models as usermodels
 
 
 class CharacterByID(Pattern):
     def handleMatch(self, m):
         try:
-            character = UserModels.Character.objects.get(pk=m.group(3))
+            character = usermodels.Character.objects.get(pk=m.group(3))
         except ObjectDoesNotExist:
             return m.group(2)
         el = etree.Element('button', {'class': 'btn btn-default character-popover', 'title': character.name,
@@ -30,10 +30,10 @@ class CharacterByFriendly(Pattern):
     def handleMatch(self, m):
         print(self.config)
         try:
-            character = UserModels.Character.objects.filter(user=self.config['user']).get(friendlyid=m.group(2))
+            character = usermodels.Character.objects.filter(user=self.config['user']).get(friendlyid=m.group(2))
         except ObjectDoesNotExist:
             try:
-                character = UserModels.Character.objects.filter(user=self.config['user']).get(name=m.group(2))
+                character = usermodels.Character.objects.filter(user=self.config['user']).get(name=m.group(2))
             except ObjectDoesNotExist:
                 return m.group(2)
         el = etree.Element('button', {'class': 'btn btn-default character-popover', 'title': character.name,
