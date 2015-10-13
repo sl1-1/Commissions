@@ -1,0 +1,56 @@
+{% extends "Base.html" %}
+{% load bootstrap3 %}
+{% load static %}
+{% block title %}
+    {{ request.resolver_match.namespaces.2 }}: {{ object.name }} {% if object.price %} - ${{ object.price }}{% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
+        <script type="text/javascript" src="{% static 'bootstrap-datetimepicker.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'bootstrap-datetimepicker.min.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 well col-md-offset-4">
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_field form.name %}
+                    {% bootstrap_field form.types %}
+                    {% bootstrap_field form.sizes %}
+                    {% bootstrap_field form.extras %}
+                    {% bootstrap_field form.max_characters %}
+                    {% bootstrap_field form.character_cost %}
+                    {% bootstrap_field form.max_commissions_in_queue %}
+                    {% bootstrap_field form.max_commissions_per_person %}
+                    {% bootstrap_field form.expire %}
+                    {% bootstrap_field form.closed %}
+                    {% bootstrap_field form.hidden %}
+                    <div class="form-group">
+                        <label class="control-label" for="id_end">Close queue at</label>
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" id="id_end" name="end"
+                                   placeholder="Leave blank for no end time" value="{{ form.end.value|date:"Y-m-d" }}{{ form.end.value|time:" H:i" }}"/>
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="$('#id_end').val('');">
+                                    <span class="fa fa-eraser" style="pointer-events: none;"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <input type="submit" class="form-control" name="submit"/>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({format: 'YYYY-MM-DD HH:mm', sideBySide: true});
+        });
+    </script>
+{% endblock %}

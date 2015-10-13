@@ -34,6 +34,11 @@ class ContactForm(ModelForm):
         super(ContactForm, self).__init__(*args, **kwargs)
         self.fields['site'].queryset = models.ContactMethod.objects.filter(disabled=False).exclude(name="Email").all()
 
+    def clean(self):
+        if "site" not in self.cleaned_data and "username" not in self.cleaned_data:
+            self.cleaned_data['DELETE'] = True
+        super(ContactForm, self).clean()
+
     def clean_username(self):
         return self.cleaned_data['username']
 
@@ -60,35 +65,29 @@ def view(request, pk):
     if commission.expired:
         if commission.queue.is_full or commission.queue.ended:
             return redirect('Coms:Detail:TooSlow', pk=pk)
+
+    contactfactory = inlineformset_factory(models.Commission, models.Contact, form=ContactForm, min_num=0, extra=1,
+                                           formset=ContactFormset)
+
     if request.POST:
         if commission.locked:
             return redirect('Coms:Detail:Done', pk=pk)
         form = CommissionDetailForm(request.POST)
-        contactfactory = inlineformset_factory(models.Commission, models.Contact, form=ContactForm, min_num=0, extra=1,
-                                               formset=ContactFormset)
         contactformset = contactfactory(request.POST, instance=commission)
-        contactformset.is_valid()
-        print(dir(contactformset))
         if contactformset.is_valid() and form.is_valid():
-            saved_contacts = contactformset.save()
             form.instance.com = commission
-            detail = form.save(commit=False)
-            detail.save()
-            form.save_m2m()
-            detail.contacts.clear()
-            for x in list(filter(None, saved_contacts)):
-                detail.contacts.add(x)
+            detail = form.save()
+            detail.contacts = contactformset.save()
             detail.save()
             return redirect('Coms:Detail:Done', pk=pk)
     else:
-        contactfactory = inlineformset_factory(models.Commission, models.Contact, form=ContactForm, min_num=0, extra=1)
         detail = commission.detail_set.order_by('-date').first()
         form = CommissionDetailForm(instance=detail)
-        if detail:
-            contactformset = contactfactory(instance=commission, queryset=detail.contacts.all())
-        else:
-            contactformset = contactfactory(queryset=models.Contact.objects.none())
-    print(contactformset)
+        try:
+            contacts = detail.contacts.all()
+        except AttributeError:
+            contacts = models.Contact.objects.none()
+        contactformset = contactfactory(instance=commission, queryset=contacts)
     form.fields['type'].queryset = commission.queue.types
     form.fields['size'].queryset = commission.queue.sizes
     form.fields['extras'].queryset = commission.queue.extras
@@ -96,7 +95,7 @@ def view(request, pk):
                                                                     'max': commission.queue.max_characters})
     form.fields['number_of_Characters'].max_value = commission.queue.max_characters
     context.update({'form': form, 'contactformset': contactformset, 'Commission': commission})
-    context['characters'] = UserControl.models.Character.objects.filter(user=request.user).all()
+    # context['characters'] = UserControl.models.Character.objects.filter(user=request.user).all()
     context.update(csrf(request))
     return render_to_response('Coms/Entry/DetailForm.html', RequestContext(request, context))
 

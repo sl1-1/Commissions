@@ -87,7 +87,7 @@ class Queue(models.Model):
     expire = models.IntegerField(default=15)
     closed = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
-    end = models.DateTimeField(blank=True, null=True)
+    end = models.DateTimeField(blank=True, null=True, default=None)
 
     def get_absolute_url(self):
         return reverse('Coms:queue', args=(self.id,))

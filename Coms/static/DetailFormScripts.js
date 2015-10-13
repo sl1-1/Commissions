@@ -1,6 +1,6 @@
 function setContact() {
     $('.selected').each(function () {
-        $(this).val(false)
+        $(this).val("False")
     });
     var formid = $('#PC').val();
     $('#id_contact_set-' + formid + '-primary').val(true);

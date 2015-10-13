@@ -195,10 +195,10 @@
         }
         function render_detail(data, type, full, meta) {
             if (data == true) {
-                return '<i class="fa fa-check"></i>'
+                return '<i class="fa fa-check" style="pointer-events: none;"></i>'
             }
             else {
-                return '<i class="fa fa-close"></i>'
+                return '<i class="fa fa-close" style="pointer-events: none;"></i>'
             }
         }
         function render_lock(data, type, full, meta) {
@@ -207,6 +207,7 @@
             btn.setAttribute('id', "lock-" + full['latest_detail']);
             btn.setAttribute('data-id', full['id']);
             var icon = document.createElement("i");
+            icon.setAttribute('style', 'pointer-events: none;');
             if (data == true) {
                 icon.className = "fa fa-lock";
             }

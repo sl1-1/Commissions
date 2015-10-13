@@ -55,8 +55,8 @@ queueurls = [
     url(r'^queue/(?P<pk>[\w\-]*?)/json$', login_required(views.CommissionList.as_view()), name='JsonQueue'),
     url(r'^queue/(?P<pk>[\w\-]*?)/lock/$', login_required(views.lockqueue), name='LockQueue'),
     url(r'^queue/(?P<pk>[\w\-]*?)/unlock/$', login_required(views.unlockqueue), name='UnlockQueue'),
-    url(r'^queue/(?P<pk>[\w\-]*?)/modify/$', login_required(views.ModifyQueueView.as_view()), name='ModifyQueue'),
-    url(r'^queue/create/$', login_required(views.CreateQueueView.as_view()), name='Create'),
+    url(r'^queue/(?P<pk>[\w\-]*?)/modify/$', login_required(views.createqueue), name='ModifyQueue'),
+    url(r'^queue/create/$', login_required(views.createqueue), name='Create'),
     url(r'^details/(?P<pk>[\w\-]*?)/lock/$', login_required(views.lockcommission), name='LockCommission'),
 ]
 

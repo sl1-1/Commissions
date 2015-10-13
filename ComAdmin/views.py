@@ -3,9 +3,10 @@ from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.generic.list import ListView
+from django.forms import ModelForm
 
 from Coms.models import Queue, Commission
 import ComAdmin.models as models
@@ -20,12 +21,29 @@ class QueuesView(ListView):
     model = models.AdminQueue
 
 
-class CreateQueueView(CreateView):
-    model = models.AdminQueue
-    template_name = 'ComAdmin/Create.html'
-    fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
-              'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
-              'closed', 'hidden')
+class QueueForm(ModelForm):
+    class Meta:
+        model = models.AdminQueue
+        fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
+                  'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
+                  'closed', 'hidden')
+
+
+def createqueue(request, pk=None):
+    queue = None
+    if pk:
+        queue = get_object_or_404(models.AdminQueue, pk=pk)
+    context = {}
+    if request.POST:
+        form = QueueForm(request.POST, instance=queue)
+        if form.is_valid():
+            queue = form.save()
+            return redirect(queue)
+        context['form'] = form
+        print(context['form'].errors)
+    else:
+        context['form'] = QueueForm(instance=queue)
+    return render_to_response('ComAdmin/Queue_Form.html', RequestContext(request, context))
 
 
 class ModifyQueueView(UpdateView):
