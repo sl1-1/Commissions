@@ -21,6 +21,8 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('description', models.TextField(max_length=10000)),
                 ('img', models.ImageField(upload_to=UserControl.models.ref_name)),
+                ('date', models.DateTimeField(auto_now=True)),
+                ('friendlyid', models.CharField(max_length=110)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),

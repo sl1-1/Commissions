@@ -16,10 +16,32 @@
                     <div class="col-md-12 well">
                         <div class="height-600">
                             {% csrf_token %}
-                            {% bootstrap_field form.type %}
-                            {% bootstrap_field form.size %}
-                            {% bootstrap_field form.extras %}
-                            {% bootstrap_field form.number_of_Characters %}
+                            {% if Commission.queue.types.all|length > 1 %}
+                                {% bootstrap_field form.type %}
+                            {% else %}
+                                <div class="form-group">
+                                    <label class="control-label" for="id_type">Type</label>
+                                    <p class="form-control-static">{{ Commission.queue.types.first }}</p>
+                                    <input type="hidden" id="id_type" name="type" value="1" />
+                                </div>
+                            {% endif %}
+                            {% if Commission.queue.sizes.all|length > 1 %}
+                                {% bootstrap_field form.size %}
+                            {% else %}
+                                <div class="form-group">
+                                    <label class="control-label" for="id_size">Size</label>
+                                    <p class="form-control-static">{{ Commission.queue.sizes.first }}</p>
+                                    <input type="hidden" id="id_size" name="size" value="1" />
+                                </div>
+                            {% endif %}
+                            {% if Commission.queue.extras.all %}
+                                {% bootstrap_field form.extras %}
+                            {% endif %}
+                            {% if Commission.queue.max_number_of_Characters > 1 %}
+                                {% bootstrap_field form.number_of_Characters %}
+                            {% else %}
+                                <input type="hidden" id="id_number_of_Characters" name="number_of_Characters" value="1" />
+                            {% endif %}
                             {% bootstrap_field form.paypal %}
                             <div class="form-group">
                                 <input class="" type="checkbox" id="paypalisemail" onchange="paypalemail()"/>

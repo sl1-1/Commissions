@@ -2,39 +2,47 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import uuid
+from django.conf import settings
 import django.core.validators
+import uuid
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ComFile',
+            name='Commission',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
-                ('description', models.CharField(max_length=2000)),
-                ('file_name', models.CharField(max_length=2000)),
+                ('id', models.UUIDField(default=uuid.uuid4, serialize=False, editable=False, primary_key=True)),
+                ('date', models.DateTimeField(auto_now_add=True, verbose_name=b'Submitted')),
+                ('locked', models.BooleanField(default=False)),
+                ('status', models.IntegerField(default=0, choices=[(0, b'Waiting'), (1, b'Sketched'), (2, b'Lined'), (3, b'Coloured'), (4, b'Finished'), (5, b'Canceled'), (6, b'Please Revise'), (7, b'Rejected')])),
+                ('paid', models.IntegerField(default=0, choices=[(0, b'Not Yet Requested'), (1, b'Invoiced'), (2, b'Paid'), (3, b'Refunded')])),
+                ('price_adjustment', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
             ],
         ),
         migrations.CreateModel(
-            name='Commission',
+            name='Contact',
             fields=[
-                ('id', models.UUIDField(editable=False, serialize=False, primary_key=True, default=uuid.uuid4)),
-                ('User', models.CharField(max_length=200)),
-                ('Email', models.EmailField(max_length=254)),
-                ('Date', models.DateTimeField(verbose_name='date entered', auto_now_add=True)),
-                ('locked', models.BooleanField(default=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, serialize=False, editable=False, primary_key=True)),
+                ('username', models.CharField(max_length=100)),
+                ('primary', models.BooleanField(default=False)),
+                ('commission', models.ForeignKey(to='Coms.Commission')),
             ],
         ),
         migrations.CreateModel(
             name='ContactMethod',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
+                ('message_url', models.URLField(blank=True)),
+                ('profile_url', models.URLField(blank=True)),
+                ('description', models.CharField(max_length=500, blank=True)),
+                ('disabled', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name': 'Contact Method',
@@ -43,11 +51,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Detail',
             fields=[
-                ('id', models.UUIDField(editable=False, serialize=False, primary_key=True, default=uuid.uuid4)),
-                ('Number_of_Characters', models.IntegerField(validators=[django.core.validators.MinValueValidator(1)], default=1)),
-                ('Details', models.TextField(max_length=2000)),
-                ('Date', models.DateTimeField(verbose_name='date entered', auto_now_add=True)),
-                ('Contact_Method', models.ForeignKey(to='Coms.ContactMethod')),
+                ('id', models.UUIDField(default=uuid.uuid4, serialize=False, editable=False, primary_key=True)),
+                ('number_of_Characters', models.IntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)])),
+                ('details', models.TextField(max_length=10000)),
+                ('date', models.DateTimeField(auto_now_add=True, verbose_name=b'Details Submitted')),
+                ('paypal', models.EmailField(max_length=254)),
+                ('com', models.ForeignKey(to='Coms.Commission')),
+                ('contacts', models.ManyToManyField(to='Coms.Contact', blank=True)),
             ],
             options={
                 'verbose_name': 'Commission Detail',
@@ -56,10 +66,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Extra',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=5, default=0.0)),
+                ('price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
                 ('description', models.CharField(max_length=500, blank=True)),
+                ('disabled', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name': 'Commission Extra',
@@ -68,14 +79,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Queue',
             fields=[
-                ('id', models.UUIDField(editable=False, serialize=False, primary_key=True, default=uuid.uuid4)),
-                ('Name', models.CharField(max_length=200)),
-                ('Date', models.DateTimeField(verbose_name='date created', auto_now_add=True)),
-                ('Max_characters', models.IntegerField(validators=[django.core.validators.MinValueValidator(1)], default=1)),
-                ('Character_cost', models.DecimalField(decimal_places=2, max_digits=5, default=0.0)),
-                ('Max_commissions_in_queue', models.IntegerField(default=1)),
-                ('Max_commissions_per_person', models.IntegerField(default=1)),
-                ('Extras', models.ManyToManyField(blank=True, to='Coms.Extra')),
+                ('id', models.UUIDField(default=uuid.uuid4, serialize=False, editable=False, primary_key=True)),
+                ('name', models.CharField(max_length=200)),
+                ('date', models.DateTimeField(auto_now_add=True, verbose_name=b'date created')),
+                ('max_characters', models.IntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)])),
+                ('character_cost', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
+                ('max_commissions_in_queue', models.IntegerField(default=1)),
+                ('max_commissions_per_person', models.IntegerField(default=1)),
+                ('expire', models.IntegerField(default=15)),
+                ('closed', models.BooleanField(default=False)),
+                ('hidden', models.BooleanField(default=False)),
+                ('end', models.DateTimeField(null=True, blank=True)),
+                ('extras', models.ManyToManyField(to='Coms.Extra', blank=True)),
             ],
             options={
                 'verbose_name': 'Commission Queue',
@@ -84,10 +99,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Size',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=5, default=0.0)),
+                ('price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
                 ('description', models.CharField(max_length=500, blank=True)),
+                ('disabled', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name': 'Commission Size',
@@ -96,10 +112,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Type',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=5, default=0.0)),
+                ('price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
                 ('description', models.CharField(max_length=500, blank=True)),
+                ('disabled', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name': 'Commission Type',
@@ -107,33 +124,38 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='queue',
-            name='Sizes',
+            name='sizes',
             field=models.ManyToManyField(to='Coms.Size'),
         ),
         migrations.AddField(
             model_name='queue',
-            name='Types',
+            name='types',
             field=models.ManyToManyField(to='Coms.Type'),
         ),
         migrations.AddField(
             model_name='detail',
-            name='Extras',
-            field=models.ManyToManyField(blank=True, to='Coms.Extra'),
+            name='extras',
+            field=models.ManyToManyField(to='Coms.Extra', blank=True),
         ),
         migrations.AddField(
             model_name='detail',
-            name='Size',
+            name='primary_contact',
+            field=models.ForeignKey(related_name='detail_pc', blank=True, to='Coms.Contact', null=True),
+        ),
+        migrations.AddField(
+            model_name='detail',
+            name='size',
             field=models.ForeignKey(to='Coms.Size'),
         ),
         migrations.AddField(
             model_name='detail',
-            name='Type',
+            name='type',
             field=models.ForeignKey(to='Coms.Type'),
         ),
         migrations.AddField(
-            model_name='detail',
-            name='com',
-            field=models.ForeignKey(to='Coms.Commission'),
+            model_name='contact',
+            name='site',
+            field=models.ForeignKey(to='Coms.ContactMethod'),
         ),
         migrations.AddField(
             model_name='commission',
@@ -141,8 +163,8 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='Coms.Queue'),
         ),
         migrations.AddField(
-            model_name='comfile',
-            name='comdetails',
-            field=models.ForeignKey(to='Coms.Detail'),
+            model_name='commission',
+            name='user',
+            field=models.ForeignKey(default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True),
         ),
     ]

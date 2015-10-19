@@ -48,16 +48,18 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-extras">
-                            Extras
-                        </label>
-                        <ul id="queue-extras" class="list-unstyled">
-                            {% for item in queue.extras.all %}
-                                <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    {%  if queue.extras.all %}
+                        <div class="form-group">
+                            <label class="control-label" for="queue-extras">
+                                Extras
+                            </label>
+                            <ul id="queue-extras" class="list-unstyled">
+                                {% for item in queue.extras.all %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                     <div class="form-group">
                         <label class="control-label" for="queue-characters">
                             Max characters

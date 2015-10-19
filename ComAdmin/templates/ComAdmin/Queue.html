@@ -1,12 +1,4 @@
-{% extends "ComAdmin/Queues.html" %}
-{% load static %}
-{% block scripts %}
-    <script src="{% static 'Coms/ajax.js' %}"></script>
-    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-    <link rel="stylesheet"
-          href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
-{% endblock %}
+{% extends "ComAdmin/AdminBase.html" %}
 
 {% block content %}
     <div class="container-fluid">
@@ -206,8 +198,9 @@
             btn.className = "btn btn-default btn-block lock-button";
             btn.setAttribute('id', "lock-" + full['latest_detail']);
             btn.setAttribute('data-id', full['id']);
+            btn.setAttribute('onclick', 'lockcom(this)')
             var icon = document.createElement("i");
-            icon.setAttribute('style', 'pointer-events: none;');
+            icon.setAttribute('style', 'pointer-events: none;'); //So you can actually click the icon
             if (data == true) {
                 icon.className = "fa fa-lock";
             }

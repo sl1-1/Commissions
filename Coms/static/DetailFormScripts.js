@@ -7,8 +7,7 @@ function setContact() {
 }
 
 function getOption() {
-    var obj = $("#id_contact_set-TOTAL_FORMS");
-    var forms = obj.val();
+    var forms = $("#id_contact_set-TOTAL_FORMS").val();
     var select = $('#PC');
     $("select[id$=PC] > option").remove();
     select.empty();

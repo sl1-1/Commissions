@@ -11,8 +11,6 @@ from django_markdown.widgets import MarkdownWidget
 
 import Coms.models as models
 
-import UserControl.models
-
 
 class CommissionDetailForm(ModelForm):
     class Meta:
@@ -38,9 +36,6 @@ class ContactForm(ModelForm):
         if "site" not in self.cleaned_data and "username" not in self.cleaned_data:
             self.cleaned_data['DELETE'] = True
         super(ContactForm, self).clean()
-
-    def clean_username(self):
-        return self.cleaned_data['username']
 
     def save(self, commit=True):
         if self.has_changed():
@@ -70,6 +65,7 @@ def view(request, pk):
                                            formset=ContactFormset)
 
     if request.POST:
+        print(request.POST)
         if commission.locked:
             return redirect('Coms:Detail:Done', pk=pk)
         form = CommissionDetailForm(request.POST)
@@ -89,13 +85,14 @@ def view(request, pk):
             contacts = models.Contact.objects.none()
         contactformset = contactfactory(instance=commission, queryset=contacts)
     form.fields['type'].queryset = commission.queue.types
+    for choice in form.fields['type'].choices:
+        print(choice)
     form.fields['size'].queryset = commission.queue.sizes
     form.fields['extras'].queryset = commission.queue.extras
     form.fields['number_of_Characters'].widget = NumberInput(attrs={'step': 1, 'min': '1',
                                                                     'max': commission.queue.max_characters})
     form.fields['number_of_Characters'].max_value = commission.queue.max_characters
     context.update({'form': form, 'contactformset': contactformset, 'Commission': commission})
-    # context['characters'] = UserControl.models.Character.objects.filter(user=request.user).all()
     context.update(csrf(request))
     return render_to_response('Coms/Entry/DetailForm.html', RequestContext(request, context))
 
