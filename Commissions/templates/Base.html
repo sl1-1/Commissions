@@ -44,7 +44,8 @@
                            aria-expanded="false">User Tools<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li role="presentation"><a href="{% url 'UserControl:commissions' %}">Commissions</a></li>
-                            <li role="presentation"><a href="{% url 'UserControl:CharacterGallery' %}">Characters</a></li>
+                            <li role="presentation"><a href="{% url 'UserControl:CharacterGallery' %}">Characters</a>
+                            </li>
                         </ul>
                     </li>
                 {% endif %}
@@ -83,5 +84,14 @@
 {% block content %} Blank {% endblock %}
 {% load tz_detect %}
 {% tz_detect %}
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    {% load tz %}
+    {% get_current_timezone as TIME_ZONE %}
+    <span class="hidden">Server thinks your Timezone is  {{ TIME_ZONE }}</span>
+    <p class="navbar-text">Server thinks your time is {% now "DATETIME_FORMAT" %}</p>
+    {% timezone None %}
+    <span class="hidden">UTC time is {% now "DATETIME_FORMAT" %}</span>
+    {% endtimezone %}
+</nav>
 </body>
 </html>
