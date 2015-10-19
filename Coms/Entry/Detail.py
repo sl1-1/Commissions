@@ -65,7 +65,6 @@ def view(request, pk):
                                            formset=ContactFormset)
 
     if request.POST:
-        print(request.POST)
         if commission.locked:
             return redirect('Coms:Detail:Done', pk=pk)
         form = CommissionDetailForm(request.POST)
@@ -85,8 +84,6 @@ def view(request, pk):
             contacts = models.Contact.objects.none()
         contactformset = contactfactory(instance=commission, queryset=contacts)
     form.fields['type'].queryset = commission.queue.types
-    for choice in form.fields['type'].choices:
-        print(choice)
     form.fields['size'].queryset = commission.queue.sizes
     form.fields['extras'].queryset = commission.queue.extras
     form.fields['number_of_Characters'].widget = NumberInput(attrs={'step': 1, 'min': '1',
