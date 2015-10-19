@@ -25,7 +25,7 @@ class QueueForm(ModelForm):
     class Meta:
         model = models.AdminQueue
         fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
-                  'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
+                  'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'start', 'end',
                   'closed', 'hidden')
 
 

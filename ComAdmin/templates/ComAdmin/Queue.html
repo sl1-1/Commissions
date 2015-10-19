@@ -84,13 +84,20 @@
                         <br/>
                         <span id="expire">{{ queue.expire }} minutes</span>
                     </div>
+                    <div class="form-group">
+                            <label class="control-label" for="start">
+                                Start time
+                            </label>
+                            <br/>
+                            <span id="start">{{ queue.start|date:"N d, Y" }} at {{ queue.start|time:"P" }}</span>
+                    </div>
                     {% if queue.end %}
                         <div class="form-group">
                             <label class="control-label" for="end">
-                                Closes on
+                                Close time
                             </label>
                             <br/>
-                            <span id="queue-max-per">{{ queue.end|date:"N, d, Y" }} at {{ queue.end|time:"P" }}</span>
+                            <span id="end">{{ queue.end|date:"N d, Y" }} at {{ queue.end|time:"P" }}</span>
                         </div>
                     {% endif %}
                     <div class="form-group">

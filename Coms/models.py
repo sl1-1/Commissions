@@ -88,6 +88,7 @@ class Queue(models.Model):
     closed = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
     end = models.DateTimeField(blank=True, null=True, default=None)
+    start = models.DateTimeField(default=now)
 
     def get_absolute_url(self):
         return reverse('Coms:queue', args=(self.id,))
@@ -122,7 +123,7 @@ class Queue(models.Model):
             return True
         if self.closed:
             return True
-        elif self.end is not None and self.end < now():
+        elif self.start > now() or self.end is not None and self.end < now():
             return True
         else:
             return False
