@@ -11,7 +11,7 @@
                 {% for character in characters %}
                     <div class="col-md-2">
                     {% thumbnail character.img "400" crop="noop" as im %}
-                        <a href="{% url 'UserControl:Character' character.id %}">
+                        <a href="{% url 'Characters:Character' character.id %}">
                             <div class="panel panel-default">
                                 <div class="panel-body" >
                                     <img src="{{ im.url }}" class="img-responsive">
@@ -27,7 +27,7 @@
             </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
-                <a class="btn btn-default" href="{% url 'UserControl:CharacterUpload' %}">Add</a>
+                <a class="btn btn-default" href="{% url 'Characters:CharacterUpload' %}">Add</a>
             </div>
         </div>
         </div>
