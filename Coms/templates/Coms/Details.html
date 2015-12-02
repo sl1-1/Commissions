@@ -71,11 +71,6 @@
                         <span id="size-{{ commission.id }}">{{ commission.size }}</span>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="characters-{{ commission.id }}">Characters</label>
-                        <br/>
-                        <span id="characters-{{ commission.id }}">{{ commission.number_of_Characters }}</span>
-                    </div>
-                    <div class="form-group">
                         <label class="control-label" for="extras-{{ commission.id }}">Extras</label>
                         <br/>
                         <ul id="extras-{{ commission.id }}">
@@ -83,6 +78,11 @@
                                 <li>{{ item }}</li>
                             {% endfor %}
                         </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="characters-{{ commission.id }}">Characters</label>
+                        <br/>
+                        <span id="characters-{{ commission.id }}">{{ commission.number_of_Characters }}</span>
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="primarycontact-{{ commission.id }}">Primary Contact</label>
@@ -154,6 +154,11 @@
                         {% endif %}
                         <br/>
                         <span id="status">{{ commission.com.get_status_display }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="total-{{ commission.id }}">Total</label>
+                        <br/>
+                        <span id="total-{{ commission.id }}">${{ commission.total }}</span>
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="paymentstatus">Payment Status</label>

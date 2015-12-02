@@ -32,6 +32,7 @@ class Type(Option):
 
     name = models.CharField(max_length=200)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
     description = models.CharField(max_length=500, blank=True)
     disabled = models.BooleanField(default=False)
 
@@ -42,6 +43,7 @@ class Size(Option):
 
     name = models.CharField(max_length=200)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
     description = models.CharField(max_length=500, blank=True)
     disabled = models.BooleanField(default=False)
 
@@ -52,6 +54,7 @@ class Extra(Option):
 
     name = models.CharField(max_length=200)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
     description = models.CharField(max_length=500, blank=True)
     disabled = models.BooleanField(default=False)
 
@@ -244,3 +247,15 @@ class Detail(models.Model):
     com = models.ForeignKey(Commission)
     contacts = models.ManyToManyField(Contact, blank=True)
     paypal = models.EmailField()
+
+    @property
+    def total(self):
+        characters = self.number_of_Characters-1
+        cost = self.type.price
+        cost += self.type.extra_character_price*characters
+        cost += self.size.price
+        cost += self.size.extra_character_price*characters
+        for extra in self.extras.all():
+            cost += extra.price
+            cost += extra.extra_character_price*characters
+        return cost

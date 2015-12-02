@@ -40,20 +40,6 @@
                         </ul>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="queue-characters">
-                            Max characters
-                        </label>
-                        <br/>
-                        <span id="queue-characters">{{ queue.max_characters }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-cost">
-                            Character cost
-                        </label>
-                        <br/>
-                        <span id="queue-cost">{{ queue.character_cost }}</span>
-                    </div>
-                    <div class="form-group">
                         <label class="control-label" for="queue-extras">
                             Extras
                         </label>
@@ -62,6 +48,13 @@
                                 <li>{{ item }}</li>
                             {% endfor %}
                         </ul>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="queue-characters">
+                            Max characters
+                        </label>
+                        <br/>
+                        <span id="queue-characters">{{ queue.max_characters }}</span>
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="queue-max">
@@ -205,7 +198,7 @@
             btn.className = "btn btn-default btn-block lock-button";
             btn.setAttribute('id', "lock-" + full['latest_detail']);
             btn.setAttribute('data-id', full['id']);
-            btn.setAttribute('onclick', 'lockcom(this)')
+            btn.setAttribute('onclick', 'lockcom(this)');
             var icon = document.createElement("i");
             icon.setAttribute('style', 'pointer-events: none;'); //So you can actually click the icon
             if (data == true) {

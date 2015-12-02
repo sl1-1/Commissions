@@ -25,7 +25,7 @@ class QueueForm(ModelForm):
     class Meta:
         model = models.AdminQueue
         fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
-                  'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'start', 'end',
+                  'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'start', 'end',
                   'closed', 'hidden')
 
 
@@ -50,15 +50,15 @@ class ModifyQueueView(UpdateView):
     model = models.AdminQueue
     template_name = 'ComAdmin/Create.html'
     fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
-              'character_cost', 'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
+              'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'end',
               'closed', 'hidden')
 
 
 # noinspection PyClassHasNoInit
 class Options:
     template_name = 'ComAdmin/Options.html'
-    success_url = "success"
-    fields = ('name', 'price', 'description')
+    # success_url = "success"
+    fields = ('name', 'price', 'extra_character_price', 'description')
 
 
 class OptionView(Options, ListView):

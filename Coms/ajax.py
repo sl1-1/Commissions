@@ -53,6 +53,7 @@ def detailmodal(request, pk=None):
                 break
         else:
             context['primary'] = detail.com.user.email
+    context['total'] = detail.total
     return render_to_response('Coms/ajax/detail_modal.html', RequestContext(request, context))
 
 
