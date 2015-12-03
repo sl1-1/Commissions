@@ -1,14 +1,37 @@
 {% load thumbnail %}
-{% for character in characters %}
-    {% thumbnail character.img "400" crop="noop" as im %}
-        <a class="character" id="{{ character.id }}" data-name="{{ character.name }}">
-            <div class="panel panel-default" style="pointer-events: none">
-                <div class="panel-body" style="pointer-events: none">
-                    <img src="{{ im.url }}" class="img-responsive"
-                         style="pointer-events: none" alt="character.name">
-                </div>
-                <div class="panel-footer">{{ character.name }}</div>
+{% load static %}
+<div class="modal-header content">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="model-label">Characters</h4>
+</div>
+<div class="modal-body detail-modal content">
+    <div>
+        <div style="height: 75vh; overflow: auto" id="characterlist">
+            {% for character in characters %}
+                {% thumbnail character.img "400" crop="noop" as im %}
+                    <div id="{{ character.id }}" class="panel panel-default"
+                         style="width:10vw; float: left; margin: 5px;"
+                         onclick="insertCharacter(this)" data-name="{{ character.name }}">
+                        <div class="panel-body" style="pointer-events: none;  padding: 5px">
+                            <img src="{{ im.url }}" class="img-responsive"
+                                 style="pointer-events: none" alt="character.name">
+                        </div>
+                        <div class="panel-footer">{{ character.name }}</div>
+                    </div>
+                {% endthumbnail %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="modal-footer content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4 text-center">
+                <button class="btn btn-default btn-block" type="button" id="addcharacter" onclick="uploadChar()">
+                    Upload New Character
+                </button>
             </div>
-        </a>
-    {% endthumbnail %}
-{% endfor %}
+        </div>
+    </div>
+</div>

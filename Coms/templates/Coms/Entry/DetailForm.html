@@ -12,7 +12,7 @@
     <div class="container-fluid">
         <form method="post" class="form-horizontal" action="{% url 'Coms:Detail:View' Commission.id %} ">
             <div class="row">
-                <div class="col-xs-12 col-s-12 col-md-2 col-l-2 ">
+                <div class="col-xs-12 col-s-12 col-md-2 col-l-2 col-md-offset-2">
                     <div class="col-md-12 well">
                         <div class="height-600">
                             {% csrf_token %}
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-s-12 col-md-3 col-l-2">
+                <div class="col-xs-12 col-s-12 col-md-2 col-l-2">
                     <div class="col-md-12 well">
                         <div class="height-600">
                             <div class="scrollbox">
@@ -119,4 +119,7 @@
     <div id="empty_form" style="display:none;height: 0">
         {% bootstrap_form contactformset.empty_form %}
     </div>
+    {% load hooks_tags %}
+    {% hook 'detail_form' %}
+
 {% endblock %}

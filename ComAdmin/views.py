@@ -171,6 +171,7 @@ class CommissionSerializer(serializers.ModelSerializer):
 
 
 class CommissionList(APIView):
+    # noinspection PyUnusedLocal,PyShadowingBuiltins
     def get(self, request, pk, format=None):
         queue = get_object_or_404(models.AdminQueue, pk=pk)
         commissions = queue.commission_set.order_by('-date').all()
@@ -181,6 +182,7 @@ from Navigation.signals import render_navbar_admin
 from django.dispatch import receiver
 
 
+# noinspection PyUnusedLocal
 @receiver(render_navbar_admin)
 def nav(urls, **kwargs):
     urls['Admin Tools'].append(('Queues', reverse('Admin:Queue:ShowQueues')))

@@ -11,12 +11,6 @@
 // Feel free to add more tags
 // -------------------------------------------------------------------
 
-function weasyl_submission(){
-	var submission_url = window.prompt("Weasyl URL", "https://www.weasyl.com/submission/");
-	var match = submission_url.match(/https:\/\/www.weasyl.com\/submission\/(\d*)\//);
-	return '[ws:'+match[1]+']';
-}
-
 mySettings = {
 	onShiftEnter:		{keepDefault:false, openWith:'\n\n'},
 	markupSet: [
@@ -41,8 +35,7 @@ mySettings = {
 		{name:'Quotes', openWith:'> '},
 		{name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
 		{separator:'---------------'},
-		{name:'Preview', call:'preview', className:"preview"},
-        {name:'Weasyl Submission', replaceWith:function(markItUp) { return weasyl_submission(markItUp)}}
+		{name:'Preview', call:'preview', className:"preview"}
 	]
 };
 

@@ -30,6 +30,7 @@ from Navigation.signals import render_navbar
 from django.dispatch import receiver
 
 
+# noinspection PyUnusedLocal
 @receiver(render_navbar)
 def nav(urls, **kwargs):
     urls['User Tools'].append(('Commissions', reverse('UserControl:commissions')))

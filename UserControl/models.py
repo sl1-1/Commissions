@@ -1,8 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
-import os.path as path
-from django.core.urlresolvers import reverse
 
 
 class UserProfile(models.Model):
