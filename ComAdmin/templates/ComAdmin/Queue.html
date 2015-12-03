@@ -124,13 +124,13 @@
                         <br/>
 
                         <div class="btn-group">
-                            <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id %}">
+                            <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id True %}">
                                 <i class="fa fa-lock"></i>
                             </a>
                             <button type="button" class="btn btn-default" disabled>
                                 &nbsp;
                             </button>
-                            <a class="btn btn-default" href="{% url 'Admin:Queue:UnlockQueue' queue.id %}">
+                            <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id False %}">
                                 <i class="fa fa-unlock"></i>
                             </a>
                         </div>

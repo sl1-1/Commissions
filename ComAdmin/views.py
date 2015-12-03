@@ -113,17 +113,14 @@ def queueview(request, pk):
 
 
 # noinspection PyUnusedLocal
-def lockqueue(request, pk):
+def lockqueue(request, pk, mode):
+    if mode == "True":
+        mode = True
+    else:
+        mode = False
     for commission in get_object_or_404(Queue, pk=pk).commission_set.all():
-        commission.locked = True
-        commission.save()
-    return HttpResponseRedirect(reverse('Admin:Queue:ShowQueue', args=[pk]))
-
-
-# noinspection PyUnusedLocal
-def unlockqueue(request, pk):
-    for commission in get_object_or_404(Queue, pk=pk).commission_set.all():
-        commission.locked = False
+        print(mode)
+        commission.locked = mode
         commission.save()
     return HttpResponseRedirect(reverse('Admin:Queue:ShowQueue', args=[pk]))
 
