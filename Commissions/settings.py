@@ -47,7 +47,8 @@ INSTALLED_APPS = (
     'ComMarkdown',
     'tz_detect',
     'rest_framework',
-    'Characters'
+    'Characters',
+    'Navigation'
 
 )
 

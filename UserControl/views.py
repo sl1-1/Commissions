@@ -1,5 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
+
 
 import Coms.models
 
@@ -23,3 +25,11 @@ def commissions(request):
 
 def index(request):
     return render_to_response('Base.html', RequestContext(request, {}))
+
+from Navigation.signals import render_navbar
+from django.dispatch import receiver
+
+
+@receiver(render_navbar)
+def nav(urls, **kwargs):
+    urls['User Tools'].append(('Commissions', reverse('UserControl:commissions')))

@@ -22,64 +22,8 @@
 
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'Coms:index' %}">Crimissions</a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                {% if user.is_authenticated %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">User Tools<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li role="presentation"><a href="{% url 'UserControl:commissions' %}">Commissions</a></li>
-                            </li>
-                        </ul>
-                    </li>
-                {% endif %}
-                {% if user.is_staff %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Admin Tools<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li role="presentation"><a href="{% url 'Admin:Queue:ShowQueues' %}">Queues</a></li>
-                            <li role="presentation"><a href="{% url 'Admin:Type:Show' %}">Types</a></li>
-                            <li role="presentation"><a href="{% url 'Admin:Size:Show' %}">Sizes</a></li>
-                            <li role="presentation"><a href="{% url 'Admin:Extra:Show' %}">Extras</a></li>
-                            <li role="presentation"><a href="{% url 'Admin:Contact:Show' %}">Contact Methods</a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endif %}
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                    <li><p class="navbar-text">Welcome,
-                        <strong>{% firstof user.get_short_name user.get_username %}</strong>
-                    </p></li>
-                    {% if user.has_usable_password %}
-                        <li><a href="{% url 'Auth:password_change' %}">Change password</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'Auth:logout' %}">Log out</a></li>
-                {% else %}
-                    <li><a href="{% url 'Auth:register' %}?next={{ request.path }}">Register</a></li>
-                    <li><a href="{% url 'Auth:login' %}?next={{ request.path }}">Login</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</nav>
+{% load navigation %}
+{% navbar %}
 {% block content %} Blank {% endblock %}
 {% load tz_detect %}
 {% tz_detect %}
@@ -94,3 +38,4 @@
 </nav>
 </body>
 </html>
+

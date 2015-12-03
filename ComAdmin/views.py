@@ -176,3 +176,15 @@ class CommissionList(APIView):
         commissions = queue.commission_set.order_by('-date').all()
         serializer = CommissionSerializer(commissions, many=True)
         return Response(serializer.data)
+
+from Navigation.signals import render_navbar_admin
+from django.dispatch import receiver
+
+
+@receiver(render_navbar_admin)
+def nav(urls, **kwargs):
+    urls['Admin Tools'].append(('Queues', reverse('Admin:Queue:ShowQueues')))
+    urls['Admin Tools'].append(('Types', reverse('Admin:Type:Show')))
+    urls['Admin Tools'].append(('Sizes', reverse('Admin:Size:Show')))
+    urls['Admin Tools'].append(('Extras', reverse('Admin:Extra:Show')))
+    urls['Admin Tools'].append(('Contact Methods', reverse('Admin:Contact:Show')))
