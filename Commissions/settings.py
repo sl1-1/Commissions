@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     'Auth',
     'UserControl',
     'sorl.thumbnail',
-    'ComMarkdown',
+    # 'ComMarkdown',
     'tz_detect',
     'rest_framework',
     'Characters',

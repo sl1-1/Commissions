@@ -4,7 +4,7 @@ function lockcom(event) {
     $.get('/admin/details/' + id + '/lock/').done(function () {
         $('#commissiontable').DataTable().ajax.reload();
     });
-};
+}
 
 $(document).on('submit', '#statusform', function (ev) {
     var frm = $('#statusform');

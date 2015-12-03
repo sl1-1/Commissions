@@ -6,7 +6,7 @@ function buttonHandler(event) {
 
 function characterpopover(event) {
     var target = $('#' + event.target.id);
-    $.get('/user/character/' + event.target.id + '/popover/', function (d) {
+    $.get('/character/' + event.target.id + '/popover/', function (d) {
         target.popover({content: d, html: true, container: 'body', trigger: 'click'}).popover('show');
     });
 }
