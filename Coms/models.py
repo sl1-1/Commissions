@@ -258,3 +258,54 @@ class Detail(models.Model):
             cost += extra.price
             cost += extra.extra_character_price*characters
         return cost
+
+
+class AdminQueue(Queue):
+    class Meta:
+        proxy = True
+
+    def get_absolute_url(self):
+        return reverse('Admin:Queue:ShowQueue', args=[self.id])
+
+
+class AdminCommission(Commission):
+    class Meta:
+        proxy = True
+
+    def get_absolute_url(self):
+        return reverse('Admin:Queue:ShowQueue', args=[self.id])
+
+
+class AdminContactMethod(ContactMethod):
+    class Meta:
+        proxy = True
+
+    def get_absolute_url(self):
+        return reverse('Admin:Contact:Modify', args=[self.id])
+
+
+class AdminType(Type):
+    class Meta:
+        proxy = True
+        verbose_name = "Commission Types"
+
+    def get_absolute_url(self):
+        return reverse('Admin:Type:Modify', args=[self.id])
+
+
+class AdminSize(Size):
+    class Meta:
+        proxy = True
+        verbose_name = "Commission Sizes"
+
+    def get_absolute_url(self):
+        return reverse('Admin:Size:Modify', args=[self.id])
+
+
+class AdminExtra(Extra):
+    class Meta:
+        proxy = True
+        verbose_name = "Commission Extras"
+
+    def get_absolute_url(self):
+        return reverse('Admin:Extra:Modify', args=[self.id])

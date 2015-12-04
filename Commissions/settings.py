@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'django_markdown',
     'bootstrap3',
     'Coms',
-    'ComAdmin',
     'Auth',
     'UserControl',
     'sorl.thumbnail',

@@ -6,11 +6,10 @@ from django.conf import settings
 
 urlpatterns = patterns('',
                        # Examples:
-                       url(r'^', include('Coms.urls', namespace="Coms")),
+                       url(r'^', include('Coms.urls')),
                        url(r'^account/', include('Auth.urls', namespace='Auth')),
                        url(r'^user/', include('UserControl.urls', namespace='UserControl')),
                        url(r'^character/', include('Characters.urls', namespace='Characters')),
-                       url(r'^admin/', include('ComAdmin.urls', namespace='Admin')),
                        url(r'^djangoadmin/', include(admin.site.urls)),
                        url('^markdown/', include('django_markdown.urls')),
                        url(r'^tz_detect/', include('tz_detect.urls')),
