@@ -73,7 +73,7 @@ userurls = [
     url(r'^$', views.index, name='index'),
     url(r'^details/', include(detail_urls, namespace="Detail")),
     url(r'^enter/', include(entry_urls, namespace="Enter")),
-    url(r'^ajax/', include(ajax.urls, namespace="Ajax")),
+    url(r'^ajax/', include(ajax.urls, namespace="Ajax"))
 ]
 
 adminurls = [
@@ -88,5 +88,5 @@ adminurls = [
 urlpatterns = patterns('',
                        url(r'^$', views.index, name='index'),
                        url(r'^details/', include(userurls, namespace="Coms")),
-                       url(r'^admin/', include(adminurls, namespace='Admin')),
+                       url(r'^admin/', include(adminurls, namespace='Admin'))
                        )

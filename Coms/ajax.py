@@ -93,7 +93,6 @@ def commissionpayment(request, pk):
 
 urls = [
     url(r'^detail/(?P<pk>[\w\-]*?)/', detailmodal, name="DetailView"),
-    url(r'^detail//', detailmodal, name="DetailView"),
     url(r'^commission/(?P<pk>[\w\-]*?)/status/$', commissionstatus, name="CommissionStatus"),
     url(r'^commission/(?P<pk>[\w\-]*?)/payment/$', commissionpayment, name="CommissionPayment")
 ]

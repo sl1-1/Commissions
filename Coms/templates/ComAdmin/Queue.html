@@ -173,7 +173,7 @@
             if (full['details_submitted']) {
                 var btn = document.createElement("button");
                 btn.className = "btn btn-default modal-action btn-block";
-                btn.setAttribute('data-url', "/ajax/detail/" + full['latest_detail']);
+                btn.setAttribute('data-url', "/details/ajax/detail/" + full['latest_detail']);
                 btn.setAttribute('id', "detail-" + full['latest_detail']);
                 btn.setAttribute('data-target', 'detail-content');
                 btn.appendChild(document.createTextNode(full['user']));
