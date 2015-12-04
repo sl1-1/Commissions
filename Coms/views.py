@@ -12,14 +12,6 @@ from django.template import RequestContext
 import Coms.models as models
 
 
-class CommissionDetailForm(ModelForm):
-    class Meta:
-        model = models.Detail
-        fields = ['type', 'size', 'number_of_Characters', 'extras',
-                  'details', 'paypal']
-        widgets = {'extras': CheckboxSelectMultiple(), 'details': MarkdownWidget()}
-
-
 class ContactForm(ModelForm):
     class Meta:
         model = models.Contact
@@ -73,6 +65,7 @@ class DetailForm(ModelForm):
         self.fields['number_of_Characters'].max_value = queue.max_characters
 
 
+# noinspection PyUnusedLocal
 class DetailFormView(View):
     commission = None
     contactfactory = None
