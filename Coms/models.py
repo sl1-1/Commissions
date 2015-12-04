@@ -101,9 +101,9 @@ class Queue(models.Model):
         if self.expire > 0:
             expiry = now() - timedelta(minutes=self.expire)
             query = self.commission_set.filter(date__gt=expiry) | self.commission_set.filter(detail__isnull=False)
-            return query.count()
+            return query.distinct('id').count()
         else:
-            return self.commission_set.count()
+            return self.commission_set.distinct('id').count()
 
     @property
     def open_slots(self):
@@ -210,7 +210,7 @@ class Contact(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     site = models.ForeignKey(ContactMethod)
-    commission = models.ForeignKey(Commission)
+    # commission = models.ForeignKey(Commission)
     username = models.CharField(max_length=100)
     primary = models.BooleanField(default=False)
 
@@ -242,7 +242,6 @@ class Detail(models.Model):
     number_of_Characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     extras = models.ManyToManyField(Extra, blank=True)
     details = models.TextField(max_length=10000)
-    primary_contact = models.ForeignKey(Contact, blank=True, null=True, related_name="detail_pc")
     date = models.DateTimeField('Details Submitted', auto_now_add=True)
     com = models.ForeignKey(Commission)
     contacts = models.ManyToManyField(Contact, blank=True)

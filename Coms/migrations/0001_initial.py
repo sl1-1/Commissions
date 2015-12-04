@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.utils.timezone
 from django.conf import settings
 import django.core.validators
 import uuid
@@ -31,7 +32,6 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, serialize=False, editable=False, primary_key=True)),
                 ('username', models.CharField(max_length=100)),
                 ('primary', models.BooleanField(default=False)),
-                ('commission', models.ForeignKey(to='Coms.Commission')),
             ],
         ),
         migrations.CreateModel(
@@ -69,6 +69,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
                 ('price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
+                ('extra_character_price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
                 ('description', models.CharField(max_length=500, blank=True)),
                 ('disabled', models.BooleanField(default=False)),
             ],
@@ -89,7 +90,8 @@ class Migration(migrations.Migration):
                 ('expire', models.IntegerField(default=15)),
                 ('closed', models.BooleanField(default=False)),
                 ('hidden', models.BooleanField(default=False)),
-                ('end', models.DateTimeField(null=True, blank=True)),
+                ('end', models.DateTimeField(default=None, null=True, blank=True)),
+                ('start', models.DateTimeField(default=django.utils.timezone.now)),
                 ('extras', models.ManyToManyField(to='Coms.Extra', blank=True)),
             ],
             options={
@@ -102,6 +104,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
                 ('price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
+                ('extra_character_price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
                 ('description', models.CharField(max_length=500, blank=True)),
                 ('disabled', models.BooleanField(default=False)),
             ],
@@ -115,6 +118,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
                 ('price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
+                ('extra_character_price', models.DecimalField(default=0.0, max_digits=5, decimal_places=2)),
                 ('description', models.CharField(max_length=500, blank=True)),
                 ('disabled', models.BooleanField(default=False)),
             ],
@@ -136,11 +140,6 @@ class Migration(migrations.Migration):
             model_name='detail',
             name='extras',
             field=models.ManyToManyField(to='Coms.Extra', blank=True),
-        ),
-        migrations.AddField(
-            model_name='detail',
-            name='primary_contact',
-            field=models.ForeignKey(related_name='detail_pc', blank=True, to='Coms.Contact', null=True),
         ),
         migrations.AddField(
             model_name='detail',
