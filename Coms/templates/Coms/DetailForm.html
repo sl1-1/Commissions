@@ -2,9 +2,9 @@
 {% load static %}
 {% load bootstrap3 %}
 {% load thumbnail %}
+{% load django_markdown %}
 {% block scripts %}
     <script src="{% static 'DetailFormScripts.js' %}" type="text/javascript"></script>
-    {% markdown_media %}
 {% endblock %}
 {% block title %} Commission Details for {{ Commission.user }} {{ Commission.date }} {% endblock %}
 {% block content %}

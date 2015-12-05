@@ -8,22 +8,6 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 well col-md-offset-1">
-                {#                {% for character in characters %}#}
-                {#                    <div class="col-md-2">#}
-                {#                    {% thumbnail character.img "400" crop="noop" as im %}#}
-                {#                        <a href="{% url 'Characters:Character' character.id %}">#}
-                {#                            <div class="panel panel-default">#}
-                {#                                <div class="panel-body" >#}
-                {#                                    <img src="{{ im.url }}" class="img-responsive">#}
-                {#                                </div>#}
-                {#                                <div class="panel-footer">#}
-                {#                                    {{ character.name }}#}
-                {#                                </div>#}
-                {#                            </div>#}
-                {#                        </a>#}
-                {#                    {% endthumbnail %}#}
-                {#                    </div>#}
-                {#                {% endfor %}#}
                 <div style="height: 75vh; overflow: auto" id="characterlist">
                     {% for character in characters %}
                         {% thumbnail character.img "400" crop="noop" as im %}
