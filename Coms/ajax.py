@@ -48,10 +48,7 @@ def detailmodal(request, pk=None):
         queue['first'] = firstlast.last().detail_set.order_by('-date').first()
         queue['last'] = firstlast.first().detail_set.order_by('-date').first()
         context['queue'] = queue
-        for contact in detail.contacts.all():
-            if contact.primary:
-                break
-        else:
+        if not detail.contacts.filter(primary__exact=True):
             context['primary'] = detail.com.user.email
     context['total'] = detail.total
     return render_to_response('Coms/ajax/detail_modal.html', RequestContext(request, context))
