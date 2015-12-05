@@ -1,15 +1,4 @@
 from django.contrib import admin
-
-import Coms.models as models
-
-# Register your models here.
-admin.site.register(models.Queue)
-admin.site.register(models.Commission)
-admin.site.register(models.Detail)
-admin.site.register(models.Contact)
-admin.site.register(models.ContactMethod)
-
-
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
@@ -20,8 +9,14 @@ from django.template import RequestContext
 from django.views.generic.list import ListView
 from django.forms import ModelForm
 
-from Coms.models import Queue, Commission
 import Coms.models as models
+
+# Register your models here.
+admin.site.register(models.Queue)
+admin.site.register(models.Commission)
+admin.site.register(models.Detail)
+admin.site.register(models.Contact)
+admin.site.register(models.ContactMethod)
 
 
 class Index(TemplateView):
@@ -130,7 +125,7 @@ def lockqueue(request, pk, mode):
         mode = True
     else:
         mode = False
-    for commission in get_object_or_404(Queue, pk=pk).commission_set.all():
+    for commission in get_object_or_404(models.AdminQueue, pk=pk).commission_set.all():
         print(mode)
         commission.locked = mode
         commission.save()
@@ -145,7 +140,7 @@ def lockcommission(request, pk):
     :param pk:
     :return: button html to be inserted into the page
     """
-    commission = get_object_or_404(Commission, pk=pk)
+    commission = get_object_or_404(models.AdminCommission, pk=pk)
     if request.user.is_staff:
         commission.locked = not commission.locked
         commission.save()
@@ -165,7 +160,7 @@ class CommissionSerializer(serializers.ModelSerializer):
     paid_display = serializers.SerializerMethodField()
 
     class Meta:
-        model = Commission
+        model = models.AdminCommission
         fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'price_adjustment', 'details_submitted', 'expired',
                   'latest_detail', 'status_display', 'paid_display')
 

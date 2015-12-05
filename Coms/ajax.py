@@ -23,14 +23,12 @@ def detailmodal(request, pk=None):
         return render_to_response('Coms/ajax/detail_modal.html', context)
     queueobj = comobj.queue
     context['commission'] = detail
-    print(detail.contacts.all())
     historical = dict()
     historical['previous'] = detail.com.detail_set.filter(date__lt=detail.date).order_by('-date')[0:1].first()
     historical['next'] = detail.com.detail_set.filter(date__gt=detail.date).order_by('date')[0:1].first()
     historical['first'] = detail.com.detail_set.order_by('date')[0:1].first()
     historical['last'] = detail.com.detail_set.order_by('-date')[0:1].first()
     context['historical'] = historical
-    print(comobj.date)
     if request.user.is_staff:
         comset = queueobj.commission_set
         queue = dict()
