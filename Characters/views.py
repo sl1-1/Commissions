@@ -16,7 +16,7 @@ import Characters.models as models
 
 
 class CharacterForm(ModelForm):
-    class Meta:
+    class Meta(object):
         model = models.Character
         fields = ('name', 'description', 'img')
 

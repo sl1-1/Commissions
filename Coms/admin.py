@@ -29,7 +29,7 @@ class QueuesView(ListView):
 
 
 class QueueForm(ModelForm):
-    class Meta:
+    class Meta(object):
         model = models.AdminQueue
         fields = ('name', 'types', 'sizes', 'extras', 'max_characters',
                   'max_commissions_in_queue', 'max_commissions_per_person', 'expire', 'start', 'end',
@@ -159,7 +159,7 @@ class CommissionSerializer(serializers.ModelSerializer):
     status_display = serializers.SerializerMethodField()
     paid_display = serializers.SerializerMethodField()
 
-    class Meta:
+    class Meta(object):
         model = models.AdminCommission
         fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'price_adjustment', 'details_submitted', 'expired',
                   'latest_detail', 'status_display', 'paid_display')

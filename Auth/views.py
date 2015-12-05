@@ -11,7 +11,7 @@ from django.forms import ValidationError
 class MyUserCreationForm(UserCreationForm):
     email = EmailField(required=True)
 
-    class Meta:
+    class Meta(object):
         model = User
         fields = {'username', 'email'}
 

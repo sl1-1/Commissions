@@ -9,7 +9,7 @@ from datetime import timedelta
 
 
 class Option(models.Model):
-    class Meta:
+    class Meta(object):
         abstract = True
 
     def __unicode__(self):
@@ -27,7 +27,7 @@ class Option(models.Model):
 
 
 class Type(Option):
-    class Meta:
+    class Meta(object):
         verbose_name = "Commission Type"
 
     name = models.CharField(max_length=200)
@@ -38,7 +38,7 @@ class Type(Option):
 
 
 class Size(Option):
-    class Meta:
+    class Meta(object):
         verbose_name = "Commission Size"
 
     name = models.CharField(max_length=200)
@@ -49,7 +49,7 @@ class Size(Option):
 
 
 class Extra(Option):
-    class Meta:
+    class Meta(object):
         verbose_name = "Commission Extra"
 
     name = models.CharField(max_length=200)
@@ -68,7 +68,7 @@ class QueueManager(models.Manager):
 class Queue(models.Model):
     objects = QueueManager()
 
-    class Meta:
+    class Meta(object):
         verbose_name = "Commission Queue"
 
     def __unicode__(self):
@@ -146,7 +146,7 @@ class Queue(models.Model):
 
 
 class ContactMethod(models.Model):
-    class Meta:
+    class Meta(object):
         verbose_name = "Contact Method"
 
     def __unicode__(self):
@@ -227,7 +227,7 @@ class Contact(models.Model):
 
 
 class Detail(models.Model):
-    class Meta:
+    class Meta(object):
         verbose_name = "Commission Detail"
 
     def __unicode__(self):
@@ -261,7 +261,7 @@ class Detail(models.Model):
 
 
 class AdminQueue(Queue):
-    class Meta:
+    class Meta(object):
         proxy = True
 
     def get_absolute_url(self):
@@ -269,7 +269,7 @@ class AdminQueue(Queue):
 
 
 class AdminCommission(Commission):
-    class Meta:
+    class Meta(object):
         proxy = True
 
     def get_absolute_url(self):
@@ -277,7 +277,7 @@ class AdminCommission(Commission):
 
 
 class AdminContactMethod(ContactMethod):
-    class Meta:
+    class Meta(object):
         proxy = True
 
     def get_absolute_url(self):
@@ -285,7 +285,7 @@ class AdminContactMethod(ContactMethod):
 
 
 class AdminType(Type):
-    class Meta:
+    class Meta(object):
         proxy = True
         verbose_name = "Commission Types"
 
@@ -294,7 +294,7 @@ class AdminType(Type):
 
 
 class AdminSize(Size):
-    class Meta:
+    class Meta(object):
         proxy = True
         verbose_name = "Commission Sizes"
 
@@ -303,7 +303,7 @@ class AdminSize(Size):
 
 
 class AdminExtra(Extra):
-    class Meta:
+    class Meta(object):
         proxy = True
         verbose_name = "Commission Extras"
 

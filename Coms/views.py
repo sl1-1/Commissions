@@ -13,7 +13,7 @@ import Coms.models as models
 
 
 class ContactForm(ModelForm):
-    class Meta:
+    class Meta(object):
         model = models.Contact
         fields = ('site', 'username', 'primary')
         widgets = {'site': Select(attrs={'onchange': 'getOption()'}, ),
@@ -48,7 +48,7 @@ class ContactFormset(BaseModelFormSet):
 
 
 class DetailForm(ModelForm):
-    class Meta:
+    class Meta(object):
         model = models.Detail
         fields = ['type', 'size', 'number_of_Characters', 'extras',
                   'details', 'paypal']
