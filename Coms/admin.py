@@ -62,7 +62,7 @@ class ModifyQueueView(UpdateView):
 
 
 # noinspection PyClassHasNoInit
-class Options:
+class Options(object):
     template_name = 'ComAdmin/Options.html'
     # success_url = "success"
     fields = ('name', 'price', 'extra_character_price', 'description')
