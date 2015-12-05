@@ -93,7 +93,7 @@ class DeleteOptionView(Options, DeleteView):
 
 
 # noinspection PyClassHasNoInit
-class Contacts:
+class Contacts(object):
     model = models.AdminContactMethod
     template_name = 'ComAdmin/Contacts.html'
     fields = ('name', 'profile_url', 'message_url', 'description', 'disabled')
