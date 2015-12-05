@@ -13,9 +13,9 @@
                     <div id="{{ character.id }}" class="panel panel-default"
                          style="width:10vw; float: left; margin: 5px;"
                          onclick="insertCharacter(this)" data-name="{{ character.name }}">
-                        <div class="panel-body" style="pointer-events: none;  padding: 5px">
+                        <div class="panel-body" style="pointer-events: none;  padding: 5px; height: 20vh; width: 10vw">
                             <img src="{{ im.url }}" class="img-responsive"
-                                 style="pointer-events: none" alt="character.name">
+                                 style="pointer-events: none; max-height: 18vh; max-width: 8vw; margin: 0 auto; float: none;" alt="character.name">
                         </div>
                         <div class="panel-footer">{{ character.name }}</div>
                     </div>

@@ -1,10 +1,33 @@
 function charmodal() {
     var modal = $('#char-modal');
     var content = $('#char-content');
-    content.load('/character/ajax/');
+    content.load('/character/ajax/', function () {
+        $(".character").each(function (index, button) {
+            button.onclick = insertCharacter(event)
+        })
+    });
     modal.modal('show');
 }
 
+function uploadChar() {
+    var full = $(event.target).data()['full'];
+    var modal = $('#char-modal');
+    var content = $('#char-content');
+    content.load('/character/upload/', function () {
+        if (full == true) {
+            $('#charactersubmit').data('full', true);
+        }
+        $('#addcharacter').click(function () {
+            if (full == true) {
+                modal.modal('hide');
+            }
+            else {
+                charmodal()
+            }
+        })
+    });
+    modal.modal('show');
+}
 
 function insertCharacter(event) {
     var character = event.id;
@@ -15,16 +38,15 @@ function insertCharacter(event) {
     modal.modal('hide');
 }
 
-function uploadChar() {
-    var modal = $('#char-modal');
-    var content = $('#char-content');
-    content.load('/character/upload/ajax/');
-}
-
-function cancelChar() {
-    var modal = $('#char-modal');
-    var content = $('#char-content');
-    content.load('/character/ajax/');
+function registerEvents() {
+    $(".character").each(function (index, button) {
+        console.log(button);
+        button.onclick = (
+            function (event) {
+                window.open('/character/' + event.target.id, '_self');
+            }
+        )
+    })
 }
 
 $(document).ready(function () {
@@ -52,7 +74,13 @@ $(document).on('submit', '#characterupload', function (ev) {
         data: formData,
         success: function (data) {
             if (data == "Success") {
-                $('#char-content').load("/character/ajax/")
+                if(submitbutton.data()['full'] == true){
+                    $('#characterlist').load('/character/ajax/ #characterlist');
+                    $('#char-modal').modal('hide');
+                }
+                else{
+                    $('#char-content').load("/character/ajax/")
+                }
             }
             else {
                 $('#char-content').html(data)
