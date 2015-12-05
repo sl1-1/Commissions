@@ -101,7 +101,6 @@ class Contacts(object):
 
 class ContactsView(Contacts, ListView):
     model = models.AdminContactMethod
-    pass
 
 
 class CreateContactsView(Contacts, CreateView):
