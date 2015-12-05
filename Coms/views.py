@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response, redirect
 from django.template.context_processors import csrf
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 
 import Coms.models as models
 
@@ -110,20 +111,8 @@ class DetailFormView(View):
             detail = form.save()
             detail.contacts = contactformset.save()
             detail.save()
-            self.response = redirect('Coms:Detail:Done', pk=pk)
+            self.response = redirect("{0}#{1}".format(reverse('Coms:commissions'), detail.id))
         self.context.update({'form': form, 'contactformset': contactformset})
-
-
-class Done(DetailView):
-    model = models.Commission
-    template_name = 'Coms/Detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(Done, self).get_context_data(**kwargs)
-        # noinspection PyUnresolvedReferences
-        com = get_object_or_404(models.Commission, pk=self.kwargs['pk'])
-        context['commission'] = com.detail_set.order_by('-date').first()
-        return context
 
 
 def enter(request, pk):
@@ -146,3 +135,30 @@ def index(request):
     for queue in queues:
         print(queue.show)
     return render_to_response('Coms/index.html', RequestContext(request, {'queues': queues}))
+
+
+def commissions(request):
+    usercoms = models.Commission.objects.filter(user=request.user).order_by('queue__date')
+    comsdict = {}
+    for com in usercoms:
+        if com.detail_set.all():
+            if com.queue_id in comsdict:
+                comsdict[com.queue_id]['coms'].append(com.detail_set.order_by('-date').first())
+            else:
+                comsdict[com.queue_id] = {'name': com.queue.name, 'date': com.queue.date,
+                                          'coms': [com.detail_set.order_by('-date').first()]}
+            print(com.detail_set)
+    print(comsdict)
+    context = {'commissions': comsdict}
+    print(context)
+    return render_to_response('Coms/Commissions.html', RequestContext(request, context))
+
+
+from Navigation.signals import render_navbar
+from django.dispatch import receiver
+
+
+# noinspection PyUnusedLocal
+@receiver(render_navbar)
+def nav(urls, **kwargs):
+    urls['User Tools'].append(('Commissions', reverse('Coms:commissions')))

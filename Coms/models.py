@@ -309,3 +309,4 @@ class AdminExtra(Extra):
 
     def get_absolute_url(self):
         return reverse('Admin:Extra:Modify', args=[self.id])
+

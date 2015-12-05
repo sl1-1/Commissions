@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'bootstrap3',
     'Coms',
     'Auth',
-    'UserControl',
     'sorl.thumbnail',
     'hooks',
     'tz_detect',

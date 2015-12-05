@@ -8,7 +8,6 @@ urlpatterns = patterns('',
                        # Examples:
                        url(r'^', include('Coms.urls')),
                        url(r'^account/', include('Auth.urls', namespace='Auth')),
-                       url(r'^user/', include('UserControl.urls', namespace='UserControl')),
                        url(r'^character/', include('Characters.urls', namespace='Characters')),
                        url(r'^djangoadmin/', include(admin.site.urls)),
                        url('^markdown/', include('django_markdown.urls')),

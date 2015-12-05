@@ -4,7 +4,7 @@ import os.path as path
 from django.core.urlresolvers import reverse
 from django.db import models
 
-import UserControl.models as usermodels
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -16,7 +16,7 @@ def ref_name(instance, filename):
 
 class Character(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(usermodels.User)
+    user = models.ForeignKey(User)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=10000)
     img = models.ImageField(upload_to=ref_name)

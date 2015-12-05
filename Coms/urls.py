@@ -11,7 +11,6 @@ entry_urls = [
 
 detail_urls = [
     url(r'^(?P<pk>[\w\-]*?)/$', views.DetailFormView.as_view(), name='View'),
-    url(r'^(?P<pk>[\w\-]*?)/success/$', views.Done.as_view(), name='Done'),
 ]
 
 
@@ -73,7 +72,8 @@ userurls = [
     url(r'^$', views.index, name='index'),
     url(r'^details/', include(detail_urls, namespace="Detail")),
     url(r'^enter/', include(entry_urls, namespace="Enter")),
-    url(r'^ajax/', include(ajax.urls, namespace="Ajax"))
+    url(r'^ajax/', include(ajax.urls, namespace="Ajax")),
+    url(r'^commissions/$', views.commissions, name="commissions")
 ]
 
 adminurls = [
