@@ -81,9 +81,10 @@ class DetailFormView(View):
         if self.commission.expired:
             if self.commission.queue.is_full or self.commission.queue.ended:
                 return render_to_response('Coms/TooSlow.html', RequestContext(request, self.context))
-        if self.response:
+        elif self.response:
             return self.response
-        return self.render(request)
+        else:
+            return self.render(request)
 
     def render(self, request):
         self.context.update(csrf(request))
