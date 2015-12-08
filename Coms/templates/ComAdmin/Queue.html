@@ -169,6 +169,7 @@
     </div>
 
     <script>
+        //noinspection JSUnusedLocalSymbols
         function render_name(data, type, full, meta) {
             if (full['details_submitted']) {
                 var btn = document.createElement("button");
@@ -185,6 +186,7 @@
                 return '<p class="text-center">' + data + '</p>';
             }
         }
+        //noinspection JSUnusedLocalSymbols
         function render_detail(data, type, full, meta) {
             if (data == true) {
                 return '<i class="fa fa-check" style="pointer-events: none;"></i>'
@@ -193,6 +195,7 @@
                 return '<i class="fa fa-close" style="pointer-events: none;"></i>'
             }
         }
+        //noinspection JSUnusedLocalSymbols
         function render_lock(data, type, full, meta) {
             var btn = document.createElement("button");
             btn.className = "btn btn-default btn-block lock-button";

@@ -152,6 +152,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 
 
+# noinspection PyMethodMayBeStatic,PyMethodMayBeStatic,PyMethodMayBeStatic
 class CommissionSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     date = serializers.SerializerMethodField()
@@ -173,6 +174,7 @@ class CommissionSerializer(serializers.ModelSerializer):
         return timezone.localtime(obj.date).strftime("%Y-%m-%d %H:%M:%S %Z")
 
 
+# noinspection PyMethodMayBeStatic
 class CommissionList(APIView):
     # noinspection PyUnusedLocal,PyShadowingBuiltins
     def get(self, request, pk, format=None):

@@ -1,7 +1,6 @@
 from django.forms.models import modelformset_factory
 from django.forms import NumberInput, HiddenInput
 from django.forms import ModelForm, CheckboxSelectMultiple, Select, TextInput, BaseModelFormSet
-from django.views.generic.detail import DetailView
 from django_markdown.widgets import MarkdownWidget
 from django.views.generic import View
 from django.shortcuts import get_object_or_404
