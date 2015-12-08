@@ -25,13 +25,14 @@
     {% endblock %}
 
 </head>
-<body>
+<body class="body-overide">
 {% load navigation %}
 {% navbar %}
 {% block content %} Blank {% endblock %}
 {% load tz_detect %}
 {% tz_detect %}
-<nav class="navbar navbar-default navbar-fixed-bottom">
+<nav id="footer">
+<div class="container">
     {% load tz %}
     {% get_current_timezone as TIME_ZONE %}
     <span class="hidden">Server thinks your Timezone is  {{ TIME_ZONE }}</span>
@@ -39,6 +40,7 @@
     {% timezone None %}
     <span class="hidden">UTC time is {% now "DATETIME_FORMAT" %}</span>
     {% endtimezone %}
+</div>
 </nav>
 </body>
 </html>
