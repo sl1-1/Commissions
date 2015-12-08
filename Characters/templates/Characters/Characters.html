@@ -8,34 +8,33 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 well col-md-offset-1">
-                <div style="height: 75vh; overflow: auto" id="characterlist">
-                    {% for character in characters %}
-                        {% thumbnail character.img "400" crop="noop" as im %}
+                <div class="col-md-12">
+                    <div id="characterlist">
+                        {% for character in characters %}
                             <div id="{{ character.id }}" class="panel panel-default character"
-                                 style="width:10vw; float: left; margin: 5px;" data-name="{{ character.name }}">
-                                <div class="panel-body"
-                                     style="pointer-events: none;  padding: 5px; height: 20vh; width: 10vw">
-                                    <img src="{{ im.url }}" class="img-responsive"
-                                         style="pointer-events: none; max-height: 18vh; max-width: 8vw; margin: 0 auto; float: none;"
-                                         alt="character.name">
-                                </div>
-                                <div class="panel-footer">{{ character.name }}</div>
+                                 data-name="{{ character.name }}">
+                                {% thumbnail character.img "400" crop="noop" as im %}
+                                    <div class="character-container">
+                                        <div class="panel-body">
+                                            <img src="{{ im.url }}" class="img-responsive center-block"
+                                                 alt="character.name">
+                                        </div>
+                                        <div class="panel-footer text-center">{{ character.name }}</div>
+                                    </div>
+                                {% endthumbnail %}
                             </div>
-                        {% endthumbnail %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6 col-md-offset-3">
-                    <a class="btn btn-default" onclick="uploadChar(this)" data-full="true">Add</a>
+                    <a class="btn btn-default center-block" onclick="uploadChar(this)" data-full="true">Add</a>
                 </div>
             </div>
         </div>
-    </div>
-    {% include 'Characters/detailform.html' %}
-    <script type="application/javascript">
-        $(document).ready(function () {
-            registerEvents()
-        });
-    </script>
+        {% include 'Characters/detailform.html' %}
+        <script type="application/javascript">
+            $(document).ready(function () {
+                registerEvents()
+            });
+        </script>
 {% endblock %}

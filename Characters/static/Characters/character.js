@@ -3,14 +3,14 @@ function charmodal() {
     var content = $('#char-content');
     content.load('/character/ajax/', function () {
         $(".character").each(function (index, button) {
-            button.onclick = insertCharacter(event)
+            button.onclick = insertCharacter
         })
     });
     modal.modal('show');
 }
 
-function uploadChar() {
-    var full = $(event.target).data()['full'];
+function uploadChar(event) {
+    var full = $(event).data()['full'];
     var modal = $('#char-modal');
     var content = $('#char-content');
     content.load('/character/upload/', function () {
@@ -30,10 +30,9 @@ function uploadChar() {
 }
 
 function insertCharacter(event) {
-    var character = event.id;
-    var target = $('#' + (event.id));
+    var character = $(event.target);
     $('#id_details').focus();
-    $.markItUp({replaceWith: '(!' + target.data()['name'] + ':' + character + ')'});
+    $.markItUp({replaceWith: '(!' + character.data()['name'] + ':' + event.target.id + ')'});
     var modal = $('#char-modal');
     modal.modal('hide');
 }
