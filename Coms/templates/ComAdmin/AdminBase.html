@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block scripts %}
-    <script src="{{ STATIC_URL }}Coms/ajax.js"></script>
-    <script src="{{ STATIC_URL }}ComAdmin/admin.js"></script>
+    <script src="{% static "Coms/ajax.js" %}"></script>
+    <script src="{% static "ComAdmin/admin.js" %}"></script>
     <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
     <link rel="stylesheet"
