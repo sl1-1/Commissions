@@ -79,8 +79,7 @@ class DetailFormView(View):
         self.contactfactory = modelformset_factory(models.Contact, form=ContactForm, formset=ContactFormset, min_num=0,
                                                    extra=1, can_delete=True)
         super(DetailFormView, self).dispatch(request, *args, **kwargs)
-        if self.commission.expired:
-            if self.commission.queue.is_full or self.commission.queue.ended:
+        if self.commission.expired and (self.commission.queue.is_full or self.commission.queue.ended):
                 return render_to_response('Coms/TooSlow.html', RequestContext(request, self.context))
         elif self.response:
             return self.response
