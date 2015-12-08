@@ -20,8 +20,6 @@ SECRET_KEY = '%0951uw)u5*v84azua8hkddlg($#af)@-aab-4!egevy_8vnz%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -55,6 +53,7 @@ TEMPLATES = [
         'DIRS': ['Commissions/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': True,
             'context_processors': [
                 # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
                 # list if you haven't customized them:
@@ -142,3 +141,11 @@ MARKDOWN_EXTENSIONS = ['ComMarkup:ComsMarkdown']
 TZ_DETECT_COUNTRIES = ('US', 'CA', 'EU', 'GB')
 
 THUMBNAIL_DEBUG = True
+
+MANAGERS = (
+    ('YOURNAMEHERE', 'your@email.here'),
+)
+
+ADMINS = (
+    ('YOURNAMEHERE', 'your@email.here'),
+)
