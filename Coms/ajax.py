@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from urlparse import urlparse
 
 from django import forms
 
@@ -13,6 +14,10 @@ import Coms.models as models
 
 def detailmodal(request, pk=None):
     context = {}
+    if urlparse(request.META['HTTP_REFERER'])[2].split('/')[1] == 'admin':
+        context['admin'] = True
+    else:
+        context['admin'] = False
     # noinspection PyBroadException
     try:
         detail = models.Detail.objects.get(pk=pk)
@@ -29,7 +34,7 @@ def detailmodal(request, pk=None):
     historical['first'] = detail.com.detail_set.order_by('date')[0:1].first()
     historical['last'] = detail.com.detail_set.order_by('-date')[0:1].first()
     context['historical'] = historical
-    if request.user.is_staff:
+    if request.user.is_staff and context['admin']:
         comset = queueobj.commission_set
         queue = dict()
         for com in comset.filter(date__lt=comobj.date).order_by('-date'):

@@ -145,7 +145,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="status">Status</label>
-                        {% if request.user.is_staff %}
+                        {% if request.user.is_staff and admin %}
                             <button type="button" class="btn btn-default btn-xs detail-popover"
                                     data-url="{% url 'Coms:Ajax:CommissionStatus' commission.com.id %}"
                                     data-type="status" id="status-change">
@@ -162,7 +162,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="paymentstatus">Payment Status</label>
-                        {% if request.user.is_staff %}
+                        {% if request.user.is_staff and admin %}
                             <button type="button" class="btn btn-default btn-xs detail-popover"
                                     data-url="{% url 'Coms:Ajax:CommissionPayment' commission.com.id %}"
                                     data-type="payment" id="payment-change">
