@@ -60,5 +60,10 @@ $(document).ready(function () {
         modal.modal('show');
         modal.data('url', $('#' + event.target.id).data()['url'])
     });
+    $('#detail-modal').on('hidden.bs.modal', function () {
+        $('.popover').each(function () {
+            $(this).popover('hide');
+        })
+    });
 });
 
