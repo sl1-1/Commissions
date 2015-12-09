@@ -37,9 +37,8 @@ function insertCharacter(event) {
     modal.modal('hide');
 }
 
-function registerEvents() {
+function registerCharEvents() {
     $(".character").each(function (index, button) {
-        console.log(button);
         button.onclick = (
             function (event) {
                 window.open('/character/' + event.target.id, '_self');
@@ -74,7 +73,7 @@ $(document).on('submit', '#characterupload', function (ev) {
         success: function (data) {
             if (data == "Success") {
                 if(submitbutton.data()['full'] == true){
-                    $('#characterlist').load('/character/ajax/ #characterlist');
+                    $('#characterlist').load('/character/ajax/ #characterlist', registerCharEvents);
                     $('#char-modal').modal('hide');
                 }
                 else{
