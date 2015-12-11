@@ -266,7 +266,8 @@
                             {"mData": "paid_display"},
                             {"mData": "locked"}
                         ],
-                        "ajax": '{% url 'Admin:Queue:JsonQueue' queue.id %}?format=json'
+                        "ajax": '{% url 'API:commission-list' %}?queue={{ queue.id }}&format=json',
+                        "order": [[1, "desc"]],
                     });
             $("div.toolbar").html('Show Expired <input class="form-control" type="checkbox" id="showexpired"/>');
             $('#showexpired').click(function () {

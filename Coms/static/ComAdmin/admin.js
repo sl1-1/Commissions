@@ -35,7 +35,7 @@ $(document).on('submit', '#statusform', function (ev) {
 $(document).ready(function () {
     $('#detail-modal').on('hidden.bs.modal', function (event) {
         console.log(event);
-        $('#commissiontable').DataTable().ajax.reload();
+        $('#commissiontable').DataTable().ajax.reload(null, false);
         $('.popover').each(function () {
             $(this).popover('hide');
         })

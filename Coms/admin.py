@@ -1,13 +1,15 @@
 from django.contrib import admin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.generic.list import ListView
 from django.forms import ModelForm
+from django.apps import apps
+from django.contrib.admin.views.decorators import staff_member_required
 
 import Coms.models as models
 
@@ -61,56 +63,13 @@ class ModifyQueueView(UpdateView):
               'closed', 'hidden')
 
 
-# noinspection PyClassHasNoInit
-class Options(object):
-    template_name = 'ComAdmin/Options.html'
-    # success_url = "success"
-    fields = ('name', 'price', 'extra_character_price', 'description')
-
-
-class OptionView(Options, ListView):
-    def get_context_data(self, **kwargs):
-        context = super(OptionView, self).get_context_data(**kwargs)
-        context['name'] = context['view'].model._meta.verbose_name.title()
-        return context
-
-
-class CreateOptionView(Options, CreateView):
-    template_name = 'ComAdmin/Create.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(CreateOptionView, self).get_context_data(**kwargs)
-        context['optionname'] = context['view'].model.__name__
-        return context
-
-
-class ModifyOptionView(Options, UpdateView):
-    template_name = 'ComAdmin/Create.html'
-
-
-class DeleteOptionView(Options, DeleteView):
-    template_name = 'ComAdmin/Delete.html'
-
-
-# noinspection PyClassHasNoInit
-class Contacts(object):
-    model = models.AdminContactMethod
-    template_name = 'ComAdmin/Contacts.html'
-    fields = ('name', 'profile_url', 'message_url', 'description', 'disabled')
-
-
-class ContactsView(Contacts, ListView):
-    model = models.AdminContactMethod
-
-
-class CreateContactsView(Contacts, CreateView):
-    model = models.AdminContactMethod
-    template_name = 'ComAdmin/Create.html'
-
-
-class ModifyContactsView(Contacts, UpdateView):
-    model = models.AdminContactMethod
-    template_name = 'ComAdmin/Create.html'
+@staff_member_required
+def optionview(request, option):
+    if option not in ('type', 'size', 'extra', 'contactmethod'):
+        return HttpResponseNotFound('Not Founds?')
+    optionmodel = apps.get_model('Coms', option)
+    context = {'option': option, 'title': optionmodel._meta.verbose_name_plural.title()}
+    return render_to_response('ComAdmin/Options.html', RequestContext(request, context))
 
 
 def queueview(request, pk):
@@ -145,44 +104,6 @@ def lockcommission(request, pk):
         commission.save()
     return render_to_response('ComAdmin/lock.html', context={'object': commission})
 
-
-from rest_framework import serializers
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.utils import timezone
-
-
-# noinspection PyMethodMayBeStatic,PyMethodMayBeStatic,PyMethodMayBeStatic
-class CommissionSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
-    date = serializers.SerializerMethodField()
-    status_display = serializers.SerializerMethodField()
-    paid_display = serializers.SerializerMethodField()
-
-    class Meta(object):
-        model = models.AdminCommission
-        fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'price_adjustment', 'details_submitted', 'expired',
-                  'latest_detail', 'status_display', 'paid_display')
-
-    def get_status_display(self, obj):
-        return obj.get_status_display()
-
-    def get_paid_display(self, obj):
-        return obj.get_paid_display()
-
-    def get_date(self, obj):
-        return timezone.localtime(obj.date).strftime("%Y-%m-%d %H:%M:%S %Z")
-
-
-# noinspection PyMethodMayBeStatic
-class CommissionList(APIView):
-    # noinspection PyUnusedLocal,PyShadowingBuiltins
-    def get(self, request, pk, format=None):
-        queue = get_object_or_404(models.AdminQueue, pk=pk)
-        commissions = queue.commission_set.order_by('-date').all()
-        serializer = CommissionSerializer(commissions, many=True)
-        return Response(serializer.data)
-
 from Navigation.signals import render_navbar_admin
 from django.dispatch import receiver
 
@@ -191,7 +112,7 @@ from django.dispatch import receiver
 @receiver(render_navbar_admin)
 def nav(urls, **kwargs):
     urls['Admin Tools'].append(('Queues', reverse('Admin:Queue:ShowQueues')))
-    urls['Admin Tools'].append(('Types', reverse('Admin:Type:Show')))
-    urls['Admin Tools'].append(('Sizes', reverse('Admin:Size:Show')))
-    urls['Admin Tools'].append(('Extras', reverse('Admin:Extra:Show')))
-    urls['Admin Tools'].append(('Contact Methods', reverse('Admin:Contact:Show')))
+    urls['Admin Tools'].append(('Types', reverse('Admin:Options', args=['type'])))
+    urls['Admin Tools'].append(('Sizes', reverse('Admin:Options', args=['size'])))
+    urls['Admin Tools'].append(('Extras', reverse('Admin:Options', args=['extra'])))
+    urls['Admin Tools'].append(('Contact Methods', reverse('Admin:Options', args=['contactmethod'])))

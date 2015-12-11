@@ -1,44 +1,165 @@
 {% extends "ComAdmin/AdminBase.html" %}
 
 {% block title %}
-    {{ name }}
+    {{ title }}
 {% endblock %}
 
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6 col-md-offset-3 text-center well">
-                <table class="table table-compact table-bordered table-hover datatable">
+                <table class="table table-compact table-bordered table-hover" id="optiontable">
                     <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Description</th>
-                        <th>Delete</th>
-                    </tr>
                     </thead>
-                    <tbody>
-                    {% for object in object_list %}
-                        <tr>
-                            <td><a href="{{ object.get_absolute_url }}">{{object.name}}</a></td>
-                            <td>{{ object.price }}</td>
-                            <td>{{ object.description|truncatewords:5 }}</td>
-                            <td><a href="{{ object.get_absolute_url }}delete/"><i class="fa fa-trash-o"></i></a></td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                        <td colspan="4">Nothing Here!</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
                 </table>
                 <br/>
-                <a href="create">
-                    <button type="button" class="btn btn-default">Add</button>
-                </a>
+                <button type="button" class="btn btn-default" onclick="new_option()">Add</button>
             </div>
         </div>
     </div>
-
+    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="option-modal">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content" id="option-content">
+                <div class="modal-header content">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="model-label-{{ commission.id }}">Commission</h4>
+                </div>
+                <div class="modal-body content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <form method="post" class="form" id="optionform">
+                                    <div id="dynamic-form">
+                                    </div>
+                                    <input type="submit" class="form-control" name="submit"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-1 col-md-offset-5">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="application/javascript">
+        function register_events() {
+            $('.modal-action').each(function (index, button) {
+                button.onclick = function (event) {
+                    var modal = $('#option-modal');
+                    var id = $(event.target).data()['id'];
+                    var url = '/api/{{ option }}/' + id;
+                    $('.modal-body').removeData();
+                    $("#dynamic-form").load(url + '/?format=form');
+                    $("#optionform").attr('data-url', url).attr('data-id', id);
+                    modal.modal('show');
+                };
+            });
+        }
+        function new_option() {
+            console.log('blah')
+            var modal = $('#option-modal');
+            var url = '/api/{{ option }}';
+            $('.modal-body').removeData();
+            $("#dynamic-form").load(url + '/?format=form');
+            $("#optionform").attr('data-url', url).attr('data-id', 'new');
+            modal.modal('show');
+        }
+        function render_name(data, type, full, meta) {
+            var btn = document.createElement("button");
+            btn.className = "btn btn-default modal-action btn-block";
+            btn.setAttribute('id', "option-" + full['id']);
+            btn.setAttribute('data-id', full['id']);
+            btn.appendChild(document.createTextNode(full['name']));
+            var wrapper = document.createElement('wrap');
+            wrapper.appendChild(btn);
+            return wrapper.innerHTML;
+        }
+        function reload_row(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (rvalue, status) {
+                    var id = rvalue['id']
+                    $('#optiontable').DataTable().row('#' + id).data(rvalue).draw()
+                }
+            });
+        }
+        $(document).ready(function () {
+            var cols = [];
+            $.ajax({
+                'url': '/api/{{ option }}/',
+                'method': 'OPTIONS'
+            }).done(function (data) {
+                var items = data['table'];
+                var i = 0;
+                for (var item in items) {
+                    cols.push({"sTitle": items[item], "mData": item});
+                    i++;
+                }
+                $('#optiontable')
+                        .on('order.dt', function () {
+                            register_events();
+                        })
+                        .on('search.dt', function () {
+                            register_events();
+                        })
+                        .on('page.dt', function () {
+                            register_events();
+                        })
+                        .dataTable({
+                            "columnDefs": [{
+                                "targets": 0,
+                                "data": "id",
+                                "render": render_name
+                            }
+                            ],
+                            "sAjaxDataProp": "",
+                            "ajax": '/api/{{ option }}/',
+                            "aoColumns": cols,
+                            "rowId": 'id'
+                        });
+            });
+        });
+        $(document).on('submit', '#optionform', function (ev) {
+            var data = $(this).serializeArray();
+            var method;
+            if ($('#optionform').data()['id'] == "new") {
+                method = 'POST'
+            }
+            else {
+                method = "PUT"
+            }
+            $.ajax({
+                url: $('#optionform').data()['url'] + '/?format=form',
+                type: method,
+                data: data,
+                statusCode: {
+                    400: function (rvalue) {
+                        $('#dynamic-form').html(rvalue.responseText);
+                    }
+                },
+                success: function (rvalue, status) {
+                    var modal = $('#option-modal');
+                    modal.modal('hide');
+                    if ($('#optionform').data()['id'] == "new") {
+                        $('#optiontable').DataTable().ajax.reload(null, false);
+                    }
+                    else {
+                        reload_row($('#optionform').data()['url'])
+                    }
+                }
+            });
+            ev.preventDefault();
+        })
+    </script>
 
 {% endblock %}
