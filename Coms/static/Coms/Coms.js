@@ -1,5 +1,4 @@
 function buttonHandler(event) {
-    console.log(event)
     var target = $('#' + event.target.id);
     var url = target.data()['url'];
     $('#' + target.data()['target']).load(url)
@@ -57,7 +56,7 @@ $(document).ready(function () {
     $('.action-btn').each(function (index, button) {
         button.onclick = buttonHandler;
     });
-    $('#detail-modal').on('hidden.bs.modal', function () {
+    $('#option-modal').on('hidden.bs.modal', function () {
         $('.popover').each(function () {
             $(this).popover('hide');
         })
@@ -104,17 +103,6 @@ $(document).on('submit', '#statusform', function (ev) {
         }
     });
     ev.preventDefault();
-});
-
-$(document).ready(function () {
-    $('#detail-modal').on('hidden.bs.modal', function (event) {
-        console.log(event);
-        $('#commissiontable').DataTable().ajax.reload(null, false);
-        $('.popover').each(function () {
-            $(this).popover('hide');
-        })
-    });
-    $('.datatable').dataTable();
 });
 
 function setContact() {
@@ -351,7 +339,6 @@ $(document).on('submit', '#optionform', function (ev) {
 
 
 function new_option() {
-
     var modal = $('#option-modal');
     var id = $(event.target).data()['id'];
     var url = modal.data()['src'];
