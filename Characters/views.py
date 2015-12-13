@@ -8,8 +8,11 @@ from django.views.generic.detail import DetailView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.dispatch import receiver
+
 
 import Characters.models as models
+from Navigation.signals import render_navbar
 
 
 # Create your views here.
@@ -70,10 +73,6 @@ def charactergallery(request):
     print(models.Character.objects.all())
     context = {'characters': characters}
     return render_to_response('Characters/Characters.html', RequestContext(request, context))
-
-
-from Navigation.signals import render_navbar
-from django.dispatch import receiver
 
 
 # noinspection PyUnusedLocal

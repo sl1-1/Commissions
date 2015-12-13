@@ -8,8 +8,10 @@ from django.shortcuts import render_to_response, redirect
 from django.template.context_processors import csrf
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+from django.dispatch import receiver
 
 import Coms.models as models
+from Navigation.signals import render_navbar
 
 
 class ContactForm(ModelForm):
@@ -150,10 +152,6 @@ def commissions(request):
     context = {'commissions': comsdict}
     print(context)
     return render_to_response('Coms/Commissions.html', RequestContext(request, context))
-
-
-from Navigation.signals import render_navbar
-from django.dispatch import receiver
 
 
 # noinspection PyUnusedLocal

@@ -13,12 +13,15 @@
     <script src="//cdn.datatables.net/plug-ins/1.10.8/integration/bootstrap/3/dataTables.bootstrap.js"></script>
     <link rel="stylesheet"
           href="//cdn.datatables.net/plug-ins/1.10.8/integration/bootstrap/3/dataTables.bootstrap.css"/>
-    <script src="{% static "Coms/ajax.js" %}"></script>
+    <script src="{% static "Coms/Coms.js" %}"></script>
     <link rel="stylesheet" href="{% static "base.css" %}"/>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% load django_markdown %}
     {% markdown_media %}
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
+        <script type="text/javascript" src="{% static "bootstrap-datetimepicker.min.js" %}"></script>
+        <link rel="stylesheet" href="{% static "bootstrap-datetimepicker.min.css" %}"/>
 
 
     {% block scripts %}

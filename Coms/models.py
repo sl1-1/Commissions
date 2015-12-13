@@ -97,6 +97,10 @@ class Queue(models.Model):
         return reverse('Coms:queue', args=(self.id,))
 
     @property
+    def enter_url(self):
+        return reverse('Coms:Enter:View', args=(self.id,))
+
+    @property
     def submission_count(self):
         if self.expire > 0:
             expiry = now() - timedelta(minutes=self.expire)

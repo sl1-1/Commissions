@@ -1,2 +1,2 @@
-__author__ = 'chris'
 from ComMarkup import *
+__author__ = 'chris'

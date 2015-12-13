@@ -1,28 +1,35 @@
-from django.shortcuts import render_to_response
-from django.conf.urls import url
-from django.template import RequestContext
-from django.shortcuts import get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse
 from urlparse import urlparse
 
 from django import forms
+from django.conf.urls import url
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 import Coms.models as models
 
 
 def detailmodal(request, pk=None):
     context = {}
-    if urlparse(request.META['HTTP_REFERER'])[2].split('/')[1] == 'admin':
-        context['admin'] = True
-    else:
+    try:
+        if urlparse(request.META['HTTP_REFERER'])[2].split('/')[1] == 'admin':
+            context['admin'] = True
+        else:
+            context['admin'] = False
+    except KeyError:
         context['admin'] = False
-    # noinspection PyBroadException
     try:
         detail = models.Detail.objects.get(pk=pk)
-    except:
-        return render_to_response('Coms/ajax/detail_modal.html', context)
+    except ObjectDoesNotExist:
+        try:
+            com = models.Commission.objects.get(pk=pk)
+            detail = models.Detail.objects.get(pk=com.latest_detail)
+        except ObjectDoesNotExist:
+            return render_to_response('Coms/ajax/detail_modal.html', context)
     comobj = detail.com
     if request.user != detail.com.user and not request.user.is_staff:
         return render_to_response('Coms/ajax/detail_modal.html', context)

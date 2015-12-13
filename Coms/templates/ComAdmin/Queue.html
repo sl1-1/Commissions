@@ -78,11 +78,11 @@
                         <span id="expire">{{ queue.expire }} minutes</span>
                     </div>
                     <div class="form-group">
-                            <label class="control-label" for="start">
-                                Start time
-                            </label>
-                            <br/>
-                            <span id="start">{{ queue.start|date:"N d, Y" }} at {{ queue.start|time:"P" }}</span>
+                        <label class="control-label" for="start">
+                            Start time
+                        </label>
+                        <br/>
+                        <span id="start">{{ queue.start|date:"N d, Y" }} at {{ queue.start|time:"P" }}</span>
                     </div>
                     {% if queue.end %}
                         <div class="form-group">
@@ -112,10 +112,7 @@
                             Edit Queue
                         </label>
                         <br/>
-                        <a class="btn btn-default" href="{% url 'Admin:Queue:ModifyQueue' queue.id %}"
-                           id="queue-edit">
-                            Edit
-                        </a>
+                        <button type="button" class="btn btn-default" onclick="edit_queue()">Edit</button>
                     </div>
                     <div class="form-group">
                         <label class="control-label">
@@ -139,83 +136,25 @@
             </div>
             <div class="col-md-8 ">
                 <div class="col-md-12 well">
-                    <table class="table table-compact table-bordered table-hover" id="commissiontable">
-                        <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Submitted</th>
-                            <th>Details Submitted</th>
-                            <th>Status</th>
-                            <th>Paid</th>
-                            <th>Locked</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td colspan="10">Nothing Here :(</td>
-                        </tr>
-                        </tbody>
+                    <table class="table table-compact table-bordered table-hover" id="commissiontable"
+                           data-src="/api/commissions/?queue={{ queue.id }}&format=json">
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="detail-modal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="detail-content">
-            </div>
-        </div>
+    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="option-modal" data-src="/details/ajax/detail/">
     </div>
-
     <script>
-        //noinspection JSUnusedLocalSymbols
-        function render_name(data, type, full, meta) {
-            if (full['details_submitted']) {
-                var btn = document.createElement("button");
-                btn.className = "btn btn-default modal-action btn-block";
-                btn.setAttribute('data-url', "/details/ajax/detail/" + full['latest_detail']);
-                btn.setAttribute('id', "detail-" + full['latest_detail']);
-                btn.setAttribute('data-target', 'detail-content');
-                btn.appendChild(document.createTextNode(full['user']));
-                var wrapper = document.createElement('wrap');
-                wrapper.appendChild(btn);
-                return wrapper.innerHTML;
-            }
-            else {
-                return '<p class="text-center">' + data + '</p>';
-            }
+        function edit_queue() {
+            var modal = $('#option-modal');
+            var url = '/api/queue/' + "{{ queue.id }}";
+            modal.removeData();
+            modal.load(url + '/?format=form');
+            $("#optionform").attr('data-url', url).attr('data-id', "{{ queue.id }}");
+            modal.modal('show');
         }
         //noinspection JSUnusedLocalSymbols
-        function render_detail(data, type, full, meta) {
-            if (data == true) {
-                return '<i class="fa fa-check" style="pointer-events: none;"></i>'
-            }
-            else {
-                return '<i class="fa fa-close" style="pointer-events: none;"></i>'
-            }
-        }
-        //noinspection JSUnusedLocalSymbols
-        function render_lock(data, type, full, meta) {
-            var btn = document.createElement("button");
-            btn.className = "btn btn-default btn-block lock-button";
-            btn.setAttribute('id', "lock-" + full['latest_detail']);
-            btn.setAttribute('data-id', full['id']);
-            btn.setAttribute('onclick', 'lockcom(this)');
-            var icon = document.createElement("i");
-            icon.setAttribute('style', 'pointer-events: none;'); //So you can actually click the icon
-            if (data == true) {
-                icon.className = "fa fa-lock";
-            }
-            else {
-                icon.className = "fa fa-unlock";
-            }
-            btn.appendChild(icon);
-            var wrapper = document.createElement('wrap');
-            wrapper.appendChild(btn);
-            return wrapper.innerHTML;
-        }
-
         $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex, object) {
                     if (!$('#showexpired').is(":checked")) {
@@ -227,55 +166,23 @@
                 });
 
         $(document).ready(function () {
-            var table = $('#commissiontable')
-                    .on('order.dt', function () {
-                        register_events();
-                    })
-                    .on('search.dt', function () {
-                        register_events();
-                    })
-                    .on('page.dt', function () {
-                        register_events();
-                    })
-                    .DataTable({
-                        "columnDefs": [{
-                            "targets": 0,
-                            "data": "user",
-                            "render": render_name
-                        },
-                            {
-                                "targets": 2,
-                                "data": "details_submitted",
-                                "render": render_detail
-                            },
-                            {
-                                "targets": 5,
-                                "data": "user",
-                                "render": render_lock
-                            }
-                        ],
-                        "sAjaxDataProp": "",
-                        "dom": "<'row'<'col-sm-4'l><'col-sm-4 toolbar'><'col-sm-4'f>>" +
-                        "<'row'<'col-sm-12'tr>>" +
-                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-                        "aoColumns": [
-                            {"mData": "user"},
-                            {"mData": "date"},
-                            {"mData": "details_submitted"},
-                            {"mData": "status_display"},
-                            {"mData": "paid_display"},
-                            {"mData": "locked"}
-                        ],
-                        "ajax": '{% url 'API:commission-list' %}?queue={{ queue.id }}&format=json',
-                        "order": [[1, "desc"]],
-                    });
-            $("div.toolbar").html('Show Expired <input class="form-control" type="checkbox" id="showexpired"/>');
-            $('#showexpired').click(function () {
-                table.draw();
+            var src = $('#commissiontable').data()['src'];
+            var table;
+            $.ajax({
+                'url': src,
+                'method': 'OPTIONS'
+            }).done(function (data) {
+                table = create_table('commissiontable', src, data['table'])
             });
 
 
         });
+        $(document).on('init.dt', function () {
+            $("div.toolbar").html('Show Expired <input class="form-control" type="checkbox" id="showexpired"/>');
+            $('#showexpired').click(function () {
+                $('#commissiontable').DataTable().draw();
+            });
+        })
     </script>
 
 {% endblock %}

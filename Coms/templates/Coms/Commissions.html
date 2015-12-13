@@ -28,7 +28,7 @@
                                         <li class="list-group-item">
                                             <a role="button" class="btn btn-default modal-action btn-block"
                                                data-target="detail-content"
-                                               data-url="{% url 'Coms:Ajax:DetailView' commission.id %}"
+                                               data-id="{{ commission.id }}"
                                                id="detail-{{ commission.id }}">
                                                 Submitted on {{ commission.date }}
                                             </a>
@@ -42,20 +42,14 @@
             </div>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="detail-modal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="detail-content">
-            </div>
-        </div>
+    <div class="modal fade modal-detail" tabindex="-1" role="dialog" id="option-modal" data-src="/details/ajax/detail/">
     </div>
     <script type="application/javascript">
         $(document).ready(function () {
             var anchor = window.location.hash.replace("#", "");
             if (anchor) {
-                var modal = $('#detail-modal');
-                var content = $('#detail-content');
-                content.load('/details/ajax/detail/' + anchor);
+                var modal = $('#option-modal');
+                modal.load('/details/ajax/detail/' + anchor);
                 var detail = $('#detail-' + anchor);
                 detail.parents(".collapse").collapse('show');
                 modal.modal('show');

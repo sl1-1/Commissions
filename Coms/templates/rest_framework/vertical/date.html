@@ -1,0 +1,32 @@
+<div class="form-group {% if field.errors %}has-error{% endif %}">
+    {% if field.label %}
+        <label {% if style.hide_label %}class="sr-only"{% endif %}>{{ field.label }}</label>
+    {% endif %}
+
+    <div class='input-group date' id="datetimepicker_{{ field.name }}">
+        <input type='text' name="{{ field.name }}" class="form-control"
+               {% if style.placeholder %}placeholder="{{ style.placeholder }}"{% endif %}
+               {% if field.value %}value="{{ field.value }}"{% endif %}>
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"
+                                        onclick="clear_input('{{ field.name }}')">
+                                    <span class="fa fa-eraser" style="pointer-events: none;"></span>
+                                </button>
+                            </span>
+    </div>
+    {% if field.errors %}
+        {% for error in field.errors %}
+            <span class="help-block">{{ error }}</span>
+        {% endfor %}
+    {% endif %}
+
+    {% if field.help_text %}
+        <span class="help-block">{{ field.help_text }}</span>
+    {% endif %}
+<script type="application/javascript">
+    $('#datetimepicker_{{ field.name }}').datetimepicker({format: 'YYYY-MM-DD HH:mm', sideBySide: true});
+</script>
+</div>

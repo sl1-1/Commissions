@@ -65,3 +65,5 @@ html {
 .markItUpEditor {
     width: 100% !important;
 }
+
+.datepicker {z-index: 1151 !important;}

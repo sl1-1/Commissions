@@ -1,57 +1,62 @@
 {% load django_markdown %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content" id="option-content">
+        <input id="detail_id" type="hidden" value="{% url 'Coms:Ajax:DetailView' commission.id %}" class="content"/>
 
-<input id="detail_id" type="hidden" value="{% url 'Coms:Ajax:DetailView' commission.id %}" class="content"/>
-
-<div class="modal-header content">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title" id="model-label-{{ commission.id }}">Commission</h4>
-</div>
-<div class="modal-body detail-modal content">
-    {% include 'Coms/Details.html' %}
-</div>
-<div class="modal-footer content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4 col-md-offset-4 text-center">
-                {% if queue %}
-                    <div class="btn-group" role="group" aria-label="...">
-                        {% if queue.previous %}
-                            <button type="button" class="btn btn-default action-btn" title="Previous" id="queue-"
-                                    data-target="detail-content"
-                                    data-url="{% url 'Coms:Ajax:DetailView' queue.previous.id %}">
-                                <
-                            </button>
-                            <button type="button" class="btn btn-default action-btn" title="Last" id="queue--"
-                                    data-target="detail-content"
-                                    data-url="{% url 'Coms:Ajax:DetailView' queue.last.id %}">
-                                <<
-                            </button>
-                        {% else %}
-                            <button type="button" class="btn btn-default" disabled><<</button>
-                            <button type="button" class="btn btn-default" disabled><</button>
-                        {% endif %}
-                        <button type="button" class="btn btn-default" disabled>Queue</button>
-                        {% if queue.next %}
-                            <button type="button" class="btn btn-default action-btn" title="First" id="queueplusplus"
-                                    data-target="detail-content"
-                                    data-url="{% url 'Coms:Ajax:DetailView' queue.first.id %}">
-                                >>
-                            </button>
-                            <button type="button" class="btn btn-default action-btn" title="Next" id="queueplus"
-                                    data-target="detail-content"
-                                    data-url="{% url 'Coms:Ajax:DetailView' queue.next.id %}">
-                                >
-                            </button>
-                        {% else %}
-                            <button type="button" class="btn btn-default" disabled>>></button>
-                            <button type="button" class="btn btn-default" disabled>></button>
+        <div class="modal-header content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="model-label-{{ commission.id }}">Commission</h4>
+        </div>
+        <div class="modal-body detail-modal content">
+            {% include 'Coms/Details.html' %}
+        </div>
+        <div class="modal-footer content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                        {% if queue %}
+                            <div class="btn-group" role="group" aria-label="...">
+                                {% if queue.previous %}
+                                    <button type="button" class="btn btn-default action-btn" title="Previous"
+                                            id="queue-"
+                                            data-target="detail-content"
+                                            data-url="{% url 'Coms:Ajax:DetailView' queue.previous.id %}">
+                                        <
+                                    </button>
+                                    <button type="button" class="btn btn-default action-btn" title="Last" id="queue--"
+                                            data-target="detail-content"
+                                            data-url="{% url 'Coms:Ajax:DetailView' queue.last.id %}">
+                                        <<
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-default" disabled><<</button>
+                                    <button type="button" class="btn btn-default" disabled><</button>
+                                {% endif %}
+                                <button type="button" class="btn btn-default" disabled>Queue</button>
+                                {% if queue.next %}
+                                    <button type="button" class="btn btn-default action-btn" title="First"
+                                            id="queueplusplus"
+                                            data-target="detail-content"
+                                            data-url="{% url 'Coms:Ajax:DetailView' queue.first.id %}">
+                                        >>
+                                    </button>
+                                    <button type="button" class="btn btn-default action-btn" title="Next" id="queueplus"
+                                            data-target="detail-content"
+                                            data-url="{% url 'Coms:Ajax:DetailView' queue.next.id %}">
+                                        >
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-default" disabled>>></button>
+                                    <button type="button" class="btn btn-default" disabled>></button>
+                                {% endif %}
+                            </div>
                         {% endif %}
                     </div>
-                {% endif %}
-            </div>
-            <div class="col-md-1 col-md-offset-3">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="col-md-1 col-md-offset-3">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
