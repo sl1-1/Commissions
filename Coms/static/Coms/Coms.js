@@ -1,7 +1,8 @@
 function buttonHandler(event) {
+    console.log(event)
     var target = $('#' + event.target.id);
     var url = target.data()['url'];
-    $('#' + target.data()['target']).load(url + ' .content')
+    $('#' + target.data()['target']).load(url)
 }
 
 function characterpopover(event) {
