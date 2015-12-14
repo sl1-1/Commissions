@@ -9,10 +9,6 @@
     <title>{% block title %}Default title{% endblock %}</title>
     <script src="//code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <script src="//cdn.datatables.net/1.10.8/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.8/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-    <link rel="stylesheet"
-          href="//cdn.datatables.net/plug-ins/1.10.8/integration/bootstrap/3/dataTables.bootstrap.css"/>
     <script src="{% static "Coms/Coms.js" %}"></script>
     <link rel="stylesheet" href="{% static "base.css" %}"/>
     {% bootstrap_css %}
@@ -20,8 +16,13 @@
     {% load django_markdown %}
     {% markdown_media %}
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
-        <script type="text/javascript" src="{% static "bootstrap-datetimepicker.min.js" %}"></script>
-        <link rel="stylesheet" href="{% static "bootstrap-datetimepicker.min.css" %}"/>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/s/bs/dt-1.10.10,r-2.0.0/datatables.min.css"/>
+
+<script type="text/javascript" src="https://cdn.datatables.net/s/bs/dt-1.10.10,r-2.0.0/datatables.min.js"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.10/sorting/datetime-moment.js"></script>
+    <script type="text/javascript" src="{% static "bootstrap-datetimepicker.min.js" %}"></script>
+    <link rel="stylesheet" href="{% static "bootstrap-datetimepicker.min.css" %}"/>
 
 
     {% block scripts %}
@@ -35,15 +36,16 @@
 {% load tz_detect %}
 {% tz_detect %}
 <nav id="footer">
-<div class="container">
-    {% load tz %}
-    {% get_current_timezone as TIME_ZONE %}
-    <span class="hidden">Server thinks your Timezone is  {{ TIME_ZONE }}</span>
-    <p class="navbar-text">Server thinks your time is {% now "DATETIME_FORMAT" %}</p>
-    {% timezone None %}
-    <span class="hidden">UTC time is {% now "DATETIME_FORMAT" %}</span>
-    {% endtimezone %}
-</div>
+    <div class="container">
+        {% load tz %}
+        {% get_current_timezone as TIME_ZONE %}
+        <span class="hidden">Server thinks your Timezone is {{ TIME_ZONE }}</span>
+
+        <p class="navbar-text">Server thinks your time is {% now "DATETIME_FORMAT" %}</p>
+        {% timezone None %}
+            <span class="hidden">UTC time is {% now "DATETIME_FORMAT" %}</span>
+        {% endtimezone %}
+    </div>
 </nav>
 </body>
 </html>

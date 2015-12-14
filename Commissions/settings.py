@@ -139,7 +139,7 @@ BOOTSTRAP3 = {
     'set_required': False
 }
 MARKDOWN_EXTENSIONS = ['ComMarkup:ComsMarkdown']
-TZ_DETECT_COUNTRIES = ('US', 'CA', 'EU', 'GB')
+# TZ_DETECT_COUNTRIES = ('US', 'CA', 'EU', 'GB')
 
 THUMBNAIL_DEBUG = True
 

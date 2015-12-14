@@ -246,6 +246,16 @@ function render_iconbool(data) {
     }
 }
 
+function render_datetime(data){
+    var elm = document.createElement("time");
+    elm.setAttribute('datetime', data);
+    var text = document.createTextNode(moment(data).format('YYYY-MM-DD HH:MM'));
+    elm.appendChild(text);
+    var wrapper = document.createElement('wrap');
+    wrapper.appendChild(elm);
+    return wrapper.innerHTML;
+}
+
 function create_table(id, url, data) {
     var cols = data['cols'];
     var order;
@@ -272,7 +282,9 @@ function create_table(id, url, data) {
                 },
                 {
                     "targets": getColumnByClass(cols, "iconbool"),
-                    "render": render_iconbool
+                    "render": {
+                        "display": render_iconbool
+                    }
                 },
                 {
                     "targets": getColumnByClass(cols, "queuelink"),
@@ -280,7 +292,15 @@ function create_table(id, url, data) {
                 },
                 {
                     "targets": getColumnByClass(cols, 'iconlock'),
-                    "render": render_lock
+                    "render": {
+                        "display": render_lock
+                    }
+                },
+                {
+                    "targets": getColumnByClass(cols, 'datetime'),
+                    "render": {
+                        "display": render_datetime
+                    }
                 }
             ],
             "dom": "<'row'<'col-sm-4'l><'col-sm-4 toolbar'><'col-sm-4'f>>" +
@@ -289,7 +309,9 @@ function create_table(id, url, data) {
             "sAjaxDataProp": "",
             "ajax": url,
             "rowId": 'id',
-            "order": order
+            "order": order,
+            "responsive": true,
+            "bAutoWidth": false
         });
 }
 

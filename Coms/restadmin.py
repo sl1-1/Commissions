@@ -47,7 +47,7 @@ class QueueSerializer(serializers.ModelSerializer):
                   'open', 'enter_url')
 
     def get_date(self, obj):
-        return timezone.localtime(obj.date).strftime("%Y-%m-%d %H:%M:%S %Z")
+        return timezone.localtime(obj.date)
 
     def get_open(self, obj):
         return not obj.ended
@@ -67,7 +67,7 @@ class QueueViewSet(viewsets.ModelViewSet):
     table = {
         'cols': [
             {'title': 'Name', 'className': 'queuelink', 'data': 'name'},
-            {'data': 'date', 'title': 'Created'},
+            {'data': 'date', 'title': 'Created', 'className': 'datetime'},
             {'data': 'max_commissions_in_queue', 'title': 'Max Commissions'},
             {'data': 'submission_count', 'title': 'Submissions in Queue'},
             {'data': 'open', 'title': 'Open', 'className': 'iconbool'},
@@ -102,7 +102,7 @@ class CommissionSerializer(serializers.ModelSerializer):
         return obj.get_paid_display()
 
     def get_date(self, obj):
-        return timezone.localtime(obj.date).strftime("%Y-%m-%d %H:%M:%S %Z")
+        return timezone.localtime(obj.date)
 
 
 class CommissionViewSet(viewsets.ModelViewSet):
@@ -114,7 +114,7 @@ class CommissionViewSet(viewsets.ModelViewSet):
     table = {
         'cols': [
             {'title': 'Username', 'data': 'user', 'className': 'modallink'},
-            {'title': 'Submitted', 'data': 'date'},
+            {'title': 'Submitted', 'data': 'date', 'className': 'datetime'},
             {'title': 'Details Submitted', 'data': 'details_submitted', 'className': 'iconbool'},
             {'title': 'Status', 'data': 'status_display'},
             {'title': 'Paid', 'data': 'paid_display'},
