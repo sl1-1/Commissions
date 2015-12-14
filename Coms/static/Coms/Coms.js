@@ -303,7 +303,7 @@ function create_table(id, url, data) {
                     }
                 }
             ],
-            "dom": "<'row'<'col-sm-4'l><'col-sm-4 toolbar'><'col-sm-4'f>>" +
+            "dom": "<'row'<'col-sm-3'l><'col-sm-6 toolbar'><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             "sAjaxDataProp": "",

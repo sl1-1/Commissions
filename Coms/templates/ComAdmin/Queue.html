@@ -164,6 +164,15 @@
                         return true
                     }
                 });
+        $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex, object) {
+                    if ($('#hidefinished').is(":checked")) {
+                        if(object['status'] == 4){
+                            return false
+                        }
+                    }
+                    return true
+                });
 
         $(document).ready(function () {
             var src = $('#commissiontable').data()['src'];
@@ -178,8 +187,21 @@
 
         });
         $(document).on('init.dt', function () {
-            $("div.toolbar").html('Show Expired <input class="form-control" type="checkbox" id="showexpired"/>');
+            var toolbar = document.createElement("div");
+            toolbar.setAttribute('class', 'row');
+            var expired = document.createElement('div');
+            expired.setAttribute('class', 'col-sm-4 dataTables_length');
+            expired.innerHTML = '<label>Show Expired <input class="form-control input-sm" type="checkbox" id="showexpired"/></label>';
+            toolbar.appendChild(expired);
+            var status = document.createElement('div');
+            status.setAttribute('class', 'col-sm-4 dataTables_length');
+            status.innerHTML = '<label>Hide Finished <input class="form-control input-sm" type="checkbox" id="hidefinished"/></label>';
+            toolbar.appendChild(status);
+            $("div.toolbar").html(toolbar);
             $('#showexpired').click(function () {
+                $('#commissiontable').DataTable().draw();
+            });
+            $('#hidefinished').click(function () {
                 $('#commissiontable').DataTable().draw();
             });
         })
