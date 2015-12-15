@@ -365,7 +365,7 @@ function new_option() {
     var id = $(event.target).data()['id'];
     var url = modal.data()['src'];
     modal.empty();
-    modal.load(url + '/?format=form');
+    modal.load(url + '?format=form');
     modal.modal('show');
 }
 
