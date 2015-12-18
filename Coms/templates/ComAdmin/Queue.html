@@ -3,141 +3,68 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3 col-lg-2">
                 <div class="col-md-12 well">
-                    <div class="form-group">
-                        <label class="control-label" for="queue-name">
-                            Name
-                        </label>
-                        <br/>
-                        <span id="queue-name">{{ queue.name }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-date">
-                            Date published
-                        </label>
-                        <br/>
-                        <span id="queue-date">{{ queue.date }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-type">
-                            Types
-                        </label>
-                        <ul id="queue-type" class="list-unstyled">
-                            {% for item in queue.types.all %}
-                                <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-size">
-                            Sizes
-                        </label>
-                        <ul id="queue-size" class="list-unstyled">
-                            {% for item in queue.sizes.all %}
-                                <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-extras">
-                            Extras
-                        </label>
-                        <ul id="queue-extras" class="list-unstyled">
-                            {% for item in queue.extras.all %}
-                                <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-characters">
-                            Max characters
-                        </label>
-                        <br/>
-                        <span id="queue-characters">{{ queue.max_characters }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-max">
-                            Max commissions in queue
-                        </label>
-                        <br/>
-                        <span id="queue-max">{{ queue.max_commissions_in_queue }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-max-per">
-                            Max commissions per person
-                        </label>
-                        <br/>
-                        <span id="queue-max-per">{{ queue.max_commissions_per_person }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="expire">
-                            Submission Expiry Time
-                        </label>
-                        <br/>
-                        <span id="expire">{{ queue.expire }} minutes</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="start">
-                            Start time
-                        </label>
-                        <br/>
-                        <span id="start">{{ queue.start|date:"N d, Y" }} at {{ queue.start|time:"P" }}</span>
-                    </div>
-                    {% if queue.end %}
-                        <div class="form-group">
-                            <label class="control-label" for="end">
-                                Close time
-                            </label>
-                            <br/>
-                            <span id="end">{{ queue.end|date:"N d, Y" }} at {{ queue.end|time:"P" }}</span>
-                        </div>
-                    {% endif %}
-                    <div class="form-group">
-                        <label class="control-label" for="hidden">
-                            Hidden
-                        </label>
-                        <br/>
-                        <span id="hidden">{{ queue.hidden|yesno|title }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="closed">
-                            Closed
-                        </label>
-                        <br/>
-                        <span id="closed">{{ queue.ended|yesno|title }}</span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="queue-edit">
-                            Edit Queue
-                        </label>
-                        <br/>
-                        <button type="button" class="btn btn-default" onclick="edit_queue()">Edit</button>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">
-                            Lock Queue
-                        </label>
-                        <br/>
-
-                        <div class="btn-group">
-                            <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id True %}">
-                                <i class="fa fa-lock"></i>
-                            </a>
-                            <button type="button" class="btn btn-default" disabled>
-                                &nbsp;
-                            </button>
-                            <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id False %}">
-                                <i class="fa fa-unlock"></i>
-                            </a>
-                        </div>
-                    </div>
+                    <dl>
+                        <dt>Name</dt>
+                        <dd>{{ queue.name }}</dd>
+                        <dt>Date published</dt>
+                        <dd>{{ queue.date }}</dd>
+                        <dt>Types</dt>
+                        {% for item in queue.types.all %}
+                            <dd>{{ item }}</dd>
+                        {% endfor %}
+                        <dt>Sizes</dt>
+                        {% for item in queue.sizes.all %}
+                            <dd>{{ item }}</dd>
+                        {% endfor %}
+                        <dt>Extras</dt>
+                        {% for item in queue.extras.all %}
+                            <dd>{{ item }}</dd>
+                        {% endfor %}
+                        <dt>Max characters</dt>
+                        <dd id="queue-characters">{{ queue.max_characters }}</dd>
+                        <dt>Max commissions in queue</dt>
+                        <dd>{{ queue.max_commissions_in_queue }}</dd>
+                        <dt>Max commissions per person</dt>
+                        <dd>{{ queue.max_commissions_per_person }}</dd>
+                        <dt>Submission Expiry Time</dt>
+                        <dd>{{ queue.expire }} minutes</dd>
+                        <dt>Start time</dt>
+                        <dd id="start">{{ queue.start|date:"N d, Y" }} at {{ queue.start|time:"P" }}</dd>
+                        {% if queue.end %}
+                            <dt>Close time</dt>
+                            <dd>{{ queue.end|date:"N d, Y" }} at {{ queue.end|time:"P" }}</dd>
+                        {% endif %}
+                        <dt>Hidden</dt>
+                        <dd>{{ queue.hidden|yesno|title }}</dd>
+                        <dt>Closed</dt>
+                        <dd>{{ queue.ended|yesno|title }}</dd>
+                        <dt>Edit Queue</dt>
+                        <dd>
+                            <button type="button" class="btn btn-default" onclick="edit_queue()">Edit</button>
+                        </dd>
+                        <dt>Lock Queue</dt>
+                        <dd>
+                            <div class="btn-group">
+                                <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id True %}">
+                                    <i class="fa fa-lock"></i>
+                                </a>
+                                <button type="button" class="btn btn-default" disabled>
+                                    &nbsp;
+                                </button>
+                                <a class="btn btn-default" href="{% url 'Admin:Queue:LockQueue' queue.id False %}">
+                                    <i class="fa fa-unlock"></i>
+                                </a>
+                            </div>
+                        </dd>
+                    </dl>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-8">
+            <div class="col-sm-12 col-md-9 col-lg-10">
                 <div class="col-md-12 well">
                     <table class="table table-compact table-bordered dt-responsive" id="commissiontable"
-                           data-src="/api/commissions/?queue={{ queue.id }}&format=json">
+                           data-src="/api/commissions/?queue={{ queue.id }}&amp;format=json">
                     </table>
                 </div>
             </div>
@@ -167,7 +94,7 @@
         $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex, object) {
                     if ($('#hidefinished').is(":checked")) {
-                        if(object['status'] == 4){
+                        if (object['status'] == 4) {
                             return false
                         }
                     }
