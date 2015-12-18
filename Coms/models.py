@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from datetime import timedelta
 
+from reversion import revisions as reversion
+
 
 class Option(models.Model):
     class Meta(object):
@@ -104,7 +106,7 @@ class Queue(models.Model):
     def submission_count(self):
         if self.expire > 0:
             expiry = now() - timedelta(minutes=self.expire)
-            query = self.commission_set.filter(date__gt=expiry) | self.commission_set.filter(detail__isnull=False)
+            query = self.commission_set.filter(date__gt=expiry) | self.commission_set.filter(details_date__isnull=False)
             return query.distinct('id').count()
         else:
             return self.commission_set.distinct('id').count()
@@ -145,7 +147,7 @@ class Queue(models.Model):
     def user_submission_count(self, user):
         expiry = now() - timedelta(minutes=self.expire)
         query = self.commission_set.filter(user=user).filter(date__gt=expiry) | \
-            self.commission_set.filter(user=user).filter(detail__isnull=False)
+            self.commission_set.filter(user=user).filter(details_date__isnull=False)
         return query.count()
 
 
@@ -165,13 +167,45 @@ class ContactMethod(models.Model):
     description = models.CharField(max_length=500, blank=True)
     disabled = models.BooleanField(default=False)
 
+    @property
+    def profile(self):
+        return self.profile_url.format
 
+    @property
+    def message(self):
+        return self.message_url.format
+
+# class Contact(object):
+#     def __unicode__(self):
+#         return '{}: {}'.format(self.site.name, self.username)
+#
+#     def __str__(self):
+#         return '{}: {}'.format(self.site.name, self.username)
+#
+#     data = {}
+#
+#     def __init__(self, json):
+#         self.data = data
+#
+#     @property
+#     def get_profile(self):
+#         profile = self.site.profile_url.format(username=self.username)
+#
+#         return profile
+#
+#     @property
+#     def get_message(self):
+#         message = self.site.message_url.format(username=self.username)
+#         return message
+
+
+@reversion.register()
 class Commission(models.Model):
-    # def __unicode__(self):
-    #     return self.user.username
-    #
-    # def __str__(self):
-    #     return self.user.username
+    def __unicode__(self):
+        return str(self.id)
+
+    def __str__(self):
+        return str(self.id)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, blank=True, null=True, default=None)
@@ -183,11 +217,31 @@ class Commission(models.Model):
     status = models.IntegerField(choices=status_choices, default=0)
     paid_choices = ((0, 'Not Yet Requested'), (1, 'Invoiced'), (2, 'Paid'), (3, 'Refunded'))
     paid = models.IntegerField(choices=paid_choices, default=0)
-    price_adjustment = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+
+    type = models.ForeignKey(Type, blank=True, null=True, default=None)
+    size = models.ForeignKey(Size, blank=True, null=True, default=None)
+    number_of_Characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    extras = models.ManyToManyField(Extra, blank=True)
+    description = models.TextField(max_length=10000, blank=True, null=True, default=None)
+    details_date = models.DateTimeField('Details Submitted', blank=True, null=True, default=None)
+    contacts = models.CharField(blank=True, max_length=500)
+    paypal = models.EmailField(blank=True, null=True, default=None)
+
+    @property
+    def total(self):
+        characters = self.number_of_Characters-1
+        cost = self.type.price
+        cost += self.type.extra_character_price*characters
+        cost += self.size.price
+        cost += self.size.extra_character_price*characters
+        for extra in self.extras.all():
+            cost += extra.price
+            cost += extra.extra_character_price*characters
+        return cost
 
     @property
     def details_submitted(self):
-        return bool(self.detail_set.count())
+        return bool(self.details_date)
 
     @property
     def expired(self):
@@ -204,113 +258,15 @@ class Commission(models.Model):
         except AttributeError:
             return None
 
-
-class Contact(models.Model):
-    def __unicode__(self):
-        return '{}: {}'.format(self.site.name, self.username)
-
-    def __str__(self):
-        return '{}: {}'.format(self.site.name, self.username)
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    site = models.ForeignKey(ContactMethod)
-    # commission = models.ForeignKey(Commission)
-    username = models.CharField(max_length=100)
-    primary = models.BooleanField(default=False)
-
-    @property
-    def get_profile(self):
-        profile = self.site.profile_url.format(username=self.username)
-
-        return profile
-
-    @property
-    def get_message(self):
-        message = self.site.message_url.format(username=self.username)
-        return message
-
-
-class Detail(models.Model):
-    class Meta(object):
-        verbose_name = "Commission Detail"
-
-    def __unicode__(self):
-        return str(self.pk)
-
-    def __str__(self):
-        return str(self.pk)
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type = models.ForeignKey(Type)
-    size = models.ForeignKey(Size)
-    number_of_Characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
-    extras = models.ManyToManyField(Extra, blank=True)
-    details = models.TextField(max_length=10000)
-    date = models.DateTimeField('Details Submitted', auto_now_add=True)
-    com = models.ForeignKey(Commission)
-    contacts = models.ManyToManyField(Contact, blank=True)
-    paypal = models.EmailField()
-
-    @property
-    def total(self):
-        characters = self.number_of_Characters-1
-        cost = self.type.price
-        cost += self.type.extra_character_price*characters
-        cost += self.size.price
-        cost += self.size.extra_character_price*characters
-        for extra in self.extras.all():
-            cost += extra.price
-            cost += extra.extra_character_price*characters
-        return cost
-
-
-class AdminQueue(Queue):
-    class Meta(object):
-        proxy = True
-
-    def get_absolute_url(self):
-        return reverse('Admin:Queue:ShowQueue', args=[self.id])
-
-
-class AdminCommission(Commission):
-    class Meta(object):
-        proxy = True
-
-    def get_absolute_url(self):
-        return reverse('Admin:Queue:ShowQueue', args=[self.id])
-
-
-class AdminContactMethod(ContactMethod):
-    class Meta(object):
-        proxy = True
-
-    def get_absolute_url(self):
-        return reverse('Admin:Contact:Modify', args=[self.id])
-
-
-class AdminType(Type):
-    class Meta(object):
-        proxy = True
-        verbose_name = "Commission Types"
-
-    def get_absolute_url(self):
-        return reverse('Admin:Type:Modify', args=[self.id])
-
-
-class AdminSize(Size):
-    class Meta(object):
-        proxy = True
-        verbose_name = "Commission Sizes"
-
-    def get_absolute_url(self):
-        return reverse('Admin:Size:Modify', args=[self.id])
-
-
-class AdminExtra(Extra):
-    class Meta(object):
-        proxy = True
-        verbose_name = "Commission Extras"
-
-    def get_absolute_url(self):
-        return reverse('Admin:Extra:Modify', args=[self.id])
-
+    def to_dict(self):
+        opts = self._meta
+        data = {}
+        for f in opts.concrete_fields + opts.many_to_many:
+            if isinstance(f, models.ManyToManyField):
+                if self.pk is None:
+                    data[f.name] = []
+                else:
+                    data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
+            else:
+                data[f.name] = f.value_from_object(self)
+        return data

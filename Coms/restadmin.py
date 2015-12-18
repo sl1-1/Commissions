@@ -92,7 +92,7 @@ class CommissionSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = models.Commission
-        fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'price_adjustment', 'details_submitted', 'expired',
+        fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'details_submitted', 'expired',
                   'latest_detail', 'status_display', 'paid_display', 'queue')
 
     def get_status_display(self, obj):

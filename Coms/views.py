@@ -1,70 +1,94 @@
-from django.forms.models import modelformset_factory
-from django.forms import NumberInput, HiddenInput
-from django.forms import ModelForm, CheckboxSelectMultiple, Select, TextInput, BaseModelFormSet
-from django_markdown.widgets import MarkdownWidget
-from django.views.generic import View
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response, redirect
-from django.template.context_processors import csrf
-from django.template import RequestContext
+import json
+
+import django.forms as forms
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
+from django.forms import ModelForm, CheckboxSelectMultiple, Select, TextInput
+from django.forms import NumberInput, HiddenInput
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
+from django.template.context_processors import csrf
+from django.utils import timezone
+from django.views.generic import View
+from django_markdown.widgets import MarkdownWidget
+from reversion import revisions as reversion
+from django.db import transaction
 
 import Coms.models as models
 from Navigation.signals import render_navbar
 
 
-class ContactForm(ModelForm):
+class ContactForm(forms.Form):
+    site = forms.ModelChoiceField(queryset=models.ContactMethod.objects.filter(disabled=False).all(), required=True,
+                                  widget=Select(attrs={'onchange': 'getOption()'}))
+    username = forms.CharField(widget=TextInput(attrs={'onchange': 'getOption()'}))
+    primary = forms.BooleanField(widget=HiddenInput(attrs={'class': 'selected'}), required=False)
+
     class Meta(object):
-        model = models.Contact
-        fields = ('site', 'username', 'primary')
         widgets = {'site': Select(attrs={'onchange': 'getOption()'}, ),
                    'username': TextInput(attrs={'onchange': 'getOption()'}),
                    'primary': HiddenInput(attrs={'class': 'selected'})}
 
-    def __init__(self, *args, **kwargs):
-        super(ContactForm, self).__init__(*args, **kwargs)
-        self.fields['site'].queryset = models.ContactMethod.objects.filter(disabled=False).exclude(name="Email").all()
-
     def clean(self):
-        print(self.cleaned_data)
         if "site" not in self.cleaned_data and "username" not in self.cleaned_data:
             self.cleaned_data['DELETE'] = True
         super(ContactForm, self).clean()
 
-    def save(self, commit=True):
-        if self.has_changed():
-            self.instance.id = None
-        return super(ContactForm, self).save(commit)
+
+def load_contactmethod(dct):
+    if "site_id" in dct:
+        dct['site'] = models.ContactMethod.objects.get(pk=dct['site_id'])
+        dct.pop('site_id', None)
+        return dct
+    return dct
 
 
-class ContactFormset(BaseModelFormSet):
-    def save(self, commit=True):
+class ContactEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, models.ContactMethod):
+            return {'name': obj.name, 'key': obj.id}
+        elif isinstance(obj, ContactForm):
+            obj = obj.cleaned_data
+            obj.pop('DELETE', None)
+            obj.update({'site': obj['site'].name, 'site_id': obj['site'].id})
+            return obj
+        return json.JSONEncoder.default(self, obj)
+
+
+class ContactFormset(forms.BaseFormSet):
+    def save(self):
         saved_objects = []
         for form in self.forms:
             if self.can_delete and self._should_delete_form(form):
                 pass
             else:
-                saved_objects.append(form.save(commit))
-        return saved_objects
+                saved_objects.append(form)
+        return ContactEncoder().encode(saved_objects)
 
 
 class DetailForm(ModelForm):
+    type = forms.ModelChoiceField(queryset=None, required=True)
+    size = forms.ModelChoiceField(queryset=None, required=True)
+    number_of_Characters = forms.IntegerField(required=True)
+    description = forms.CharField(required=True, max_length=10000, widget=MarkdownWidget)
+    paypal = forms.EmailField(required=True)
+
     class Meta(object):
-        model = models.Detail
+        model = models.Commission
         fields = ['type', 'size', 'number_of_Characters', 'extras',
-                  'details', 'paypal']
-        widgets = {'extras': CheckboxSelectMultiple(), 'details': MarkdownWidget()}
+                  'description', 'paypal']
+        widgets = {'extras': CheckboxSelectMultiple(), 'description': MarkdownWidget()}
 
     def __init__(self, *args, **kwargs):
-        queue = kwargs.pop('queue')
         super(DetailForm, self).__init__(*args, **kwargs)
-        self.fields['type'].queryset = queue.types
-        self.fields['size'].queryset = queue.sizes
-        self.fields['extras'].queryset = queue.extras
+        self.fields['type'].queryset = self.instance.queue.types
+        self.fields['size'].queryset = self.instance.queue.sizes
+        self.fields['extras'].queryset = self.instance.queue.extras
         self.fields['number_of_Characters'].widget = NumberInput(attrs=
-                                                                 {'step': 1, 'min': '1', 'max': queue.max_characters})
-        self.fields['number_of_Characters'].max_value = queue.max_characters
+                                                                 {'step': 1, 'min': '1',
+                                                                  'max': self.instance.queue.max_characters})
+        self.fields['number_of_Characters'].max_value = self.instance.queue.max_characters
 
 
 # noinspection PyUnusedLocal
@@ -77,11 +101,11 @@ class DetailFormView(View):
     def dispatch(self, request, *args, **kwargs):
         self.commission = get_object_or_404(models.Commission, pk=kwargs['pk'])
         self.context['Commission'] = self.commission
-        self.contactfactory = modelformset_factory(models.Contact, form=ContactForm, formset=ContactFormset, min_num=0,
-                                                   extra=1, can_delete=True)
+        self.contactfactory = forms.formset_factory(form=ContactForm, formset=ContactFormset,
+                                                    min_num=0, extra=1, can_delete=True)
         super(DetailFormView, self).dispatch(request, *args, **kwargs)
         if self.commission.expired and (self.commission.queue.is_full or self.commission.queue.ended):
-                return render_to_response('Coms/TooSlow.html', RequestContext(request, self.context))
+            return render_to_response('Coms/TooSlow.html', RequestContext(request, self.context))
         elif self.response:
             return self.response
         else:
@@ -92,25 +116,27 @@ class DetailFormView(View):
         return render_to_response('Coms/DetailForm.html', RequestContext(request, self.context))
 
     def get(self, request, *args, **kwargs):
-        detail = self.commission.detail_set.order_by('-date').first()
-        form = DetailForm(queue=self.commission.queue, instance=detail)
+        commission = self.commission
+        form = DetailForm(instance=commission)
         try:
-            contacts = detail.contacts.all()
-        except AttributeError:
-            contacts = models.Contact.objects.none()
-        contactformset = self.contactfactory(queryset=contacts)
+            contactformset = self.contactfactory(initial=json.loads(form.instance.contacts,
+                                                                    object_hook=load_contactmethod))
+        except ValueError:
+            contactformset = self.contactfactory()
         self.context.update({'form': form, 'contactformset': contactformset})
 
+    @transaction.atomic()
+    @reversion.create_revision()
     def post(self, request, pk, *args, **kwargs):
+        reversion.set_user(request.user)
         if self.commission.locked:
             self.response = redirect('Coms:Detail:Done', pk=pk)
-        form = DetailForm(request.POST, queue=self.commission.queue)
+        form = DetailForm(request.POST, instance=self.commission)
         contactformset = self.contactfactory(request.POST)
         if contactformset.is_valid() and form.is_valid():
-            form.instance.com = self.commission
+            form.instance.contacts = contactformset.save()
+            form.instance.details_date = timezone.now()
             detail = form.save()
-            detail.contacts = contactformset.save()
-            detail.save()
             self.response = redirect("{0}#{1}".format(reverse('Coms:commissions'), detail.id))
         self.context.update({'form': form, 'contactformset': contactformset})
 
@@ -141,16 +167,12 @@ def commissions(request):
     usercoms = models.Commission.objects.filter(user=request.user).order_by('queue__date')
     comsdict = {}
     for com in usercoms:
-        if com.detail_set.all():
-            if com.queue_id in comsdict:
-                comsdict[com.queue_id]['coms'].append(com.detail_set.order_by('-date').first())
-            else:
-                comsdict[com.queue_id] = {'name': com.queue.name, 'date': com.queue.date,
-                                          'coms': [com.detail_set.order_by('-date').first()]}
-            print(com.detail_set)
-    print(comsdict)
+        if com.queue_id in comsdict:
+            comsdict[com.queue_id]['coms'].append(com)
+        else:
+            comsdict[com.queue_id] = {'name': com.queue.name, 'date': com.queue.date,
+                                      'coms': [com]}
     context = {'commissions': comsdict}
-    print(context)
     return render_to_response('Coms/Commissions.html', RequestContext(request, context))
 
 

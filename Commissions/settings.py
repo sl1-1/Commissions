@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django_markdown',
     'django_filters',
     'bootstrap3',
+    'reversion',
     'Coms',
     'Auth',
     'sorl.thumbnail',

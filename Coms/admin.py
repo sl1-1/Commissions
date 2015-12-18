@@ -14,8 +14,6 @@ from Navigation.signals import render_navbar_admin
 
 admin.site.register(models.Queue)
 admin.site.register(models.Commission)
-admin.site.register(models.Detail)
-admin.site.register(models.Contact)
 admin.site.register(models.ContactMethod)
 
 
@@ -33,7 +31,7 @@ def optionview(request, option):
 
 
 def queueview(request, pk):
-    queue = get_object_or_404(models.AdminQueue, pk=pk)
+    queue = get_object_or_404(models.Queue, pk=pk)
     return render_to_response('ComAdmin/Queue.html', RequestContext(request, {'queue': queue}))
 
 
@@ -43,7 +41,7 @@ def lockqueue(request, pk, mode):
         mode = True
     else:
         mode = False
-    for commission in get_object_or_404(models.AdminQueue, pk=pk).commission_set.all():
+    for commission in get_object_or_404(models.Queue, pk=pk).commission_set.all():
         print(mode)
         commission.locked = mode
         commission.save()

@@ -19,10 +19,32 @@ function detailpopover(event) {
     });
 }
 
+function option_modal(event) {
+    var modal = $('#option-modal');
+    var id = $(event.target).data()['id'];
+    var url = modal.data()['src'] + id;
+    if(modal.is(':visible') == false){
+        modal.empty();
+    }
+    modal.load(url + '/?format=form');
+    $("#optionform").attr('data-url', url).attr('data-id', id);
+    if(modal.is(':visible') == false){
+         modal.modal('show');
+    }
+}
 
 function register_events() {
     $('.action-btn').each(function (index, button) {
-        button.onclick = buttonHandler;
+        button.onclick = function (event) {
+            var modal = $('#option-modal');
+            var id = $(event.target).data()['id'];
+            var url = modal.data()['src'] + id;
+            console.log(modal.data()['src']);
+            modal.empty();
+            modal.load(url + '/?format=form');
+            $("#optionform").attr('data-url', url).attr('data-id', id);
+            modal.modal('show');
+        }
     });
 
     $('.character-popover').each(function (index, button) {
@@ -35,16 +57,7 @@ function register_events() {
     $.fn.modal.Constructor.prototype.enforceFocus = function () { //This makes the modal not disappear when using select
     };
     $('.modal-action').each(function (index, button) {
-        button.onclick = function (event) {
-            var modal = $('#option-modal');
-            var id = $(event.target).data()['id'];
-            var url = modal.data()['src'] + id;
-            console.log(modal.data()['src']);
-            modal.empty();
-            modal.load(url + '/?format=form');
-            $("#optionform").attr('data-url', url).attr('data-id', id);
-            modal.modal('show');
-        };
+        button.onclick = option_modal;
     });
 }
 
@@ -246,7 +259,7 @@ function render_iconbool(data) {
     }
 }
 
-function render_datetime(data){
+function render_datetime(data) {
     var elm = document.createElement("time");
     elm.setAttribute('datetime', data);
     var text = document.createTextNode(moment(data).format('YYYY-MM-DD HH:MM'));
@@ -259,13 +272,13 @@ function render_datetime(data){
 function create_table(id, url, data) {
     var cols = data['cols'];
     var order;
-    if (data['order']){
+    if (data['order']) {
         order = [getColumnByData(cols, data['order'])[0], "asc"]
     }
-    else{
+    else {
         order = []
     }
-    console.log( getColumnByData(cols, order));
+    console.log(getColumnByData(cols, order));
     $('#' + id)
         .dataTable({
             "columns": cols,
@@ -369,6 +382,6 @@ function new_option() {
     modal.modal('show');
 }
 
-function clear_input(input){
-    $('input[name='+input+']').val('');
+function clear_input(input) {
+    $('input[name=' + input + ']').val('');
 }
