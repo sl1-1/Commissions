@@ -116,7 +116,7 @@ class DetailFormView(View):
         self.context.update(csrf(request))
         return render_to_response('Coms/DetailForm.html', RequestContext(request, self.context))
 
-    def get(self, request, *args, **kwargs):
+    def get(self, *args, **kwargs):
         commission = self.commission
         form = DetailForm(instance=commission)
         try:

@@ -23,7 +23,7 @@ class Option(models.Model):
     @property
     def friendly(self):
         if self.price != 0.00:
-            return "{} - ${}".format(self.name, self.price)
+            return "{0} - ${1}".format(self.name, self.price)
         else:
             return self.name
 
