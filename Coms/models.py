@@ -220,7 +220,7 @@ class Commission(models.Model):
 
     type = models.ForeignKey(Type, blank=True, null=True, default=None)
     size = models.ForeignKey(Size, blank=True, null=True, default=None)
-    number_of_Characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    number_of_characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     extras = models.ManyToManyField(Extra, blank=True)
     description = models.TextField(max_length=10000, blank=True, null=True, default=None)
     details_date = models.DateTimeField('Details Submitted', auto_now=True)
@@ -230,7 +230,7 @@ class Commission(models.Model):
 
     @property
     def total(self):
-        characters = self.number_of_Characters-1
+        characters = self.number_of_characters - 1
         cost = self.type.price
         cost += self.type.extra_character_price*characters
         cost += self.size.price

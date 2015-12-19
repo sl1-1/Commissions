@@ -33,8 +33,8 @@
                             {% if Commission.queue.extras.all %}
                                 {% bootstrap_field form.extras %}
                             {% endif %}
-                            {% if Commission.queue.max_number_of_Characters > 1 %}
-                                {% bootstrap_field form.number_of_Characters %}
+                            {% if Commission.queue.max_characters > 1 %}
+                                {% bootstrap_field form.number_of_characters %}
                             {% else %}
                                 <input type="hidden" id="id_number_of_Characters" name="number_of_Characters" value="1" />
                             {% endif %}

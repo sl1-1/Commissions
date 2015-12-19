@@ -71,13 +71,13 @@ class ContactFormset(forms.BaseFormSet):
 class DetailForm(ModelForm):
     type = forms.ModelChoiceField(queryset=None, required=True)
     size = forms.ModelChoiceField(queryset=None, required=True)
-    number_of_Characters = forms.IntegerField(required=True)
+    number_of_characters = forms.IntegerField(required=True)
     description = forms.CharField(required=True, max_length=10000, widget=MarkdownWidget)
     paypal = forms.EmailField(required=True)
 
     class Meta(object):
         model = models.Commission
-        fields = ['type', 'size', 'number_of_Characters', 'extras',
+        fields = ['type', 'size', 'number_of_characters', 'extras',
                   'description', 'paypal']
         widgets = {'extras': CheckboxSelectMultiple(), 'description': MarkdownWidget()}
 
@@ -86,10 +86,10 @@ class DetailForm(ModelForm):
         self.fields['type'].queryset = self.instance.queue.types
         self.fields['size'].queryset = self.instance.queue.sizes
         self.fields['extras'].queryset = self.instance.queue.extras
-        self.fields['number_of_Characters'].widget = NumberInput(attrs=
+        self.fields['number_of_characters'].widget = NumberInput(attrs=
                                                                  {'step': 1, 'min': '1',
                                                                   'max': self.instance.queue.max_characters})
-        self.fields['number_of_Characters'].max_value = self.instance.queue.max_characters
+        self.fields['number_of_characters'].max_value = self.instance.queue.max_characters
 
 
 # noinspection PyUnusedLocal
