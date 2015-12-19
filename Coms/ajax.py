@@ -71,7 +71,7 @@ def get_history(com, viewdate=None):
 
 
 def queue_nav(commission):
-    comset = commission.queue.commission_set.filter(details_date__isnull=False).order_by('-date')
+    comset = commission.queue.commission_set.filter(submitted=True).order_by('-date')
     queue = dict()
     queue['previous'] = comset.filter(date__lt=commission.date).order_by('-date').first()
     queue['next'] = comset.filter(date__gt=commission.date).order_by('date').first()
