@@ -273,11 +273,11 @@ class Commission(models.Model):
     size = models.ForeignKey(Size, blank=True, null=True, default=None)
     number_of_characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     extras = models.ManyToManyField(Extra, blank=True)
-    description = models.TextField(max_length=10000, blank=True, null=True, default=None)
+    description = models.TextField(max_length=10000, blank=True, default='')
     details_date = models.DateTimeField('Details Submitted', auto_now=True)
     submitted = models.BooleanField(default=False)
     contacts = models.CharField(blank=True, max_length=500)
-    paypal = models.EmailField(blank=True, null=True, default=None)
+    paypal = models.EmailField(blank=True, default='')
 
     @property
     def total(self):
