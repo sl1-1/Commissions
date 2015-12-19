@@ -88,7 +88,7 @@ class QueueViewSet(viewsets.ModelViewSet):
         'order': "date"}
 
     def list(self, request, *args, **kwargs):
-        if type(request.accepted_renderer) == HTMLFormRenderer:
+        if type(request.accepted_renderer) == TemplateHTMLFormRenderer:
             serializer = self.get_serializer()
             return Response(serializer.data)
         else:
