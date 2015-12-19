@@ -18,7 +18,8 @@
                                 <div class="form-group">
                                     <label class="control-label" for="id_type">Type</label>
                                     <p class="form-control-static">{{ Commission.queue.types.first }}</p>
-                                    <input type="hidden" id="id_type" name="type" value="1" />
+                                    <input type="hidden" id="id_type" name="type"
+                                           value="{{ Commission.queue.types.first.id }}" />
                                 </div>
                             {% endif %}
                             {% if Commission.queue.sizes.all|length > 1 %}
@@ -27,7 +28,7 @@
                                 <div class="form-group">
                                     <label class="control-label" for="id_size">Size</label>
                                     <p class="form-control-static">{{ Commission.queue.sizes.first }}</p>
-                                    <input type="hidden" id="id_size" name="size" value="1" />
+                                    <input type="hidden" id="id_size" name="size" value="{{ Commission.queue.sizes.first.id }}" />
                                 </div>
                             {% endif %}
                             {% if Commission.queue.extras.all %}
