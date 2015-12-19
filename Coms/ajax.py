@@ -85,7 +85,7 @@ def historical(commission, date):
     versions = reversion.get_for_object(commission)
     versions = versions.filter(revision__date_created__range=(index, index + datetime.timedelta(seconds=1)))
     version = versions[0]
-    return serializers.deserialize('json', version.serialized_data).next().object
+    return serializers.deserialize('json', version.serialized_data, ignorenonexistent=True).next().object
 
 
 def detailmodal(request, pk=None, date=None):

@@ -104,9 +104,8 @@ class CommissionSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = models.Commission
-        fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'details_submitted', 'expired',
-                  'latest_detail', 'status_display', 'paid_display', 'queue', 'description', 'status_choices',
-                  'paid_choices')
+        fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'submitted', 'expired',
+                  'status_display', 'paid_display', 'queue', 'description', 'status_choices', 'paid_choices')
 
     def get_status_display(self, obj):
         return obj.get_status_display()
@@ -128,7 +127,7 @@ class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
         'cols': [
             {'title': 'Username', 'data': 'user', 'className': 'modallink'},
             {'title': 'Submitted', 'data': 'date', 'className': 'datetime'},
-            {'title': 'Details Submitted', 'data': 'details_submitted', 'className': 'iconbool'},
+            {'title': 'Details Submitted', 'data': 'submitted', 'className': 'iconbool'},
             {'title': 'Status', 'data': 'status_display'},
             {'title': 'Paid', 'data': 'paid_display'},
             {'title': 'Locked', 'data': 'locked', 'className': 'iconlock'}

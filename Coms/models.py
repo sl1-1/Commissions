@@ -1,16 +1,18 @@
 import uuid
-
-from django.db import models
-from django.core.urlresolvers import reverse
-from django.core.validators import MinValueValidator
-from django.contrib.auth.models import User
-from django.utils.timezone import now
 from datetime import timedelta
 
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.core.validators import MinValueValidator
+from django.db import models
+from django.utils.timezone import now
 from reversion import revisions as reversion
 
 
 class Option(models.Model):
+    """
+    An Abstract model for some shared methods in Type, Size, Extra models.
+    """
     class Meta(object):
         abstract = True
 
@@ -22,6 +24,10 @@ class Option(models.Model):
 
     @property
     def friendly(self):
+        """
+        Gets a more friendly name for our objects
+        :return: string
+        """
         if self.price != 0.00:
             return "{0} - ${1}".format(self.name, self.price)
         else:
@@ -29,6 +35,9 @@ class Option(models.Model):
 
 
 class Type(Option):
+    """
+    Type model, holds the various commission types
+    """
     class Meta(object):
         verbose_name = "Commission Type"
 
@@ -40,6 +49,9 @@ class Type(Option):
 
 
 class Size(Option):
+    """
+    Size model, holds the various commission sizes
+    """
     class Meta(object):
         verbose_name = "Commission Size"
 
@@ -51,6 +63,9 @@ class Size(Option):
 
 
 class Extra(Option):
+    """
+    Extra model, holds the various commission extras
+    """
     class Meta(object):
         verbose_name = "Commission Extra"
 
@@ -62,12 +77,22 @@ class Extra(Option):
 
 
 class QueueManager(models.Manager):
+    """
+    Manager for Queue model, mainly used for showing open queues on index
+    """
     @property
     def openqueues(self):
+        """
+        Gets our open queues
+        :return: ``django.db.models.query.QuerySet``
+        """
         return self.get_queryset().filter(closed=False).filter(models.Q(hidden=False) | models.Q(end__isnull=True))
 
 
 class Queue(models.Model):
+    """
+    Queue Model, holds the different queues
+    """
     objects = QueueManager()
 
     class Meta(object):
@@ -100,10 +125,18 @@ class Queue(models.Model):
 
     @property
     def enter_url(self):
+        """
+        Gets the URL to the Enter page for this queue
+        :return: string
+        """
         return reverse('Coms:Enter:View', args=(self.id,))
 
     @property
     def submission_count(self):
+        """
+        Counts the submissions in this queue, excluding expired submissions
+        :return: integer
+        """
         if self.expire > 0:
             expiry = now() - timedelta(minutes=self.expire)
             query = self.commission_set.filter(date__gt=expiry) | self.commission_set.filter(details_date__isnull=False)
@@ -113,14 +146,26 @@ class Queue(models.Model):
 
     @property
     def open_slots(self):
+        """
+        Gets the amount of slots left for this queue
+        :return: integer
+        """
         return self.max_commissions_in_queue - self.submission_count
 
     @property
     def percent_full(self):
+        """
+        Calculates how full this queue is in percent
+        :return: float
+        """
         return self.submission_count / float(self.max_commissions_in_queue) * 100
 
     @property
     def is_full(self):
+        """
+        Returns True if queue is full, otherwise returns False
+        :return: boolean
+        """
         if self.submission_count >= self.max_commissions_in_queue:
             return True
         else:
@@ -128,6 +173,10 @@ class Queue(models.Model):
 
     @property
     def ended(self):
+        """
+        Returns True if the queue has ended, otherwise returns False
+        :return: Boolean
+        """
         if self.max_commissions_in_queue == 0:
             return True
         if self.closed:
@@ -139,12 +188,21 @@ class Queue(models.Model):
 
     @property
     def show(self):
+        """
+        Returns True if the queue should be shown, otherwise returns False
+        :return: boolean
+        """
         if not self.hidden and not self.ended:
             return True
         else:
             return False
 
     def user_submission_count(self, user):
+        """
+        When given the user, returns a count of submissions they have in the queue
+        :param user:
+        :return: integer
+        """
         expiry = now() - timedelta(minutes=self.expire)
         query = self.commission_set.filter(user=user).filter(date__gt=expiry) | \
             self.commission_set.filter(user=user).filter(details_date__isnull=False)
@@ -152,6 +210,10 @@ class Queue(models.Model):
 
 
 class ContactMethod(models.Model):
+    """
+    ContactMethod Model, Holds our contact methods
+    """
+
     class Meta(object):
         verbose_name = "Contact Method"
 
@@ -169,38 +231,27 @@ class ContactMethod(models.Model):
 
     @property
     def profile(self):
+        """
+        Returns ``str.format`` of the profile_url field
+        :return: ``str.format`` method
+        """
         return self.profile_url.format
 
     @property
     def message(self):
+        """
+        Returns ``str.format`` of the profile_url field
+        :return: ``str.format`` method
+        """
         return self.message_url.format
-
-# class Contact(object):
-#     def __unicode__(self):
-#         return '{}: {}'.format(self.site.name, self.username)
-#
-#     def __str__(self):
-#         return '{}: {}'.format(self.site.name, self.username)
-#
-#     data = {}
-#
-#     def __init__(self, json):
-#         self.data = data
-#
-#     @property
-#     def get_profile(self):
-#         profile = self.site.profile_url.format(username=self.username)
-#
-#         return profile
-#
-#     @property
-#     def get_message(self):
-#         message = self.site.message_url.format(username=self.username)
-#         return message
 
 
 @reversion.register()
 class Commission(models.Model):
+    """
+    Commission Model, Holds all the important bits for each commission
+    """
+
     def __unicode__(self):
         return str(self.id)
 
@@ -230,44 +281,28 @@ class Commission(models.Model):
 
     @property
     def total(self):
+        """
+        Totals all the options on the commission, and returns it.
+        :return: cost as a floating point value
+        """
         characters = self.number_of_characters - 1
         cost = self.type.price
-        cost += self.type.extra_character_price*characters
+        cost += self.type.extra_character_price * characters
         cost += self.size.price
-        cost += self.size.extra_character_price*characters
+        cost += self.size.extra_character_price * characters
         for extra in self.extras.all():
             cost += extra.price
-            cost += extra.extra_character_price*characters
+            cost += extra.extra_character_price * characters
         return cost
 
     @property
-    def details_submitted(self):
-        return self.submitted
-
-    @property
     def expired(self):
+        """
+        Check if commission has expired
+        :return: Boolean
+        """
         expiry = self.date + timedelta(minutes=self.queue.expire)
-        if expiry < now() and not self.details_submitted:
+        if expiry < now() and not self.submitted:
             return True
         else:
             return False
-
-    @property
-    def latest_detail(self):
-        try:
-            return self.detail_set.order_by('-date').first().id
-        except AttributeError:
-            return None
-
-    def to_dict(self):
-        opts = self._meta
-        data = {}
-        for f in opts.concrete_fields + opts.many_to_many:
-            if isinstance(f, models.ManyToManyField):
-                if self.pk is None:
-                    data[f.name] = []
-                else:
-                    data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
-            else:
-                data[f.name] = f.value_from_object(self)
-        return data

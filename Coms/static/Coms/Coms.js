@@ -223,7 +223,7 @@ function getColumnByData(columns, data) {
 
 //noinspection JSUnusedLocalSymbols
 function render_name(data, type, full) {
-    if (full['details_submitted'] == false) {
+    if (full['submitted'] == false) {
         return data;
     }
     var btn = document.createElement('button');
@@ -239,7 +239,7 @@ function render_name(data, type, full) {
 function render_lock(data, type, full) {
     var btn = document.createElement('button');
     btn.className = 'btn btn-default btn-block lock-button';
-    btn.setAttribute('id', 'lock-' + full['latest_detail']);
+    btn.setAttribute('id', 'lock-' + full['id']);
     btn.setAttribute('data-id', full['id']);
     btn.setAttribute('onclick', 'lockcom(this, ' + !data + ')');
     var icon = document.createElement('i');
