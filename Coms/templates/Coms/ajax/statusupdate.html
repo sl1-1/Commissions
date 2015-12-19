@@ -1,6 +1,0 @@
-{% load bootstrap3 %}
-<form action="{{ post }}" method="post" id="statusform">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <input type="submit" value="Save" class="form-control" id="statussubmit"/>
-</form>

@@ -46,7 +46,7 @@
                                     <dt>Status
                                         {% if request.user.is_staff and admin and not historical %}
                                             <button type="button" class="btn btn-default btn-xs detail-popover"
-                                                    data-url="{% url 'Coms:Ajax:CommissionStatus' commission.id %}"
+                                                    data-id="{{ commission.id }}"
                                                     data-type="status" id="status-change">
                                                 <i class="fa fa-cog" style="pointer-events: none"></i>
                                             </button>
@@ -58,8 +58,8 @@
                                     <dt>Payment Status
                                         {% if request.user.is_staff and admin and not historical %}
                                             <button type="button" class="btn btn-default btn-xs detail-popover"
-                                                    data-url="{% url 'Coms:Ajax:CommissionPayment' commission.id %}"
-                                                    data-type="payment" id="payment-change">
+                                                    data-id="{{ commission.id }}"
+                                                    data-type="paid" id="payment-change">
                                                 <i class="fa fa-cog" style="pointer-events: none"></i>
                                             </button>
                                         {% endif %}
@@ -89,12 +89,18 @@
                                             {% for item in history %}
                                                 {% with selected=item.current|yesno:'list-group-item-info, list-group-item' %}
                                                     {% timezone "UTC" %}
-                                                        {% with idate=item.date|date:'Y-m-d' itime=item.date|time:'H-i-s' %}
+                                                        {% if item.latest %}
                                                             <li class="list-group-item modal-action {{ selected }}"
-                                                                data-id="{{ commission.id }}/{{ idate }}T{{ itime }}"
-                                                                id="history-{{ commission.id }}-{{ idate }}T{{ itime }}"
-                                                            >
-                                                        {% endwith %}
+                                                                data-id="{{ commission.id }}"
+                                                                id="history-{{ commission.id }}">
+                                                                {% else %}
+                                                                {% with idate=item.date|date:'Y-m-d' itime=item.date|time:'H-i-s' %}
+                                                                    <li class="list-group-item modal-action {{ selected }}"
+                                                                        data-id="{{ commission.id }}/{{ idate }}T{{ itime }}"
+                                                                        id="history-{{ commission.id }}-{{ idate }}T{{ itime }}"
+                                                                    >
+                                                                {% endwith %}
+                                                        {% endif %}
                                                     {% endtimezone %}
                                                 <p style="pointer-events: none;">On
                                                     <time datetime="{{ item.date|date:'Y-m-d' }}T{{ item.date|time:'H:i:sO' }}">
@@ -130,14 +136,11 @@
                         {% if queue %}
                             <div class="btn-group" role="group" aria-label="...">
                                 {% if queue.previous %}
-                                    <button type="button" class="btn btn-default action-btn" title="Previous"
-                                            id="queue-"
-                                            data-target="option-modal"
+                                    <button type="button" class="btn btn-default modal-action" title="Previous"
                                             data-id="{{ queue.previous.id }}">
                                         <
                                     </button>
-                                    <button type="button" class="btn btn-default action-btn" title="Last" id="queue--"
-                                            data-target="option-modal"
+                                    <button type="button" class="btn btn-default modal-action" title="Last"
                                             data-id="{{ queue.last.id }}">
                                         <<
                                     </button>
@@ -147,14 +150,11 @@
                                 {% endif %}
                                 <button type="button" class="btn btn-default" disabled>Queue</button>
                                 {% if queue.next %}
-                                    <button type="button" class="btn btn-default action-btn" title="First"
-                                            id="queueplusplus"
-                                            data-target="option-modal"
+                                    <button type="button" class="btn btn-default modal-action" title="First"
                                             data-id="{{ queue.first.id }}">
                                         >>
                                     </button>
-                                    <button type="button" class="btn btn-default action-btn" title="Next" id="queueplus"
-                                            data-target="option-modal"
+                                    <button type="button" class="btn btn-default modal-action" title="Next"
                                             data-id="{{ queue.next.id }}">
                                         >
                                     </button>

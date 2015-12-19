@@ -223,7 +223,8 @@ class Commission(models.Model):
     number_of_Characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     extras = models.ManyToManyField(Extra, blank=True)
     description = models.TextField(max_length=10000, blank=True, null=True, default=None)
-    details_date = models.DateTimeField('Details Submitted', blank=True, null=True, default=None)
+    details_date = models.DateTimeField('Details Submitted', auto_now=True)
+    submitted = models.BooleanField(default=False)
     contacts = models.CharField(blank=True, max_length=500)
     paypal = models.EmailField(blank=True, null=True, default=None)
 
@@ -241,7 +242,7 @@ class Commission(models.Model):
 
     @property
     def details_submitted(self):
-        return bool(self.details_date)
+        return self.submitted
 
     @property
     def expired(self):

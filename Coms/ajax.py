@@ -2,14 +2,9 @@ import datetime
 from urlparse import urlparse
 
 import pytz
-from django import forms
 from django.conf.urls import url
-from django.contrib.admin.views.decorators import staff_member_required
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import timezone
@@ -70,6 +65,7 @@ def get_history(com, viewdate=None):
             history.append({'user': rev.revision.user, 'changes': changes, 'date': rev.revision.date_created,
                             'current': current})
         prev = rev.field_dict
+    history[-1]['latest'] = True
     history.reverse()
     return history
 
@@ -119,45 +115,7 @@ def detailmodal(request, pk=None, date=None):
     return render_to_response('Coms/ajax/detail_modal.html', RequestContext(request, context))
 
 
-class StatusForm(forms.Form):
-    status = forms.ChoiceField()
-
-
-@reversion.create_revision()
-@staff_member_required
-def commissionstatus(request, pk):
-    instance = get_object_or_404(models.Commission, pk=pk)
-    form = StatusForm(request.POST or None)
-    form.fields['status'].choices = instance.status_choices
-    form.fields['status'].initial = instance.status
-    print(instance.status)
-    if form.is_valid():
-        instance.status = int(form.cleaned_data['status'])
-        instance.save()
-        reversion.set_user(request.user)
-        return HttpResponse('Success')
-    context = {'form': form, 'post': reverse('Coms:Ajax:CommissionStatus', args=[pk])}
-    return render_to_response('Coms/ajax/statusupdate.html', RequestContext(request, context))
-
-
-@staff_member_required
-def commissionpayment(request, pk):
-    instance = get_object_or_404(models.Commission, pk=pk)
-    form = StatusForm(request.POST or None)
-    form.fields['status'].choices = instance.paid_choices
-    form.fields['status'].initial = instance.paid
-    print(instance.status)
-    if form.is_valid():
-        instance.paid = int(form.cleaned_data['status'])
-        instance.save()
-        return HttpResponse('Success')
-    context = {'form': form, 'post': reverse('Coms:Ajax:CommissionPayment', args=[pk])}
-    return render_to_response('Coms/ajax/statusupdate.html', RequestContext(request, context))
-
-
 urls = [
     url(r'^detail/(?P<pk>[\w\-]*?)/$', detailmodal, name="DetailView"),
-    url(r'^detail/(?P<pk>[\w\-]*?)/(?P<date>\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})/$', detailmodal, name="History"),
-    url(r'^commission/(?P<pk>[\w\-]*?)/status/$', commissionstatus, name="CommissionStatus"),
-    url(r'^commission/(?P<pk>[\w\-]*?)/payment/$', commissionpayment, name="CommissionPayment")
+    url(r'^detail/(?P<pk>[\w\-]*?)/(?P<date>\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})/$', detailmodal, name="History")
 ]

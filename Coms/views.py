@@ -9,11 +9,12 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.template.context_processors import csrf
-from django.utils import timezone
 from django.views.generic import View
-from django_markdown.widgets import MarkdownWidget
-from reversion import revisions as reversion
 from django.db import transaction
+
+from django_markdown.widgets import MarkdownWidget
+
+from reversion import revisions as reversion
 
 import Coms.models as models
 from Navigation.signals import render_navbar
@@ -135,7 +136,7 @@ class DetailFormView(View):
         contactformset = self.contactfactory(request.POST)
         if contactformset.is_valid() and form.is_valid():
             form.instance.contacts = contactformset.save()
-            form.instance.details_date = timezone.now()
+            form.instance.submitted = True
             detail = form.save()
             self.response = redirect("{0}#{1}".format(reverse('Coms:commissions'), detail.id))
         self.context.update({'form': form, 'contactformset': contactformset})

@@ -6,7 +6,19 @@ from rest_framework.renderers import JSONRenderer, HTMLFormRenderer, BrowsableAP
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+from reversion import revisions as reversion
+from reversion.revisions import transaction
+
 import models
+
+
+class ReversionViewMixin(object):
+    def dispatch(self, *args, **kwargs):
+        with transaction.atomic(), reversion.create_revision():
+            response = super(ReversionViewMixin, self).dispatch(*args, **kwargs)
+            if not self.request.user.is_anonymous():
+                reversion.set_user(self.request.user)
+            return response
 
 
 class TemplateHTMLFormRenderer(TemplateHTMLRenderer):
@@ -93,7 +105,8 @@ class CommissionSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = models.Commission
         fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'details_submitted', 'expired',
-                  'latest_detail', 'status_display', 'paid_display', 'queue')
+                  'latest_detail', 'status_display', 'paid_display', 'queue', 'description', 'status_choices',
+                  'paid_choices')
 
     def get_status_display(self, obj):
         return obj.get_status_display()
@@ -105,7 +118,7 @@ class CommissionSerializer(serializers.ModelSerializer):
         return timezone.localtime(obj.date)
 
 
-class CommissionViewSet(viewsets.ModelViewSet):
+class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
     serializer_class = CommissionSerializer
     queryset = models.Commission.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
