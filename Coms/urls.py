@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.routers import DefaultRouter
 
 import Coms.ajax as ajax
-import Coms.restadmin as restadmin
+import Coms.rest as restadmin
 from Coms import views, admin
 
 entry_urls = [
