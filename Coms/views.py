@@ -165,7 +165,7 @@ def index(request):
 
 
 def commissions(request):
-    usercoms = models.Commission.objects.filter(user=request.user).order_by('queue__date')
+    usercoms = models.Commission.objects.filter(user=request.user).filter(submitted=True).order_by('queue__date')
     comsdict = {}
     for com in usercoms:
         if com.queue_id in comsdict:
