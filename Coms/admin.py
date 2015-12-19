@@ -18,6 +18,12 @@ admin.site.register(models.ContactMethod)
 
 @staff_member_required
 def optionview(request, option):
+    """
+    View for the various options (Type, Size, Extra, ContactMethod, Queue)
+    :param request:
+    :param option:
+    :return:
+    """
     if option not in ('type', 'size', 'extra', 'contactmethod', 'queue'):
         return HttpResponseNotFound('Not Founds?')
     optionmodel = apps.get_model('Coms', option)
@@ -26,12 +32,25 @@ def optionview(request, option):
 
 
 def queueview(request, pk):
+    """
+    Main view for the Queue model
+    :param request:
+    :param pk:
+    :return:
+    """
     queue = get_object_or_404(models.Queue, pk=pk)
     return render_to_response('ComAdmin/Queue.html', RequestContext(request, {'queue': queue}))
 
 
 # noinspection PyUnusedLocal
 def lockqueue(request, pk, mode):
+    """
+    Locks/unlocks entire queue
+    :param request:
+    :param pk: Primary Key
+    :param mode: True to lock Queue, False to unlock Queue
+    :return:
+    """
     if mode == "True":
         mode = True
     else:
