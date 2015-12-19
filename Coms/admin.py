@@ -17,10 +17,6 @@ admin.site.register(models.Commission)
 admin.site.register(models.ContactMethod)
 
 
-class Index(TemplateView):
-    template_name = 'ComAdmin/Index.html'
-
-
 @staff_member_required
 def optionview(request, option):
     if option not in ('type', 'size', 'extra', 'contactmethod', 'queue'):

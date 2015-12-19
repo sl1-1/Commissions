@@ -30,7 +30,6 @@ userurls = [
 ]
 
 adminurls = [
-    url(r'^$', login_required(admin.Index.as_view()), name='Index'),
     url(r'^', include(queueurls, namespace="Queue")),
     url(r'^options/(?P<option>\w*?)/$', admin.optionview, name="Options"),
 ]
