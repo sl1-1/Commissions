@@ -17,10 +17,10 @@ def ref_name(instance, filename):
 
 class Character(models.Model):
     def __unicode__(self):
-        return self.friendly
+        return self.create_friendly()
 
     def __str__(self):
-        return self.friendly
+        return self.create_friendly()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User)
