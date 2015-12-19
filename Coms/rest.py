@@ -188,7 +188,7 @@ class SizeViewSet(OptionViewSet):
 
 class ExtraSerializer(OptionSerializer):
     class Meta(object):
-        model = models.Type
+        model = models.Extra
 
 
 class ExtraViewSet(OptionViewSet):
