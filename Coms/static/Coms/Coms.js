@@ -432,6 +432,46 @@ function CommissionFileUploadPopover(event) {
         .popover('show');
 }
 
+function CommissionFileDeletePopover(event) {
+    var target = $(event);
+    if (target.data()['bs.popover']) {
+        target.popover('destroy');
+        return;
+    }
+    $('.popover').each(function(index, button) {
+        $(button).popover('destroy');
+    });
+    var popover = target.popover({
+            content: function() {
+                var html = $('#CommissionFileDelete').clone();
+                html.find('#delete').attr('data-id', target.data()['id']);
+                return html.html();
+            }
+            ,
+            placement: 'auto',
+            html: true,
+            trigger: 'click',
+            container: 'body'
+        })
+        .popover('show');
+}
+
+function CommissionFileDelete(event) {
+    var target = $(event);
+    $.ajax({
+            processData: false,
+            contentType: false,
+            url: '/api/commissionfiles/' + target.data()['id'],
+            type: 'DELETE',
+            success: function(data) {
+                $('.popover').each(function(index, button) {
+                    $(button).popover('destroy');
+                });
+            }
+        });
+}
+
+
 $(document).on('submit', '#commissionfile', function(ev) {
     var form = $(this);
     var url = form.attr('action');

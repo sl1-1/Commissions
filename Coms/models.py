@@ -314,6 +314,7 @@ def file_name(instance, filename):
     return path.join(str(user), 'wip', str(uuid.uuid4()), filename)
 
 
+@reversion.register()
 class CommissionFiles(models.Model):
     """
     Commission Files Model, Holds our file uploads for commissions.
@@ -334,4 +335,6 @@ class CommissionFiles(models.Model):
     note = models.TextField(max_length=1000, blank=True, default='')
     imgname = models.CharField(max_length=1000)
     img = models.ImageField(upload_to=file_name)
+    user_deleted = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
 

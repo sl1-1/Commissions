@@ -147,7 +147,10 @@ def enter(request, pk):
     context = {'queue': queue, 'pk': pk}
     if not request.user.is_authenticated():
         return render_to_response('Coms/EnterForm.html', RequestContext(request, context))
-    if queue.user_submission_count(request.user) >= queue.max_commissions_per_person:
+    existing_com = models.Commission.objects.all().filter(user=request.user).filter(submitted=False).first()
+    if existing_com:
+        return redirect('Coms:Detail:View', pk=existing_com.id)
+    elif queue.user_submission_count(request.user) >= queue.max_commissions_per_person:
         context['error'] = "You have exceeded the amount of slots you may have\n"
     elif request.POST and not queue.is_full and not queue.ended and request.user.is_active:
         obj = models.Commission(queue=queue, user=request.user)

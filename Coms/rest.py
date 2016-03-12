@@ -216,10 +216,10 @@ class CommissionFileSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = models.CommissionFiles
-        fields = ('id', 'user', 'commission', 'date', 'type', 'note', 'imgname', 'img')
+        fields = ('id', 'user', 'commission', 'date', 'type', 'note', 'imgname', 'img', 'user_deleted', 'deleted')
 
 
-class CommissionFileViewSet(viewsets.ModelViewSet):
+class CommissionFileViewSet(ReversionViewMixin, viewsets.ModelViewSet):
     serializer_class = CommissionFileSerializer
     queryset = models.CommissionFiles.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
@@ -229,3 +229,9 @@ class CommissionFileViewSet(viewsets.ModelViewSet):
         filename = self.request.FILES['img'].name
         serializer.save(user=self.request.user, imgname=filename)
 
+    def perform_destroy(self, instance):
+        if self.request.user.is_staff:
+            instance.deleted = True
+        else:
+            instance.user_deleted = True
+        instance.save()

@@ -50,6 +50,10 @@ def get_history(com, viewdate=None):
     available_versions.reverse()
     prev = available_versions[0]
     print(prev.revision.date_created, viewdate)
+    for CommissionFile in models.CommissionFiles.objects.all().filter(commission=com):
+        for rev in list(reversion.get_for_object(CommissionFile).get_unique()):
+            prevrev = rev.field_dict
+            print(diff(prevrev, rev.field_dict))
     if cmp_time(prev.revision.date_created, viewdate):
         current = True
     else:
