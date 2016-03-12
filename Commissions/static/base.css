@@ -66,4 +66,11 @@ html {
     width: 100% !important;
 }
 
-.datepicker {z-index: 1151 !important;}
+.datepicker {
+    z-index: 1151 !important;
+}
+
+.featherlight .featherlight-image {
+    height: 90vh !important;
+    width: auto !important;
+}

@@ -208,3 +208,24 @@ class ContactMethodViewSet(OptionViewSet):
         {'title': 'Name', 'className': 'modallink', 'data': 'name'},
         {'data': 'description', 'title': 'Description'}
     ]}
+
+
+class CommissionFileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    imgname = serializers.CharField(read_only=True)
+
+    class Meta(object):
+        model = models.CommissionFiles
+        fields = ('id', 'user', 'commission', 'date', 'type', 'note', 'imgname', 'img')
+
+
+class CommissionFileViewSet(viewsets.ModelViewSet):
+    serializer_class = CommissionFileSerializer
+    queryset = models.CommissionFiles.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('id', 'commission')
+
+    def perform_create(self, serializer):
+        filename = self.request.FILES['img'].name
+        serializer.save(user=self.request.user, imgname=filename)
+

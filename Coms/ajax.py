@@ -8,6 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import timezone
+from django import forms
+
 from reversion import revisions as reversion
 
 import Coms.models as models
@@ -88,6 +90,12 @@ def historical(commission, date):
     return serializers.deserialize('json', version.serialized_data, ignorenonexistent=True).next().object
 
 
+class CommissionFileUpload(forms.ModelForm):
+    class Meta(object):
+        model = models.CommissionFiles
+        fields = ('type', 'note', 'img')
+
+
 def detailmodal(request, pk=None, date=None):
     context = {}
     try:
@@ -112,6 +120,8 @@ def detailmodal(request, pk=None, date=None):
     if request.user.is_staff and context['admin']:
         context['queue'] = queue_nav(commission)
     context['total'] = commission.total
+    context['files'] = commission.commissionfiles_set.all()
+    context['fileform'] = CommissionFileUpload(context['files'].none())
     return render_to_response('Coms/ajax/detail_modal.html', RequestContext(request, context))
 
 

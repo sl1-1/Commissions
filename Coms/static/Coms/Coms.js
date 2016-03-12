@@ -411,8 +411,49 @@ function clear_input(input) {
     $('input[name=' + input + ']').val('');
 }
 
-//$('html').on('click', function (e) {
-//    if (typeof $(e.target).data('original-title') == 'undefined') {
-//        $('[data-original-title]').popover('destroy');
-//    }
-//});
+function CommissionFileUploadPopover(event) {
+    var target = $(event);
+    if (target.data()['bs.popover']) {
+        target.popover('destroy');
+        return;
+    }
+    $('.detail-popover').each(function(index, button) {
+        $(button).popover('destroy');
+    });
+    target.popover({
+            content: function() {
+                return $('#CommissionFileUpload').html();
+            }
+            ,
+            placement: 'left',
+            html: true,
+            trigger: 'click'
+        })
+        .popover('show');
+}
+
+$(document).on('submit', '#commissionfile', function(ev) {
+    var form = $(this);
+    var url = form.attr('action');
+    var formdata = new FormData(form[0]);
+    console.log(formdata);
+    $.ajax({
+        processData: false,
+        contentType: false,
+        url: url,
+        type: 'POST',
+        data: formdata,
+        statusCode: {
+            400: function(rvalue) {
+                console.log(rvalue);
+            }
+        },
+        success: function(data) {
+            option_modal(data['commission']);
+            $('.detail-popover').each(function(index, button) {
+                $(button).popover('destroy');
+            });
+        }
+    });
+    ev.preventDefault();
+});

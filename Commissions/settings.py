@@ -95,8 +95,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         "HOST": '127.0.0.1',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'coms',
+        'PASSWORD': 'coms',
         'NAME': 'commissions'
     }
 }
@@ -124,7 +124,7 @@ MARKDOWN_SET_PATH = "Coms/"
 AUTH_PROFILE_MODULE = 'UserControl.UserProfile'
 
 LOGIN_URL = '/account/login'
-LOGIN_REDIRECT_URL = '/user/'
+LOGIN_REDIRECT_URL = '/'
 
 MEDIA_ROOT = BASE_DIR + '/media/'
 MEDIA_URL = '/media/'

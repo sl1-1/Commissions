@@ -41,6 +41,8 @@ router.register(r'size', restadmin.SizeViewSet)
 router.register(r'extra', restadmin.ExtraViewSet)
 router.register(r'contactmethod', restadmin.ContactMethodViewSet)
 router.register(r'queue', restadmin.QueueViewSet)
+router.register(r'commissionfiles', restadmin.CommissionFileViewSet)
+
 
 urlpatterns = patterns('',
                        url(r'^$', views.index, name='index'),
