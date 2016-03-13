@@ -216,7 +216,7 @@ class CommissionFileSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = models.CommissionFiles
-        fields = ('id', 'user', 'commission', 'date', 'type', 'note', 'imgname', 'img', 'user_deleted', 'deleted')
+        fields = ('id', 'user', 'commission', 'date', 'note', 'imgname', 'img', 'user_deleted', 'deleted')
 
 
 class CommissionFileViewSet(ReversionViewMixin, viewsets.ModelViewSet):

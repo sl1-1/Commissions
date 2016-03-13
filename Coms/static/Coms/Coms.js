@@ -427,7 +427,9 @@ function CommissionFileUploadPopover(event) {
             ,
             placement: 'left',
             html: true,
-            trigger: 'click'
+            trigger: 'click',
+            container: 'body'
+
         })
         .popover('show');
 }
@@ -490,10 +492,19 @@ $(document).on('submit', '#commissionfile', function(ev) {
         },
         success: function(data) {
             option_modal(data['commission']);
-            $('.detail-popover').each(function(index, button) {
+            $('.popover').each(function(index, button) {
                 $(button).popover('destroy');
             });
         }
     });
     ev.preventDefault();
 });
+
+
+function filemodal() {
+    var modal = $('#file-modal');
+    var content = $('#file-content');
+    var commission_id = $('#commission_id').val();
+    content.load('/details/ajax/files/' + commission_id + '/');
+    modal.modal('show');
+}

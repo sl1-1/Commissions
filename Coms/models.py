@@ -327,11 +327,9 @@ class CommissionFiles(models.Model):
         return str(self.id)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     commission = models.ForeignKey(Commission)
     user = models.ForeignKey(User)
-    type_choices = ((1, 'Sketch'), (2, 'Lines'), (3, 'Colours'), (4, 'Finished'))
-    type = models.IntegerField(choices=type_choices)
     note = models.TextField(max_length=1000, blank=True, default='')
     imgname = models.CharField(max_length=1000)
     img = models.ImageField(upload_to=file_name)

@@ -5,6 +5,7 @@
 {% load django_markdown %}
 {% block title %} Commission Details for {{ Commission.user }} {{ Commission.date }} {% endblock %}
 {% block content %}
+    <input type="hidden" id="commission_id" name="commission_id" value="{{ Commission.id }}">
     <div class="container-fluid">
         <form method="post" class="form-horizontal" action="{% url 'Coms:Detail:View' Commission.id %} ">
             <div class="row">
@@ -111,6 +112,20 @@
         });
 
         $(':checkbox').click(getOption);
+$(document).ready(function() {
+    var markItUpHeader = $('.markItUpHeader');
+    markItUpHeader.children('ul')
+        .append('<li class="markItUpSeparator">---------------</li>');
+    markItUpHeader.children('ul')
+        .append('<li class="markItUpButton" id="filebutton">' +
+            '<i class="fa fa-file" style="cursor: pointer" title="Characters">' +
+            '</i></li>');
+    var charbutton = $('#filebutton');
+    charbutton.bind('click.markItUp', function(e) {
+        e.preventDefault();
+    });
+    charbutton.click(option_modal);
+});
 
     </script>
     <div id="empty_form" style="display:none;height: 0">
@@ -118,5 +133,7 @@
     </div>
     {% load hooks_tags %}
     {% hook 'detail_form' %}
+<div class="modal fade modal-detail" tabindex="-1" role="dialog" id="option-modal" data-src="{% url 'Coms:Ajax:Files' Commission.id %}">
 
+</div>
 {% endblock %}
