@@ -1,12 +1,15 @@
 import uuid
 from datetime import timedelta
-from os import path
 
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.timezone import now
+from guardian.shortcuts import assign_perm
+from os import path
 from reversion import revisions as reversion
 
 
@@ -14,6 +17,7 @@ class Option(models.Model):
     """
     An Abstract model for some shared methods in Type, Size, Extra models.
     """
+
     class Meta(object):
         abstract = True
 
@@ -39,8 +43,10 @@ class Type(Option):
     """
     Type model, holds the various commission types
     """
+
     class Meta(object):
         verbose_name = "Commission Type"
+        default_permissions = ('view',)
 
     name = models.CharField(max_length=200)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
@@ -53,8 +59,10 @@ class Size(Option):
     """
     Size model, holds the various commission sizes
     """
+
     class Meta(object):
         verbose_name = "Commission Size"
+        default_permissions = ('view',)
 
     name = models.CharField(max_length=200)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
@@ -67,8 +75,10 @@ class Extra(Option):
     """
     Extra model, holds the various commission extras
     """
+
     class Meta(object):
         verbose_name = "Commission Extra"
+        default_permissions = ('view',)
 
     name = models.CharField(max_length=200)
     price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
@@ -81,6 +91,7 @@ class QueueManager(models.Manager):
     """
     Manager for Queue model, mainly used for showing open queues on index
     """
+
     @property
     def openqueues(self):
         """
@@ -98,6 +109,7 @@ class Queue(models.Model):
 
     class Meta(object):
         verbose_name = "Commission Queue"
+        default_permissions = ('view',)
 
     def __unicode__(self):
         return self.name
@@ -120,17 +132,6 @@ class Queue(models.Model):
     hidden = models.BooleanField(default=False)
     end = models.DateTimeField(blank=True, null=True, default=None)
     start = models.DateTimeField(default=now)
-
-    def get_absolute_url(self):
-        return reverse('Coms:queue', args=(self.id,))
-
-    @property
-    def enter_url(self):
-        """
-        Gets the URL to the Enter page for this queue
-        :return: string
-        """
-        return reverse('Coms:Enter:View', args=(self.id,))
 
     @property
     def submission_count(self):
@@ -209,6 +210,14 @@ class Queue(models.Model):
             self.commission_set.filter(user=user).filter(details_date__isnull=False)
         return query.count()
 
+    def existing(self, user):
+        existing = self.commission_set.filter(user=user).filter(details_date__isnull=True).first()
+        if existing:
+            return existing
+
+    def usermax(self, user):
+        return self.user_submission_count(user) >= self.max_commissions_per_person
+
 
 class ContactMethod(models.Model):
     """
@@ -217,6 +226,7 @@ class ContactMethod(models.Model):
 
     class Meta(object):
         verbose_name = "Contact Method"
+        default_permissions = ('view',)
 
     def __unicode__(self):
         return self.name
@@ -247,7 +257,7 @@ class ContactMethod(models.Model):
         return self.message_url.format
 
 
-@reversion.register()
+@reversion.register(exclude=['id', 'date', 'details_date'])
 class Commission(models.Model):
     """
     Commission Model, Holds all the important bits for each commission
@@ -272,13 +282,13 @@ class Commission(models.Model):
 
     type = models.ForeignKey(Type, blank=True, null=True, default=None)
     size = models.ForeignKey(Size, blank=True, null=True, default=None)
-    number_of_characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     extras = models.ManyToManyField(Extra, blank=True)
-    description = models.TextField(max_length=10000, blank=True, default='')
-    details_date = models.DateTimeField('Details Submitted', auto_now=True)
+    details_date = models.DateTimeField('Details Submitted', null=True)
     submitted = models.BooleanField(default=False)
-    contacts = models.CharField(blank=True, max_length=500)
-    paypal = models.EmailField(blank=True, default='')
+
+    class Meta:
+        default_permissions = ('add', 'view', 'change')
 
     @property
     def total(self):
@@ -286,7 +296,7 @@ class Commission(models.Model):
         Totals all the options on the commission, and returns it.
         :return: cost as a floating point value
         """
-        characters = self.number_of_characters - 1
+        characters = self.characters - 1
         cost = self.type.price
         cost += self.type.extra_character_price * characters
         cost += self.size.price
@@ -307,6 +317,24 @@ class Commission(models.Model):
             return True
         else:
             return False
+
+
+class UserData(models.Model):
+    user = models.ForeignKey(User)
+    sites = JSONField(default=list)
+
+
+class Message(models.Model):
+    user = models.ForeignKey(User)
+    commission = models.ForeignKey(Commission)
+    date = models.DateTimeField('Sent', auto_now_add=True)
+    type_choices = ((0, 'Initial'), (1, 'Reply'), (2, 'Status Update'))
+    type = models.IntegerField(choices=type_choices, default=2)
+    message = models.TextField(max_length=10000, blank=True, default='')
+    status_changes = JSONField(default=list)
+
+    class Meta:
+        default_permissions = ('add', 'view', 'change')
 
 
 def file_name(instance, filename):
@@ -330,9 +358,31 @@ class CommissionFiles(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     commission = models.ForeignKey(Commission)
     user = models.ForeignKey(User)
-    note = models.TextField(max_length=1000, blank=True, default='')
     imgname = models.CharField(max_length=1000)
     img = models.ImageField(upload_to=file_name)
     user_deleted = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
+    message = models.ForeignKey(Message)
 
+    class Meta:
+        default_permissions = ('add', 'view', 'change')
+
+
+# noinspection PyUnusedLocal
+@receiver(post_save, sender=Commission)
+def commission_post_save(sender, **kwargs):
+    print(kwargs)
+    commission, created = kwargs["instance"], kwargs["created"]
+    if created:
+        assign_perm("view_commission", commission.user, commission)
+        assign_perm("change_commission", commission.user, commission)
+
+
+# noinspection PyUnusedLocal
+@receiver(post_save, sender=CommissionFiles)
+def commissionfiles_post_save(sender, **kwargs):
+    print(kwargs)
+    commissionfile, created = kwargs["instance"], kwargs["created"]
+    if created:
+        assign_perm("view_commissionfiles", commissionfile.user, commissionfile)
+        assign_perm("change_commissionfiles", commissionfile.user, commissionfile)

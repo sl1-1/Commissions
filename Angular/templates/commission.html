@@ -1,0 +1,89 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 col-lg-2" style="height: 75vh">
+            <div class="option-group">
+                <i class="material-icons">folder</i><span>Queue</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.queue_name }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">account_circle</i><span>User</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.user }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">date_range</i><span>Date</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">toc</i><span>Type</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.type.name }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">photo_size_select_large</i><span>Size</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.size.name }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">assignment</i><span>Extras</span>
+                <ul class="queue_table_ul">
+                    <li ng-repeat="extra in commission.extras">
+                        <span>{{ extra.name }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">monetization_on</i><span>Payment Status</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.paid[1] }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">hourglass_empty</i><span>Status</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.status[1] }}</li>
+                </ul>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">people</i><span>Characters</span><br/>
+                <ul class="queue_table_ul">
+                    <li>{{ commission.characters }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6" ng-hide="!commission">
+            <div class="panel panel-default" ng-repeat="message in commission.message_set"
+                 ng-class="{'message-commissioner': message.user == commission.user}" }>
+                <div class="panel-body">
+                    <div class="message-user">
+                         <i class="material-icons md-18">account_circle</i>
+                       {{ message.user }} replied at
+                        {{ message.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}
+                    </div>
+                    <div ng-bind-html="message.message"></div>
+                </div>
+                <!-- <div class="panel-footer" ng-hide="$index==0">
+                    <i class="material-icons">account_circle</i> {{ message.user }}
+                    <span style="float:right">
+                        <i class="material-icons">date_range</i>
+                        {{ message.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}
+                    </span>
+                </div> -->
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div text-angular ng-model="commission.message.message"></div>
+                    <button class="form-control" ng-click="update()">Reply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,52 +1,33 @@
 from django.conf.urls import patterns, url, include
-from django.contrib.auth.decorators import login_required
-from rest_framework.routers import DefaultRouter
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework_nested import routers
 
-import Coms.ajax as ajax
-import Coms.rest as restadmin
-from Coms import views, admin
+from Coms import views
 
-entry_urls = [
-    url(r'^(?P<pk>[\w\-]*?)/$', views.enter, name='View'),
-]
+# router = DefaultRouter()
+router = routers.SimpleRouter()
 
-detail_urls = [
-    url(r'^(?P<pk>[\w\-]*?)/$', views.DetailFormView.as_view(), name='View'),
-]
-
-# Queues Admin
-queueurls = [
-
-    url(r'^queue/(?P<pk>[\w\-]*?)/view$', login_required(admin.queueview), name='ShowQueue'),
-    url(r'^queue/(?P<pk>[\w\-]*?)/lock/(?P<mode>True|False)/$', login_required(admin.lockqueue), name='LockQueue'),
-]
-
-userurls = [
-    url(r'^$', views.index, name='index'),
-    url(r'^details/', include(detail_urls, namespace="Detail")),
-    url(r'^enter/', include(entry_urls, namespace="Enter")),
-    url(r'^ajax/', include(ajax.urls, namespace="Ajax")),
-    url(r'^commissions/$', views.commissions, name="commissions")
-]
-
-adminurls = [
-    url(r'^', include(queueurls, namespace="Queue")),
-    url(r'^options/(?P<option>\w*?)/$', admin.optionview, name="Options"),
-]
-
-router = DefaultRouter()
-router.register(r'commissions', restadmin.CommissionViewSet)
-router.register(r'type', restadmin.TypeViewSet)
-router.register(r'size', restadmin.SizeViewSet)
-router.register(r'extra', restadmin.ExtraViewSet)
-router.register(r'contactmethod', restadmin.ContactMethodViewSet)
-router.register(r'queue', restadmin.QueueViewSet)
-router.register(r'commissionfiles', restadmin.CommissionFileViewSet)
-
+router.register(r'commissions', views.CommissionViewSet)
+commissions_router = routers.NestedSimpleRouter(router, r'commissions', lookup='commissions')
+commissions_router.register(r'history', views.CommissionHistoryViewSet, base_name='commission-history')
+router.register(r'queues', views.QueueViewSet)
+queue_router = routers.NestedSimpleRouter(router, r'queues', lookup='queues')
+queue_router.register(r'commissions', views.CommissionViewSet, base_name='commissions')
+router.register(r'type', views.TypeViewSet)
+router.register(r'size', views.SizeViewSet)
+router.register(r'extra', views.ExtraViewSet)
+router.register(r'contactmethod', views.ContactMethodViewSet)
+router.register(r'contact', views.ContactMethodViewSet)
+router.register(r'commissionfiles', views.CommissionFileViewSet)
+router.register(r'user', views.UserViewSet)
+print(commissions_router.urls)
 
 urlpatterns = patterns('',
-                       url(r'^$', views.index, name='index'),
-                       url(r'^details/', include(userurls, namespace="Coms")),
-                       url(r'^admin/', include(adminurls, namespace='Admin')),
+                       url(r'^api/csrf$', ensure_csrf_cookie(views.CSRF)),
                        url(r'^api/', include(router.urls, namespace='API')),
+                       url(r'^api/', include(commissions_router.urls)),
+                       url(r'^api/', include(queue_router.urls)),
+                       # url(r'^(?P<path>.*)$', 'django.views.static.serve', {
+                       #     'document_root': '/mnt/network/Projects/Commission Site/Commissions/Angular',
+                       # }),
                        )

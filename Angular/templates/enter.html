@@ -1,0 +1,89 @@
+<div class="container-fluid">
+    <div class="row">
+        <wizard on-finish="vm.finishWizard()" template="/templates/wizard.html">
+            <wz-step title="Enter">
+                <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
+                    <h2>Enter</h2>
+
+                    <div>
+                        <dl>
+                            <dt>Types</dt>
+                            <dd ng-repeat="type in vm.queue.types">
+                                {{ type.name }} - {{ type.price }}
+                            </dd>
+                            <dt>Sizes</dt>
+                            <dd ng-repeat="size in vm.queue.sizes">
+                                {{ size.name }} - {{ size.price }}
+                            </dd>
+                            <dt ng-hide="!vm.queue.extras">Extras</dt>
+                            <dd ng-repeat="extra in vm.queue.extras" ng-hide="!vm.queue.extras">
+                                {{ extra.name }} - {{ extra.price }}
+                            </dd>
+                            <dt>Max characters</dt>
+                            <dd>{{ vm.queue.max_characters }}</dd>
+                            <dt ng-hide="!vm.queue.character_cost">Character cost</dt>
+                            <dd ng-hide="!vm.queue.character_cost">{{ vmqueue.character_cost }}</dd>
+                            <dt>Max commissions per person</dt>
+                            <dd>{{ vm.queue.max_commissions_per_person }}</dd>
+                            <dt ng-hide="!vm.queue.end">Closes on</dt>
+                            <dd ng-hide="!vm.queue.end">{{ vm.queue.end }} at {{ vm.queue.end }}</dd>
+                        </dl>
+
+                    </div>
+                    <div ng-hide="vm.queue.existing">
+                        <h5 ng-hide="!vm.queue.full">
+                            Sorry, Commissions are currently full.
+                            <br/>
+                                <span ng-hide="vm.queue.expire">
+                                    Better Luck next time
+                                </span>
+                                <span ng-hide="!vm.queue.expire">
+                                    There is a chance that a spot may free up, check back later
+                                </span>
+                        </h5>
+                        <h5 ng-hide="!vm.queue.ended">
+                            Sorry, This Queue has ended
+                            <br/>
+                            Better Luck next time
+                        </h5>
+                    </div>
+
+                    <div style="text-align:right">
+                        <button type="submit" wz-next="vm.new_commission()"
+                                class="btn btn-primary submit-button"
+                                ng-disabled="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">Next
+                        </button>
+                    </div>
+                </div>
+            </wz-step>
+            <wz-step title="Step 1" canexit="vm.exitValidation(vm.forms.step1)">
+                <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
+                    <h2>Step 1</h2>
+                    <formly-form model="vm.model" fields="vm.fields.step1" form="vm.forms.step1">
+                        <div style="text-align:right">
+                            <button type="submit" ng-disabled="vm.forms.step1.$invalid" wz-next
+                                    class="btn btn-primary submit-button">Next
+                            </button>
+                        </div>
+                    </formly-form>
+                </div>
+            </wz-step>
+            <wz-step title="Step 2" canexit="vm.exitValidation(vm.forms.step2)">
+                <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
+                    <div class="row">
+                        <h2>Step 2</h2>
+                        <formly-form model="vm.model" fields="vm.fields.step2" form="vm.forms.step2">
+                            <div style="text-align:right">
+                                <button type="submit" ng-disabled="vm.forms.step2.$invalid" wz-next
+                                        class="btn btn-primary submit-button">
+                                    Finish
+                                </button>
+                            </div>
+                        </formly-form>
+                    </div>
+                </div>
+            </wz-step>
+        </wizard>
+        </form>
+    </div>
+</div>

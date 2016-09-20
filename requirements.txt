@@ -1,3 +1,5 @@
+guardian
+reversion
 pytz
 django-reversion
 django-hooks

@@ -43,11 +43,16 @@ INSTALLED_APPS = (
     'tz_detect',
     'rest_framework',
     'Characters',
-    'Navigation'
-
+    'Navigation',
+    'guardian'
 )
 
-STATICFILES_DIRS = ('Commissions/static',)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+STATICFILES_DIRS = ('Commissions/static', 'bower_components/', 'Angular/')
 
 TEMPLATES = [
     {

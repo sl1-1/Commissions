@@ -1,0 +1,82 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 col-lg-2 text-center" ng-hide="vm.commission" style="height: 75vh">
+            <div class="panel panel-default text-center">
+                <div class="panel-heading">Queues</div>
+                <ul class="list-group scroller">
+                    <a class="list-group-item" ng-repeat="commission in vm.commissions|unique: 'queue'"
+                       ng-click="vm.setQueue(commission.queue)">{{ commission.queue_name }}</a>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-3 col-lg-2" ng-hide="!vm.queue" style="height: 70vh;">
+            <div class="panel panel-default text-center">
+                <div class="panel-heading">{{ vm.queue_name }}
+                    <a class="badge pull-left" ng-click="vm.setCommission()" ng-hide="!vm.commission"><i
+                            class="fa fa-backward">Back</i></a></div>
+                <ul class="list-group scroller">
+                    <a class="list-group-item" ng-repeat="commission in vm.commissions|filter: {queue: vm.queue}"
+                       ng-click="vm.setCommission(commission)">{{ commission.date| amDateFormat: 'MMMM Do YYYY, h:mm a' }}</a>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-9" ng-hide="!vm.commission">
+            <div class="panel panel-default text-center">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <dl>
+                                <dt>Commission Claimed</dt>
+                                <dd>{{ vm.commission.date| amDateFormat: 'MMMM Do YYYY, h:mm a' }}</dd>
+                                <dt>Details submitted</dt>
+                                <dd>{{ vm.commission.details_date| amDateFormat: 'MMMM Do YYYY, h:mm a' }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-2">
+                            <dl>
+                                <dt>Type</dt>
+                                <dd>{{ vm.commission.type.name }}</dd>
+                                <dt>Size</dt>
+                                <dd>{{ vm.commission.size.name }}</dd>
+                                <dt ng-hide="!vm.commission.extras.length">Extras</dt>
+                                <dd ng-repeat="extra in vm.commission.extras">{{ extra.name }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-2">
+                            <dl>
+                                <dt>Characters</dt>
+                                <dd>{{ vm.commission.characters }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-2">
+                            <dl>
+                                <dt>Contacts</dt>
+                                <dd ng-repeat="contact in vm.commission.contacts">{{ contact }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-2">
+                            <dl>
+                                <dt>Status</dt>
+                                <dd>{{ vm.commission.status[1] }}</dd>
+                                <dt>Payment Status</dt>
+                                <dd>{{ vm.commission.paid[1] }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-2">
+
+                            <dl>
+                                <dt>Paypal</dt>
+                                <dd>{{ vm.commission.paypal }}</dd>
+                                <dt>Total</dt>
+                                <dd>${{ vm.commission.total }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div ng-bind-html="vm.commission.description"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

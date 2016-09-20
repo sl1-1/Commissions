@@ -1,13 +1,6 @@
 from django.utils import timezone
 from rest_framework import filters
-from rest_framework import metadata
 from rest_framework import serializers, viewsets
-from rest_framework.renderers import JSONRenderer, HTMLFormRenderer, BrowsableAPIRenderer, TemplateHTMLRenderer
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
-
-from reversion import revisions as reversion
-from reversion.revisions import transaction
 
 import models
 

@@ -1,8 +1,10 @@
-from django.test import TestCase
-import Coms.models as models
 from time import sleep
-from django.utils import timezone
-from datetime import timedelta
+
+from django.test import TestCase
+
+import Coms.models as models
+
+
 # Create your tests here.
 
 
@@ -44,11 +46,3 @@ class QueueIsFullExpire(TestCase):
         sleep(61)
         self.assertEqual(queue.is_full, False)
         self.assertEqual(queue.submission_count, 0)
-
-
-
-
-
-
-
-
