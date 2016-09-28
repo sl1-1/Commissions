@@ -1,3 +1,9 @@
-app.controller('AdminCtrl', ['$rootScope', '$scope', function($rootScope, $scope) {
+function AdminCtrl($rootScope, $scope) {}
 
-}]);
+app.controller('AdminCtrl',
+    [
+        '$rootScope',
+        '$scope',
+        AdminCtrl
+    ]
+);

@@ -1,5 +1,4 @@
-app.controller('QueueCtrl', ['$rootScope', '$scope', 'Commission', 'Queue', '$stateParams', 'Type', 'Size', 'Extra', function($rootScope, $scope,
-                                                                                                                              Commission, Queue, $stateParams, Type, Size, Extra) {
+function QueueCtrl($rootScope, $scope, Commission, Queue, Type, Size, Extra) {
 
     $scope.commissions = Commission.getall();
     $scope.queues = Queue.getall();
@@ -102,10 +101,17 @@ app.controller('QueueCtrl', ['$rootScope', '$scope', 'Commission', 'Queue', '$st
         }
     ];
     $scope.slider = {
+        min: 0,
+        max: 50,
         options: {
             floor: 0,
             ceil: 50,
-            step: 1
+            step: 1,
+            onEnd: function() {
+                // Stupid Slider... No debounce... Poor server... This help
+                $scope.filter.char_min = $scope.slider.min;
+                $scope.filter.char_max = $scope.slider.max;
+            }
         }
     };
 
@@ -138,7 +144,7 @@ app.controller('QueueCtrl', ['$rootScope', '$scope', 'Commission', 'Queue', '$st
         });
         var startDate = '';
         var endDate = '';
-        if ($scope.filter.date.startDate != null && $scope.filter.date.endDate != null) {
+        if ($scope.filter.date.startDate && $scope.filter.date.endDate) {
             startDate = $scope.filter.date.startDate.utc().format();
             endDate = $scope.filter.date.endDate.utc().format();
         }
@@ -156,7 +162,20 @@ app.controller('QueueCtrl', ['$rootScope', '$scope', 'Commission', 'Queue', '$st
                 date_1: endDate
             });
     }, true);
-}]);
+}
+
+app.controller('QueueCtrl',
+    [
+        '$rootScope',
+        '$scope',
+        'Commission',
+        'Queue',
+        'Type',
+        'Size',
+        'Extra',
+        QueueCtrl
+    ]
+);
 
 
 app.directive('listBuilder', [function() {
@@ -166,7 +185,7 @@ app.directive('listBuilder', [function() {
             result: '=builderResults'
         },
         restrict: 'E',
-        templateUrl: 'commission_filter.html',
+        templateUrl: 'templates/commission_filter.html',
         controller: ['$scope', function($scope) {
             // console.log(typeof $scope.valuesin);
             $scope.values = []; //$scope.valuesin;

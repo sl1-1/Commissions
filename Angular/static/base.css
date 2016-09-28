@@ -39,14 +39,6 @@ html {
 }
 
 @media (min-width: 992px) {
-    .scrollbox {
-        height: 500px;
-        width: 100%;
-        overflow: auto;
-        padding: 15px;
-        overflow-x: hidden;
-    }
-
     .height-600 {
         height: 600px;
     }
@@ -54,16 +46,6 @@ html {
 
 [class*="col-"] {
     padding-top: 15px;
-}
-
-.markItUp {
-    width: 100% !important;
-    height: 500%;
-    margin: 5px 0 5px 0;
-}
-
-.markItUpEditor {
-    width: 100% !important;
 }
 
 .queue_table {
@@ -78,7 +60,7 @@ html {
 }
 
 .queue_table_ul {
-     list-style-type: none;
+    list-style-type: none;
 }
 
 .editable-click {
@@ -100,6 +82,7 @@ html {
 .option-group {
     text-align: left;
 }
+
 .option-group i {
     vertical-align: middle;
     line-height: 1;
@@ -110,12 +93,10 @@ html {
     line-height: 1;
 }
 
-
-.listbuilder{
+.listbuilder {
     list-style: none;
     color: #555;
     background-color: #fff;
-    background-image: none;
     border: 1px solid #ccc;
     /*box-sizing: content-box;*/
     width: 100% !important;
@@ -127,11 +108,8 @@ html {
     overflow: hidden;
 }
 
-.listbuilder-focus{
+.listbuilder-focus {
     outline: -webkit-focus-ring-color auto 5px;
-    outline-color: -webkit-focus-ring-color;
-    outline-style: auto;
-    outline-width: 5px;
 }
 
 .listbuilder-entry {
@@ -154,19 +132,15 @@ html {
 .listbuilder-entry-add {
     display: inline-block !important;
     width: 20px;
-    display: block;
     position: relative;
-    /*left: -30px;*/
-    height: 28px;
     height: 1.75rem;
-    line-height: 28px;
     line-height: 1.75rem;
     padding: 0;
     margin: 0 0.3em 0.3em 0;
 
 }
 
-.listbuilder-entry-add input{
+.listbuilder-entry-add input {
     /*float: left;*/
     width: 100px;
     /*display: block;*/
@@ -176,7 +150,7 @@ html {
     background: transparent;
 }
 
-.listbuilder-entry-add input:focus{
+.listbuilder-entry-add input:focus {
     outline: none;
 }
 
@@ -184,38 +158,48 @@ html {
     display: inline-block;
     position: relative;
     /*width: 2.5em;*/
-    height: 28px;
     height: 1.75rem;
     right: 0;
     top: 0;
 }
 
-a[ng-click]{
+a[ng-click] {
     cursor: pointer;
 }
 
-.datepicker{
+.datepicker {
     font-size: 10px;
 }
 
-.message-commissioner{
+.message-commissioner {
     background-color: #ffffe6;
 }
 
 .message-user {
-    font-size:smaller;
-    color:#a2a19f;
+    font-size: smaller;
+    color: #a2a19f;
     vertical-align: middle;
     display: inline-flex;
 }
 
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
+.material-icons.md-18 {
+    font-size: 18px;
+}
+
+.material-icons.md-24 {
+    font-size: 24px;
+}
+
+.material-icons.md-36 {
+    font-size: 36px;
+}
+
+.material-icons.md-48 {
+    font-size: 48px;
+}
 
 .editable-checklist label {
-  display: block;
+    display: block;
 }
 
 .ul_change {
@@ -225,15 +209,16 @@ a[ng-click]{
 }
 
 .list-comma::before {
-  content: ',';
+    content: ',';
 }
+
 .list-comma:first-child::before {
-  content: '';
+    content: '';
 }
 
 .ctrl-icon {
     height: 60px;
-    width:60px;
+    width: 60px;
     border-radius: 50%;
     background-color: #a2a19f;
     display: block;
@@ -264,7 +249,7 @@ a[ng-click]{
     list-style: None;
 }
 
-.ctrl-list li{
+.ctrl-list li {
     float: left;
     cursor: pointer;
 }

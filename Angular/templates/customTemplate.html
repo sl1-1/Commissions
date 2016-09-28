@@ -1,0 +1,7 @@
+<a>
+    <i class="material-icons"
+       ng-style="{'color': match.model.icon_color}">
+        {{ match.model.icon }}
+    </i>
+    <span ng-bind-html="match.label | uibTypeaheadHighlight:query"></span>
+</a>

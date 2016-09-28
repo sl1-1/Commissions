@@ -1,4 +1,4 @@
-app.controller('IndexCtrl', ['$scope', '$stateParams', 'Queue', function($scope, $stateParams, Queue) {
+function IndexCtrl($scope, $stateParams, Queue) {
     var vm = this;
     vm.queues = [];
     Queue.query(function(queues) {
@@ -8,5 +8,13 @@ app.controller('IndexCtrl', ['$scope', '$stateParams', 'Queue', function($scope,
             }
         });
     });
+}
 
-}]);
+app.controller('IndexCtrl',
+    [
+        '$scope',
+        '$stateParams',
+        'Queue',
+        IndexCtrl
+    ]
+);

@@ -1,0 +1,30 @@
+<!-- This is ugly, and I DO NOT LIKE -->
+<div class="panel panel-default">
+    <div class="panel-body">
+        <span ng-repeat="(type, change) in changes">
+            <span style="float:left">{{ type|titleCase }}:&nbsp;</span>
+            <span ng-hide="type != 'status'"
+                  style="float:left">&quot;{{ change.old[1] }}&quot; changed to &quot;{{ change.new[1] }}&quot;</span>
+            <span ng-hide="type != 'paid'"
+                  style="float:left">&quot;{{ change.old[1] }}&quot; changed to &quot;{{ change.new[1] }}&quot;</span>
+            <span ng-hide="type != 'characters'"
+                  style="float:left">&quot;{{ change.old }}&quot; changed to &quot;{{ change.new }}&quot;</span>
+            <span ng-hide="change.old[0] != false">&quot;{{ change.old[1] }}&quot; changed to &quot;{{ change.new[1] }}&quot;</span>
+            <span ng-hide="!change.old.id">&quot;{{ change.old.name }}&quot; changed to &quot;{{ change.new.name }}&quot;</span>
+            <span ng-hide="type != 'extras'">
+                <span style="float:left"> &quot;</span>
+               <span ng-repeat="i in change.old">
+                        <span ng-hide="$first" style="float: left">,&nbsp;</span>
+                   <span style="float:left">{{ i.name }}</span>
+                </span>
+                <span style="float:left">&quot; changed to &quot;</span>
+                <span ng-repeat="i in change.new">
+                        <span ng-hide="$first" style="float:left">,&nbsp;</span>
+                    <span style="float:left">{{ i.name }}</span>
+                </span>
+                <span style="float:left">&quot;</span>
+            </span>
+        <br/>
+        </span>
+    </div>
+</div>

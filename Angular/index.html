@@ -4,60 +4,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title> Commission Details for {{ Commission.user }} {{ Commission.date }} </title>
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-    <script src="/static/angular/angular.min.js"></script>
-    <script src="/static/angular-resource/angular-resource.js"></script>
-    <script src="/static/angular-wizard/dist/angular-wizard.min.js"></script>
-    <script src="/static/angular-ui/build/angular-ui.min.js"></script>
-    <script src="/static/angular-http-auth/src/http-auth-interceptor.js"></script>
-    <script src="/static/angular-ui-router/release/angular-ui-router.min.js"></script>
-    <link href="/static/angular-wizard/dist/angular-wizard.min.css" rel="stylesheet">
-    <script src="/static/api-check/dist/api-check.min.js"></script>
-    <script src="/static/angular-formly/dist/formly.min.js"></script>
-    <script src="/static/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.min.js"></script>
-    <script src="/static/angular-bootstrap/ui-bootstrap.js"></script>
-    <script src="/static/angular-route/angular-route.js"></script>
-    <script src="/static/moment/min/moment.min.js"></script>
-    <script src="/static/moment-timezone/moment-timezone.js"></script>
-    <script src="/static/angular-moment/angular-moment.js"></script>
-    <script src="/static/angular-route/angular-route.js"></script>
-    <link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap-theme.min.css"/>
-    <script src="/static/angular-bootstrap/ui-bootstrap.js"></script>
-    <script src="/static/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="/static/angular-ui-layout/ui-layout.min.js"></script>
-    <script src="/static/angular-ui-grid/ui-grid.min.js"></script>
-    <script src="/static/angular-cookies/angular-cookies.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/angular-ui-layout/ui-layout.css"/>
-    <link rel="stylesheet" type="text/css" href="/static/angular-ui-grid/ui-grid.min.css"/>
-    <script type="application/javascript" src="/static/angularjs-slider/dist/rzslider.js"></script>
-    <link rel="stylesheet" href="/static/angularjs-slider/dist/rzslider.css" />
-    <script src="/static/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <script type="application/javascript" src="/static/angular-daterangepicker/js/angular-daterangepicker.js"></script>
-    <link rel="stylesheet" href="/static//bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/static/bootstrap-daterangepicker/daterangepicker.css"/>
-    <link rel="stylesheet" href="/static/base.css"/>
-    <link rel="stylesheet" href="/static/textAngular/dist/textAngular.css">
-    <script src="/static/textAngular/dist/textAngular-rangy.min.js"></script>
-    <script src="/static/textAngular/dist/textAngular-sanitize.min.js"></script>
-    <script src="/static/textAngular/dist/textAngular.min.js"></script>
-    <script type="application/javascript" src="/scripts/checklist-model.js"></script>
-    <script type="application/javascript" src="/scripts/services/services.js"></script>
-    <script type="application/javascript" src="/scripts/controllers/controllers.js"></script>
+    <script type="application/javascript" src="/static/main.min.js"></script>
+
+    <!-- CSS -->
+    <link href="/static/bower.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script type="application/javascript" src="/static/angular-xeditable/dist/js/xeditable.js"></script>
-    <link href="/static/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
-    <script type="application/javascript" src="/scripts/controllers/Entry.js"></script>
-    <script type="application/javascript" src="/scripts/controllers/CommissionList.js"></script>
-    <script type="application/javascript" src="/scripts/controllers/Index.js"></script>
-    <script type="application/javascript" src="/scripts/controllers/Queue.js"></script>
-    <script type="application/javascript" src="/scripts/services/loginmodal.js"></script>
-    <script type="application/javascript" src="/scripts/controllers/Commission.js"></script>
-    <script type="application/javascript" src="/scripts/controllers/Admin.js"></script>
+    <link rel="stylesheet" href="/static/base.css"/>
 
 </head>
-<body ng-app="CommissionForm" ng-controller="MainCtrl" ng-strict-di>
+<body ng-app="Commissions" ng-controller="MainCtrl" ng-strict-di>
 <nav class="navbar navbar-default" ng-controller="NavCtrl">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -89,9 +45,9 @@
                 <li ng-hide="user.id == null"><p class="navbar-text">Welcome,
                     <strong>{{ user.username }}</strong>
                 </p></li>
-                <li ng-hide="user.id == null"><a href="/account/password_change/">Change password</a></li>
+                <li ng-hide="user.id == null"><a>Change password</a></li>
                 <li ng-hide="user.id == null"><a ng-click="logout()">Log out</a></li>
-                <li ng-hide="user.id != null"><a href="/account/register/?next={{ request.path }}">Register</a></li>
+                <li ng-hide="user.id != null"><a>Register</a></li>
                 <li ng-hide="user.id != null"><a ng-click="login()">Login</a></li>
             </ul>
         </div>

@@ -1,4 +1,4 @@
-app.controller('CommissionCtrl', ['$rootScope', '$scope', '$stateParams', 'Commission', 'Queue', function($rootScope, $scope, $stateParams, Commission, Queue) {
+function CommissionCtrl($rootScope, $scope, $stateParams, Commission, Queue) {
     $scope.user = $rootScope.user;
     $scope.paid_values = [
         [0, 'Not Yet Requested'],
@@ -16,24 +16,41 @@ app.controller('CommissionCtrl', ['$rootScope', '$scope', '$stateParams', 'Commi
         [6, 'Please Revise'],
         [7, 'Rejected']
     ];
-    $scope.commission = Commission.get({CommissionId: $stateParams.commissionid});
+    $scope.commission = Commission
+        .get({CommissionId: $stateParams.commissionid});
 
     console.log($scope.commission);
 
     $scope.commission.$promise.then(function(commission) {
         $scope.queue = Queue.get({QueueId: commission.queue});
-        console.log($scope.queue)
+        console.log($scope.queue);
     });
 
     $scope.update = function() {
         console.log($scope.commission.status);
-        $scope.commission.$save({CommissionId: $stateParams.commissionid}, function(response) {
-                $scope.commission = Commission.get({CommissionId: $stateParams.commissionid});
-            },function(response) {
+        $scope.commission.$save(
+            {CommissionId: $stateParams.commissionid},
+            function(response) {
+                $scope.commission = Commission
+                    .get({CommissionId: $stateParams.commissionid});
+            },
+            function(response) {
                 console.log(response);
-            });
+            }
+        );
     };
-}]);
+}
+
+app.controller('CommissionCtrl',
+    [
+        '$rootScope',
+        '$scope',
+        '$stateParams',
+        'Commission',
+        'Queue',
+        CommissionCtrl
+    ]
+);
 
 app.directive('statusChanges', [function() {
     return {
@@ -41,7 +58,7 @@ app.directive('statusChanges', [function() {
             changes: '=changes'
         },
         restrict: 'E',
-        templateUrl: 'status_change.html',
+        templateUrl: 'templates/status_change.html'
         // controller: ['$scope', function($scope) {
         //
         // }]

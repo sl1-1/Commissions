@@ -1,0 +1,19 @@
+<ul class="listbuilder" id="listbuilder-{{ id }}" ng-click="filter_focus()">
+    <li class="listbuilder-entry" ng-repeat="item in result">
+        <span>{{ item.name }}</span>
+        <a ng-click="filter_delete($event, filter_size, $index)" class="listbuilder-entry-remove">&times;</a>
+    </li>
+    <li class="listbuilder-entry-add">
+        <input id="listbuilder-input-{{ id }}"
+               typeahead-template-url="templates/customTemplate.html"
+               typeahead-min-length="0"
+               uib-typeahead="item as item.name for item in values| filter:{name: $viewValue}"
+               ng-model="data" typeahead-editable="false"
+               typeahead-select-on-exact="true"
+               typeahead-on-select="filter_update($item)"
+               typeahead-append-to-body="true"
+               ng-focus="focus()"
+               ng-blur="blur()"
+        >
+    </li>
+</ul>

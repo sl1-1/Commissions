@@ -1,6 +1,4 @@
-app.controller('EntryCtrl', ['$rootScope', '$scope', '$sce', 'Commission', 'Queue', 'User', 'Contact', '$state', '$stateParams', function($rootScope, $scope, $sce,
-                                                                                                                                         Commission, Queue, User,
-                                                                                                                                         Contact, $state, $stateParams) {
+function EntryCtrl($scope, Commission, Queue, $state, $stateParams) {
     var vm = this;
     vm.queue = {};
     console.log($stateParams);
@@ -39,7 +37,7 @@ app.controller('EntryCtrl', ['$rootScope', '$scope', '$sce', 'Commission', 'Queu
         if (!vm.commission_id) {
             var com = new Commission;
             com.queue = vm.queue.id;
-            console.log(com)
+            console.log(com);
             com.$create(function(commission) {
                 vm.commission_id = commission.id;
                 vm.updateCommission();
@@ -136,4 +134,15 @@ app.controller('EntryCtrl', ['$rootScope', '$scope', '$sce', 'Commission', 'Queu
                 console.log(response);
             });
     }
-}]);
+}
+
+app.controller('EntryCtrl',
+    [
+        '$scope',
+        'Commission',
+        'Queue',
+        '$state',
+        '$stateParams',
+        EntryCtrl
+    ]
+);

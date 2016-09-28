@@ -1,10 +1,11 @@
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core import serializers as dserializers
 from django.http import HttpResponse
-from rest_framework import filters
 from django_filters import Filter
 from django_filters.fields import Lookup, RangeField, IsoDateTimeField
 from django_filters.filters import RangeFilter
+from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -13,11 +14,6 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 from reversion import revisions as reversion
 from reversion.revisions import transaction
-
-from django import forms
-
-from django.contrib.auth import authenticate, login, logout
-
 
 import models
 import serializers

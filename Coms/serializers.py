@@ -1,13 +1,10 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_framework import metadata
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CreateOnlyDefault
 from reversion import revisions as reversion
-from rest_framework.renderers import JSONRenderer
-
 
 import models
 
