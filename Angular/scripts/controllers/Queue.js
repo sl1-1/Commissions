@@ -167,7 +167,7 @@ app.directive('listBuilder', [function() {
         },
         restrict: 'E',
         templateUrl: 'commission_filter.html',
-        controller: function($scope) {
+        controller: ['$scope', function($scope) {
             // console.log(typeof $scope.valuesin);
             $scope.values = []; //$scope.valuesin;
             if ('$promise' in $scope.valuesin) {
@@ -216,6 +216,6 @@ app.directive('listBuilder', [function() {
                     .removeClass('listbuilder-focus');
             };
 
-        }
+        }]
     };
 }]);

@@ -1,0 +1,270 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+.body-overide {
+    margin-bottom: 60px;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+    .detail-modal {
+        width: 98%;
+        height: 92%;
+        padding: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    .detail-modal {
+        max-height: 80vh;
+        height: 80vh;
+        overflow: auto
+    }
+}
+
+@media (min-width: 992px) {
+    .height-200 {
+        height: 230px;
+    }
+}
+
+@media (min-width: 992px) {
+    .scrollbox {
+        height: 500px;
+        width: 100%;
+        overflow: auto;
+        padding: 15px;
+        overflow-x: hidden;
+    }
+
+    .height-600 {
+        height: 600px;
+    }
+}
+
+[class*="col-"] {
+    padding-top: 15px;
+}
+
+.markItUp {
+    width: 100% !important;
+    height: 500%;
+    margin: 5px 0 5px 0;
+}
+
+.markItUpEditor {
+    width: 100% !important;
+}
+
+.queue_table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-color: gray;
+}
+
+.queue_table tr {
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+}
+
+.queue_table_ul {
+     list-style-type: none;
+}
+
+.editable-click {
+    border: none !important;
+    color: black !important;
+    cursor: pointer;
+}
+
+.queue_table_ul i {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.queue_table_ul span {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.option-group {
+    text-align: left;
+}
+.option-group i {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.option-group span {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+
+.listbuilder{
+    list-style: none;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    /*box-sizing: content-box;*/
+    width: 100% !important;
+    /*height: 40px;*/
+    min-height: 3rem;
+    text-align: left;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+}
+
+.listbuilder-focus{
+    outline: -webkit-focus-ring-color auto 5px;
+    outline-color: -webkit-focus-ring-color;
+    outline-style: auto;
+    outline-width: 5px;
+}
+
+.listbuilder-entry {
+    display: inline-block !important;
+    /*float: left;*/
+    position: relative;
+    /*left: -30px;*/
+    /*height: 28px;*/
+    height: 1.75rem;
+    /*line-height: 28px;*/
+    line-height: 1.75rem;
+    padding: 0 1em;
+    margin: 0 0.3em 0.3em 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #eee;
+    /*clear: right;*/
+}
+
+.listbuilder-entry-add {
+    display: inline-block !important;
+    width: 20px;
+    display: block;
+    position: relative;
+    /*left: -30px;*/
+    height: 28px;
+    height: 1.75rem;
+    line-height: 28px;
+    line-height: 1.75rem;
+    padding: 0;
+    margin: 0 0.3em 0.3em 0;
+
+}
+
+.listbuilder-entry-add input{
+    /*float: left;*/
+    width: 100px;
+    /*display: block;*/
+    border: none;
+    box-shadow: none;
+    padding: 0.5rem 0 0 1rem;
+    background: transparent;
+}
+
+.listbuilder-entry-add input:focus{
+    outline: none;
+}
+
+.listbuilder-entry-remove {
+    display: inline-block;
+    position: relative;
+    /*width: 2.5em;*/
+    height: 28px;
+    height: 1.75rem;
+    right: 0;
+    top: 0;
+}
+
+a[ng-click]{
+    cursor: pointer;
+}
+
+.datepicker{
+    font-size: 10px;
+}
+
+.message-commissioner{
+    background-color: #ffffe6;
+}
+
+.message-user {
+    font-size:smaller;
+    color:#a2a19f;
+    vertical-align: middle;
+    display: inline-flex;
+}
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+.editable-checklist label {
+  display: block;
+}
+
+.ul_change {
+    display: inline-block;
+    padding: 0;
+    list-style-type: none;
+}
+
+.list-comma::before {
+  content: ',';
+}
+.list-comma:first-child::before {
+  content: '';
+}
+
+.ctrl-icon {
+    height: 60px;
+    width:60px;
+    border-radius: 50%;
+    background-color: #a2a19f;
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 19px;
+    margin-right: 19px;
+    text-align: center;
+}
+
+.ctrl-icon i {
+    min-height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background-color: #a2a19f;
+    display: block;
+    padding: 12px;
+    margin: 0;
+    border: None;
+}
+
+.ctrl-text {
+    text-align: center;
+    font-size: 13px;
+    position: relative;
+}
+
+.ctrl-list {
+    list-style: None;
+}
+
+.ctrl-list li{
+    float: left;
+    cursor: pointer;
+}

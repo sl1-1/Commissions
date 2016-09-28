@@ -52,7 +52,7 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
-STATICFILES_DIRS = ('Commissions/static', 'bower_components/', 'Angular/')
+STATICFILES_DIRS = ('Commissions/static',)
 
 TEMPLATES = [
     {

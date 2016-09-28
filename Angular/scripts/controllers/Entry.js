@@ -129,25 +129,6 @@ app.controller('EntryCtrl', ['$rootScope', '$scope', '$sce', 'Commission', 'Queu
 
 // function definition
     function finishWizard() {
-        // var newextras = [];
-        // angular.forEach(vm.queue.extras, function(extra) {
-        //     angular.forEach(vm.model.extras, function(selectedextra) {
-        //         if (typeof selectedextra != 'number') {
-        //             newextras.push(selectedextra);
-        //         }
-        //         if (extra.id == selectedextra) {
-        //             newextras.push(extra);
-        //         }
-        //     });
-        //
-        // });
-        // vm.model.extras = newextras;
-        if (typeof vm.model.type != 'number') {
-            vm.model.type = vm.model.type.id;
-        }
-        if (typeof vm.model.size != 'number') {
-            vm.model.size = vm.model.size.id;
-        }
         vm.model.$save({CommissionId: vm.commission_id}, function(response) {
                 $state.go('commission', {commissionid: vm.commission_id});
             },

@@ -23,7 +23,7 @@ router.register(r'user', views.UserViewSet)
 print(commissions_router.urls)
 
 urlpatterns = patterns('',
-                       url(r'^api/csrf$', ensure_csrf_cookie(views.CSRF)),
+                       url(r'^api/csrf$', ensure_csrf_cookie(views.csrf)),
                        url(r'^api/', include(router.urls, namespace='API')),
                        url(r'^api/', include(commissions_router.urls)),
                        url(r'^api/', include(queue_router.urls)),

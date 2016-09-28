@@ -1,9 +1,9 @@
 // Declare app level module which depends on filters, and services
 var app = angular.module('CommissionForm',
     ['ngCookies', 'CommissionService', 'QueueService', 'UserService', 'ContactService', 'TypeService', 'SizeService', 'ExtraService', 'CSRFService',
-        'checklist-model', 'textAngular', 'formly', 'formlyBootstrap', 'rzModule', 'daterangepicker',
+        'checklist-model', 'textAngular', 'formly', 'formlyBootstrap', 'rzModule', 'daterangepicker', 'xeditable',
         'mgo-angular-wizard', 'ui.router', 'ui', 'ui.filters', 'ngSanitize', 'angularMoment', 'ui.bootstrap', 'ui', 'ui.filters', 'ui.bootstrap.modal', 'ngSanitize', 'angularMoment', 'ui.bootstrap', 'ui.layout', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.selection'],
-    function config(formlyConfigProvider) {
+    ['formlyConfigProvider', function config(formlyConfigProvider) {
         var unique = 1;
         formlyConfigProvider.setType({
             name: 'repeatSection',
@@ -53,7 +53,7 @@ var app = angular.module('CommissionForm',
             name: 'richEditor',
             template: '<text-angular ng-model="model[options.key]" required></text-angular>'
         });
-    });
+    }]);
 
 app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
@@ -108,13 +108,31 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
             data: {
                 requireLogin: true
             }
+        })
+        .state('admin-panel', {
+            url: '/admin/',
+            controller: 'AdminCtrl as vm',
+            templateUrl: '/templates/admin.html',
+            data: {
+                requireLogin: true,
+                requireAdmin: true
+            }
+        })
+        .state('user-panel', {
+            url: '/user/',
+            templateUrl: '/templates/user.html',
+            data: {
+                requireLogin: true
+            }
         });
+
 }]);
 
 app.run(['$rootScope', '$window', '$location', '$state', 'loginModal', function($rootScope, $window, $location, $state, loginModal) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
         var requireLogin = toState.data.requireLogin;
+        var requireAdmin = toState.data.requireAdmin;
         $rootScope.user.$promise.then(function() {
             console.log($rootScope.user);
             if (requireLogin && (!$rootScope.user.id)) {
@@ -129,9 +147,22 @@ app.run(['$rootScope', '$window', '$location', '$state', 'loginModal', function(
                         return $state.go('welcome');
                     });
             }
+            if (requireAdmin && (!$rootScope.user.is_staff)) {
+                // var url = $state.href(toState.name, toParams);
+                // $window.location.href = '/account/login/?next=/' + url;
+                event.preventDefault();
+                return $state.go('index');
+            }
         });
 
     });
+}]);
+
+app.run(['editableOptions', 'editableThemes', function(editableOptions, editableThemes) {
+    // editableThemes.bs3.inputClass = 'input-sm';
+    editableThemes.bs3.buttonsClass = 'btn-sm';
+    editableThemes['bs3'].submitTpl
+    editableOptions.theme = 'bs3';
 }]);
 
 app.config(['$resourceProvider', function($resourceProvider) {
@@ -161,7 +192,7 @@ app.controller('NavCtrl', ['$rootScope', '$scope', 'User', 'loginModal', functio
     $scope.user = $rootScope.user;
 
     $scope.login = function() {
-      loginModal();
+        loginModal();
     };
 
     $scope.logout = function() {

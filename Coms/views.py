@@ -24,8 +24,8 @@ import serializers
 from Coms import permissions
 
 
-def CSRF(request):
-    return HttpResponse('CSRF')
+def csrf(request):
+    return HttpResponse('csrf')
 
 
 # noinspection PyUnresolvedReferences
@@ -295,6 +295,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def logout(self, request):
         logout(request)
         return Response("")
+
 
 class ContactMethodViewSet(OptionViewSet):
     serializer_class = serializers.ContactMethodSerializer

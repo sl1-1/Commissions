@@ -46,13 +46,15 @@
     <script type="application/javascript" src="/scripts/controllers/controllers.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="application/javascript" src="/static/angular-xeditable/dist/js/xeditable.js"></script>
+    <link href="/static/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
     <script type="application/javascript" src="/scripts/controllers/Entry.js"></script>
     <script type="application/javascript" src="/scripts/controllers/CommissionList.js"></script>
     <script type="application/javascript" src="/scripts/controllers/Index.js"></script>
     <script type="application/javascript" src="/scripts/controllers/Queue.js"></script>
     <script type="application/javascript" src="/scripts/services/loginmodal.js"></script>
     <script type="application/javascript" src="/scripts/controllers/Commission.js"></script>
-
+    <script type="application/javascript" src="/scripts/controllers/Admin.js"></script>
 
 </head>
 <body ng-app="CommissionForm" ng-controller="MainCtrl" ng-strict-di>
@@ -72,21 +74,15 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li uib-dropdown on-toggle="toggled(open)">
-                    <a href id="simple-dropdown" uib-dropdown-toggle>
-                        User<span class="caret"></span>
+                <li>
+                    <a ui-sref="user-panel">
+                        User
                     </a>
-                    <ul uib-dropdown-menu aria-labelledby="simple-dropdown">
-                        <li><a ui-sref="commissionlist()">Commissions</a></li>
-                    </ul>
                 </li>
-                <li uib-dropdown on-toggle="toggled(open)">
-                    <a href id="simple-dropdown" uib-dropdown-toggle>
-                        Admin<span class="caret"></span>
+                <li>
+                    <a ui-sref="admin-panel" >
+                        Admin
                     </a>
-                    <ul uib-dropdown-menu aria-labelledby="simple-dropdown">
-                        <li role="presentation"><a ui-sref="queues()">Queues</a></li>
-                    </ul>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

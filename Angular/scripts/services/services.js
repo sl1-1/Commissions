@@ -28,6 +28,29 @@ QueueService.factory('Queue', ['$resource',
 
 var CommissionService = angular.module('CommissionService', ['ngResource']);
 
+commissionSave = function(data) {
+    console.log(data);
+    if (typeof data.type != 'number') {
+        data.type = data.type.id;
+    }
+    if (typeof data.size != 'number') {
+        data.size = data.size.id;
+    }
+    for (var i in data.extras) {
+        console.log(data.extras[i]);
+        if (typeof data.extras[i] != 'number') {
+            data.extras[i] = data.extras[i].id;
+        }
+    }
+    if (typeof data.paid != 'number') {
+        data.paid = data.paid[0];
+    }
+    if (typeof data.status != 'number') {
+        data.status = data.status[0];
+    }
+    return angular.toJson(data);
+};
+
 CommissionService.factory('Commission', ['$resource',
     function($resource) {
         return $resource('/api/commissions/', {}, {
@@ -35,11 +58,11 @@ CommissionService.factory('Commission', ['$resource',
                 method: 'GET',
                 url: '/api/commissions/ego/',
                 isArray: true
-                },
+            },
             create: {
                 method: 'POST',
                 url: '/api/commissions/'
-                },
+            },
             get: {
                 method: 'GET',
                 url: '/api/commissions/:CommissionId/',
@@ -48,7 +71,8 @@ CommissionService.factory('Commission', ['$resource',
             save: {
                 method: 'PUT',
                 url: '/api/commissions/:CommissionId/',
-                params: {CommissionId: 'commission'}
+                params: {CommissionId: 'commission'},
+                transformRequest: commissionSave
             },
             getall: {
                 method: 'GET',

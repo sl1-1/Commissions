@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-md-1 col-md-offset-1">
             <select class="form-control">
+                <!-- TODO: Wire this up -->
                 <option>Unfinished</option>
                 <option>Paid & Unfinished</option>
                 <option>All</option>
@@ -60,7 +61,7 @@
                 <thead>
 
                 </thead>
-                <tr ng-repeat="commission in commissions">
+                <tr ng-repeat="commission in commissions" ui-sref="commission({commissionid: commission.id})">
                     <td style="width:10vw">
                         <ul class="queue_table_ul">
                             <li>

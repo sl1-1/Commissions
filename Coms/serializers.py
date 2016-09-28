@@ -9,7 +9,6 @@ from reversion import revisions as reversion
 from rest_framework.renderers import JSONRenderer
 
 
-
 import models
 
 
@@ -163,7 +162,7 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = models.Commission
         fields = ('id', 'user', 'date', 'locked', 'submitted', 'expired', 'message',
-                  'type', 'size', 'extras', 'characters', 'queue', 'details_date')
+                  'type', 'size', 'extras', 'characters', 'queue', 'details_date', 'status', 'paid')
 
     # noinspection PyUnusedLocal
     def validate_details_date(self, value):
@@ -181,8 +180,6 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
             message = models.Message(user=self.context['request'].user,
                                      commission=instance,
                                      **validated_data.pop('message'))
-            print(message.__dict__)
-            # message.save()
 
         updated = super(CommissionWriteSerializer, self).update(instance, validated_data)
         up = dict(CommissionReadSerializer(updated).data)
@@ -196,7 +193,7 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
 
         if status_changes:
             if not message:
-                message = models.Message(user=instance.user, commission=instance, message="")
+                message = models.Message(user=self.context['request'].user, commission=instance, message="")
             message.status_changes = status_changes
             message.type = 1
         if message:
@@ -204,21 +201,6 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
                 message.type = 0
             message.save()
         return updated
-
-
-
-    # def validate_contacts(self, value):
-    #     contacts = []
-    #     for contact in value:
-    #         try:
-    #             site = models.ContactMethod.objects.get(pk=contact['site'])
-    #         except ObjectDoesNotExist:
-    #             raise serializers.ValidationError("Contact Method {} doesn't exist".format(contact['site']))
-    #         if site.disabled:
-    #             raise serializers.ValidationError("Contact Method {} is disabled".format(site.name))
-    #         contacts.append({'user': contact['user'], 'primary': contact.get('primary', False),
-    #                          'site': site.id})
-    #     return contacts
 
     def validate_characters(self, value):
         if value > self.instance.queue.max_characters:
@@ -232,6 +214,7 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
         return value
 
     def validate_size(self, value):
+        print(type(value))
         if value not in self.instance.queue.sizes.all():
             raise ValidationError('{id} is not valid'.format(id=value.id))
         return value
@@ -243,6 +226,32 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
             if extra not in valid_extras:
                 raise ValidationError('{id} is not valid'.format(id=extra.id))
         return value
+
+    def validate_status(self, value):
+        """
+        Check that the user has permission to change this
+        If they don't, keep it as it was
+        :param value:
+        :return:
+        """
+        print('Is staff?', self.context['request'].user.is_staff)
+        if self.context['request'].user.is_staff:
+            return value
+        else:
+            return self.instance.status
+
+    def validate_paid(self, value):
+        """
+        Check that the user has permission to change this.
+        If they don't, keep it as it was
+        :param value:
+        :return:
+        """
+        print('Is staff?', self.context['request'].user.is_staff)
+        if self.context['request'].user.is_staff:
+            return value
+        else:
+            return self.instance.paid
 
 
 class ContactMethodSerializer(serializers.ModelSerializer):
