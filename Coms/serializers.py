@@ -17,12 +17,12 @@ class CustomMetaData(metadata.SimpleMetadata):
 
 
 class OptionSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField(max_length=200, required=False)
+    id = serializers.IntegerField(required=False)
+    name = serializers.CharField(max_length=200)
     price = serializers.DecimalField(decimal_places=2, max_digits=5, default=0.00,
-                                     style={'base_template': 'number.html'}, required=False)
+                                     style={'base_template': 'number.html'})
     extra_character_price = serializers.DecimalField(decimal_places=2, max_digits=5, default=0.0,
-                                                     style={'base_template': 'number.html'}, required=False)
+                                                     style={'base_template': 'number.html'})
     description = serializers.CharField(required=False, allow_blank=True, max_length=500)
 
     def update(self, instance, validated_data):

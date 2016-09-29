@@ -41,7 +41,6 @@ INSTALLED_APPS = (
     'hooks',
     'tz_detect',
     'rest_framework',
-    'Characters',
     'guardian'
 )
 
@@ -171,4 +170,8 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False
 }

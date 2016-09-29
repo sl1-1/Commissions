@@ -100,7 +100,17 @@ function configUrlRouter($stateProvider, $urlRouterProvider) {
             data: {
                 requireLogin: true
             }
+        })
+        .state('admin-types', {
+            url: '/admin/types/',
+            controller: 'TypeCtrl as vm',
+            templateUrl: 'templates/options.html',
+            data: {
+                requireLogin: true,
+                requireAdmin: true
+            }
         });
+
 }
 
 app.config(
@@ -126,7 +136,7 @@ function runRootScope($rootScope, $state, loginModalService) {
                 loginModalService().then(function() {
                     return $state.go(toState.name, toParams);
                 })
-                    .catch (function() {
+                    .catch(function() {
                         return $state.go('welcome');
                     });
             }

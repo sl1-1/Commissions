@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">{{ title }}</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="option-group">
+        <label for="name">Name</label>
+        <input class="form-control" id="name" ng-model="option.name">
+    </div>
+    <div class="option-group">
+        <label for="price">Price</label>
+        <input class="form-control"  type="number" id="price" ng-model="option.price">
+    </div>
+    <div class="option-group">
+        <label for="extra_character_price">Extra Character Price</label>
+        <input class="form-control" type="number" id="extra_character_price" ng-model="option.extra_character_price">
+    </div>
+    <div class="option-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" ng-model="option.description">
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="add()">Add</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

@@ -1,7 +1,0 @@
-{% load thumbnail %}
-{% thumbnail object.img "500" crop="noop" as im %}
-    <a target="_blank" href="{{ MEDIA_URL }}{{ object.img }}">
-        <img src="{{ im.url }}" class="img-responsive center-block">
-    </a>
-{% endthumbnail %}
-<a class="btn btn-default" href="{% url 'Characters:Character' object.id %}" target="_blank">View Details</a>
