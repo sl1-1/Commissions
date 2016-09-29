@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework_nested import routers
 
@@ -22,12 +22,9 @@ router.register(r'commissionfiles', views.CommissionFileViewSet)
 router.register(r'user', views.UserViewSet)
 print(commissions_router.urls)
 
-urlpatterns = patterns('',
-                       url(r'^api/csrf$', ensure_csrf_cookie(views.csrf)),
-                       url(r'^api/', include(router.urls, namespace='API')),
-                       url(r'^api/', include(commissions_router.urls)),
-                       url(r'^api/', include(queue_router.urls)),
-                       # url(r'^(?P<path>.*)$', 'django.views.static.serve', {
-                       #     'document_root': '/mnt/network/Projects/Commission Site/Commissions/Angular',
-                       # }),
-                       )
+urlpatterns = [
+    url(r'^api/csrf$', ensure_csrf_cookie(views.csrf)),
+    url(r'^api/', include(router.urls, namespace='API')),
+    url(r'^api/', include(commissions_router.urls)),
+    url(r'^api/', include(queue_router.urls)),
+]

@@ -12,7 +12,6 @@ from django.dispatch import receiver
 
 
 import Characters.models as models
-from Navigation.signals import render_navbar
 
 
 # Create your views here.
@@ -73,12 +72,6 @@ def charactergallery(request):
     print(models.Character.objects.all())
     context = {'characters': characters}
     return render_to_response('Characters/Characters.html', RequestContext(request, context))
-
-
-# noinspection PyUnusedLocal
-@receiver(render_navbar)
-def nav(urls, **kwargs):
-    urls['User Tools'].append(('Characters', reverse('Characters:CharacterGallery')))
 
 
 # noinspection PyUnusedLocal

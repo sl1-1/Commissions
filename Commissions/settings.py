@@ -37,13 +37,11 @@ INSTALLED_APPS = (
     'bootstrap3',
     'reversion',
     'Coms',
-    'Auth',
     'sorl.thumbnail',
     'hooks',
     'tz_detect',
     'rest_framework',
     'Characters',
-    'Navigation',
     'guardian'
 )
 
@@ -70,7 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-                'django.core.context_processors.request',
+                'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
