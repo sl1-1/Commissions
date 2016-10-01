@@ -30,7 +30,7 @@ function CommissionCtrl($rootScope, $scope, $stateParams, Commission, Queue) {
         console.log($scope.commission.status);
         $scope.commission.$save(
             {CommissionId: $stateParams.commissionid},
-            function(response) {
+            function() {
                 $scope.commission = Commission
                     .get({CommissionId: $stateParams.commissionid});
             },

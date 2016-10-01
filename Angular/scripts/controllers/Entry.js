@@ -127,7 +127,7 @@ function EntryCtrl($scope, Commission, Queue, $state, $stateParams) {
 
 // function definition
     function finishWizard() {
-        vm.model.$save({CommissionId: vm.commission_id}, function(response) {
+        vm.model.$save({CommissionId: vm.commission_id}, function() {
                 $state.go('commission', {commissionid: vm.commission_id});
             },
             function(response) {

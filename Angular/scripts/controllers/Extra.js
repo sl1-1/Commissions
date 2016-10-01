@@ -1,4 +1,4 @@
-function ExtraCtrl($rootScope, $scope, $uibModal, EXtra) {
+function ExtraCtrl($scope, $uibModal, Extra) {
     $scope.slider = {
         min: 0,
         max: 50,
@@ -35,7 +35,6 @@ function ExtraCtrl($rootScope, $scope, $uibModal, EXtra) {
 
 app.controller('SizeCtrl',
     [
-        '$rootScope',
         '$scope',
         '$uibModal',
         'Size',

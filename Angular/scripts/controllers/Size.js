@@ -1,4 +1,4 @@
-function SizeCtrl($rootScope, $scope, $uibModal, Size) {
+function SizeCtrl($scope, $uibModal, Size) {
     $scope.slider = {
         min: 0,
         max: 50,
@@ -35,7 +35,6 @@ function SizeCtrl($rootScope, $scope, $uibModal, Size) {
 
 app.controller('SizeCtrl',
     [
-        '$rootScope',
         '$scope',
         '$uibModal',
         'Size',

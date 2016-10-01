@@ -37,7 +37,6 @@ commissionSave = function(data) {
         data.size = data.size.id;
     }
     for (var i in data.extras) {
-        console.log(data.extras[i]);
         if (typeof data.extras[i] != 'number') {
             data.extras[i] = data.extras[i].id;
         }

@@ -1,4 +1,4 @@
-function QueueCtrl($rootScope, $scope, $uibModal, Queue) {
+function QueueCtrl($scope, $uibModal, Queue) {
     $scope.slider = {
         min: 0,
         max: 50,
@@ -35,7 +35,6 @@ function QueueCtrl($rootScope, $scope, $uibModal, Queue) {
 
 app.controller('QueueCtrl',
     [
-        '$rootScope',
         '$scope',
         '$uibModal',
         'Queue',
@@ -43,7 +42,8 @@ app.controller('QueueCtrl',
     ]
 );
 
-function QueueModalCtrl($scope, $uibModalInstance, Type, Size, Extra, WizardHandler) {
+function QueueModalCtrl($scope, $uibModalInstance, Type,
+                        Size, Extra, WizardHandler) {
     var vm = this;
     vm.fields = {
         step1: [
@@ -73,7 +73,7 @@ function QueueModalCtrl($scope, $uibModalInstance, Type, Size, Extra, WizardHand
                 templateOptions: {
                     label: 'End',
                     labelProp: 'name',
-                    type: 'text',
+                    type: 'text'
                 }
             }
         ],
@@ -153,7 +153,7 @@ function QueueModalCtrl($scope, $uibModalInstance, Type, Size, Extra, WizardHand
     $scope.add = function() {
         console.log($scope.option);
         $scope.queue.$save(
-            function(response) {
+            function() {
                 $scope.reload();
                 $uibModalInstance.close();
             },
@@ -174,7 +174,7 @@ function QueueModalCtrl($scope, $uibModalInstance, Type, Size, Extra, WizardHand
         return WizardHandler.wizard();
     }, function(wizard) {
         if (wizard) {
-           vm.wizard = wizard;
+            vm.wizard = wizard;
         }
     });
 }

@@ -1,4 +1,4 @@
-function TypeCtrl($rootScope, $scope, $uibModal, Type) {
+function TypeCtrl($scope, $uibModal, Type) {
     $scope.slider = {
         min: 0,
         max: 50,
@@ -36,7 +36,6 @@ function TypeCtrl($rootScope, $scope, $uibModal, Type) {
 
 app.controller('TypeCtrl',
     [
-        '$rootScope',
         '$scope',
         '$uibModal',
         'Type',

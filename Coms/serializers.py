@@ -45,7 +45,6 @@ class ExtraSerializer(OptionSerializer):
         model = models.Extra
 
 
-# noinspection PyMethodMayBeStatic
 class QueueReadSerializer(serializers.ModelSerializer):
     start = serializers.DateTimeField(style={'base_template': 'date.html'}, required=False)
     end = serializers.DateTimeField(style={'base_template': 'date.html'}, required=False)
@@ -60,14 +59,16 @@ class QueueReadSerializer(serializers.ModelSerializer):
                   'max_commissions_per_person', 'expire', 'closed', 'hidden', 'start', 'end', 'submission_count',
                   'open', 'submissions_by_user', 'full', 'ended', 'existing')
 
-    def get_open(self, obj):
+    @staticmethod
+    def get_open(obj):
         return not obj.ended
 
     def get_submissions_by_user(self, obj):
         if self.context['request'].user.is_authenticated():
             return obj.user_submission_count(self.context['request'].user)
 
-    def get_full(self, obj):
+    @staticmethod
+    def get_full(obj):
         return obj.is_full
 
     def get_existing(self, obj):
@@ -151,13 +152,16 @@ class CommissionReadSerializer(serializers.ModelSerializer):
             history.reverse()
         return history
 
-    def get_status(self, obj):
+    @staticmethod
+    def get_status(obj):
         return obj.status, obj.get_status_display()
 
-    def get_paid(self, obj):
+    @staticmethod
+    def get_paid(obj):
         return obj.paid, obj.get_paid_display()
 
-    def get_queue_name(self, obj):
+    @staticmethod
+    def get_queue_name(obj):
         return obj.queue.name
 
 

@@ -37,7 +37,8 @@ var app = angular.module('Commissions',
         formlyConfigProvider.setType(
             {
                 name: 'richEditor',
-                template: '<text-angular ng-model="model[options.key]" required></text-angular>'
+                template: '<text-angular' +
+                'ng-model="model[options.key]" required></text-angular>'
             });
         formlyConfigProvider.setType(
             {
@@ -185,7 +186,7 @@ function runRootScope($rootScope, $state, loginModalService) {
                 loginModalService().then(function() {
                     return $state.go(toState.name, toParams);
                 })
-                    .catch(function() {
+                    .catch (function() {
                         return $state.go('welcome');
                     });
             }

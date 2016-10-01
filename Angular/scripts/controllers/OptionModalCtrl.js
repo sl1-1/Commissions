@@ -1,8 +1,8 @@
-function OptionModalCtrl($scope, $uibModalInstance, Type) {
+function OptionModalCtrl($scope, $uibModalInstance) {
     $scope.add = function() {
         console.log($scope.option);
         $scope.option.$save(
-            function(response) {
+            function() {
                 $scope.reload();
                 $uibModalInstance.close();
             },
@@ -21,7 +21,6 @@ app.controller('OptionModalCtrl',
     [
         '$scope',
         '$uibModalInstance',
-        'Type',
         OptionModalCtrl
     ]
 );

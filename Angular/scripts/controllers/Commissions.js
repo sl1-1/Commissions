@@ -1,4 +1,4 @@
-function CommissionsCtrl($rootScope, $scope, Commission, Queue, Type, Size, Extra) {
+function CommissionsCtrl($scope, Commission, Queue, Type, Size, Extra) {
 
     $scope.commissions = Commission.getall();
     $scope.queues = Queue.getall();
@@ -166,7 +166,6 @@ function CommissionsCtrl($rootScope, $scope, Commission, Queue, Type, Size, Extr
 
 app.controller('CommissionsCtrl',
     [
-        '$rootScope',
         '$scope',
         'Commission',
         'Queue',
