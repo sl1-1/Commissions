@@ -64,6 +64,12 @@ class QueueViewSet(viewsets.ModelViewSet):
     filter_fields = ('id',)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
 
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return serializers.QueueSerializerJson
+        else:
+            return serializers.QueueWriteSerializer
+
     def list(self, request, *args, **kwargs):
         user = self.request.user
         if user.is_authenticated():

@@ -1,4 +1,4 @@
-function QueueCtrl($rootScope, $scope, Commission, Queue, Type, Size, Extra) {
+function CommissionsCtrl($rootScope, $scope, Commission, Queue, Type, Size, Extra) {
 
     $scope.commissions = Commission.getall();
     $scope.queues = Queue.getall();
@@ -164,7 +164,7 @@ function QueueCtrl($rootScope, $scope, Commission, Queue, Type, Size, Extra) {
     }, true);
 }
 
-app.controller('QueueCtrl',
+app.controller('CommissionsCtrl',
     [
         '$rootScope',
         '$scope',
@@ -173,7 +173,7 @@ app.controller('QueueCtrl',
         'Type',
         'Size',
         'Extra',
-        QueueCtrl
+        CommissionsCtrl
     ]
 );
 

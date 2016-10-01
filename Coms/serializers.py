@@ -5,6 +5,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CreateOnlyDefault
 from reversion import revisions as reversion
+import json
+import decimal
 
 import models
 
@@ -19,10 +21,8 @@ class CustomMetaData(metadata.SimpleMetadata):
 class OptionSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     name = serializers.CharField(max_length=200)
-    price = serializers.DecimalField(decimal_places=2, max_digits=5, default=0.00,
-                                     style={'base_template': 'number.html'})
-    extra_character_price = serializers.DecimalField(decimal_places=2, max_digits=5, default=0.0,
-                                                     style={'base_template': 'number.html'})
+    price = serializers.DecimalField(decimal_places=2, max_digits=5, default=0.00)
+    extra_character_price = serializers.DecimalField(decimal_places=2, max_digits=5, default=0.0)
     description = serializers.CharField(required=False, allow_blank=True, max_length=500)
 
     def update(self, instance, validated_data):
@@ -46,7 +46,7 @@ class ExtraSerializer(OptionSerializer):
 
 
 # noinspection PyMethodMayBeStatic
-class QueueSerializer(serializers.ModelSerializer):
+class QueueReadSerializer(serializers.ModelSerializer):
     start = serializers.DateTimeField(style={'base_template': 'date.html'}, required=False)
     end = serializers.DateTimeField(style={'base_template': 'date.html'}, required=False)
     open = serializers.SerializerMethodField()
@@ -79,7 +79,17 @@ class QueueSerializer(serializers.ModelSerializer):
                 return None
 
 
-class QueueSerializerJson(QueueSerializer):
+class QueueWriteSerializer(serializers.ModelSerializer):
+    start = serializers.DateTimeField(required=True)
+    end = serializers.DateTimeField(required=False)
+
+    class Meta(object):
+        model = models.Queue
+        fields = ('id', 'name', 'date', 'types', 'sizes', 'extras', 'max_characters', 'max_commissions_in_queue',
+                  'max_commissions_per_person', 'expire', 'closed', 'hidden', 'start', 'end')
+
+
+class QueueSerializerJson(QueueReadSerializer):
     types = TypeSerializer(many=True)
     sizes = SizeSerializer(many=True)
     extras = ExtraSerializer(many=True)
@@ -151,6 +161,14 @@ class CommissionReadSerializer(serializers.ModelSerializer):
         return obj.queue.name
 
 
+class DecimalEncoder(json.JSONEncoder):
+    # http://stackoverflow.com/a/3885198
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
+
+
 # noinspection PyMethodMayBeStatic
 class CommissionWriteSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
@@ -189,6 +207,8 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
                 status_changes[k] = {'old': original[k], 'new': up[k]}
 
         if status_changes:
+            # Work around json field chocking on decimals
+            status_changes = json.dumps(status_changes, cls=DecimalEncoder)
             if not message:
                 message = models.Message(user=self.context['request'].user, commission=instance, message="")
             message.status_changes = status_changes

@@ -34,10 +34,32 @@ var app = angular.module('Commissions',
         'ui.grid.selection'
     ],
     ['formlyConfigProvider', function config(formlyConfigProvider) {
-        formlyConfigProvider.setType({
-            name: 'richEditor',
-            template: '<text-angular ng-model="model[options.key]" required></text-angular>'
-        });
+        formlyConfigProvider.setType(
+            {
+                name: 'richEditor',
+                template: '<text-angular ng-model="model[options.key]" required></text-angular>'
+            });
+        formlyConfigProvider.setType(
+            {
+                name: 'datepicker',
+                templateUrl: 'templates/datepicker.html',
+                wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+                defaultOptions: {
+                    templateOptions: {
+                        datepicker: {
+                            'autoUpdateInput': false,
+                            'singleDatePicker': true,
+                            'timePicker': true,
+                            'alwaysShowCalendars': true,
+                            'locale': {
+                                'format': 'YYYY/MM/DD h:mm A'
+                            }
+                        }
+                    }
+                }
+            });
+
+
     }]);
 
 function configUrlRouter($stateProvider, $urlRouterProvider) {
@@ -69,10 +91,10 @@ function configUrlRouter($stateProvider, $urlRouterProvider) {
                 requireLogin: true
             }
         })
-        .state('queues', {
-            url: '/admin/queue/?queueid',
-            controller: 'QueueCtrl as vm',
-            templateUrl: 'templates/queue.html',
+        .state('commissions', {
+            url: '/admin/queue/',
+            controller: 'CommissionsCtrl',
+            templateUrl: 'templates/commissions.html',
             data: {
                 requireLogin: true
             }
@@ -105,6 +127,33 @@ function configUrlRouter($stateProvider, $urlRouterProvider) {
             url: '/admin/types/',
             controller: 'TypeCtrl as vm',
             templateUrl: 'templates/options.html',
+            data: {
+                requireLogin: true,
+                requireAdmin: true
+            }
+        })
+        .state('admin-sizes', {
+            url: '/admin/sizes/',
+            controller: 'SizeCtrl as vm',
+            templateUrl: 'templates/options.html',
+            data: {
+                requireLogin: true,
+                requireAdmin: true
+            }
+        })
+        .state('admin-extras', {
+            url: '/admin/extras/',
+            controller: 'ExtraCtrl as vm',
+            templateUrl: 'templates/options.html',
+            data: {
+                requireLogin: true,
+                requireAdmin: true
+            }
+        })
+        .state('admin-queues', {
+            url: '/admin/queues/',
+            controller: 'QueueCtrl as vm',
+            templateUrl: 'templates/queues.html',
             data: {
                 requireLogin: true,
                 requireAdmin: true

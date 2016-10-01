@@ -1,82 +1,131 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3 col-lg-2 text-center" ng-hide="vm.commission" style="height: 75vh">
-            <div class="panel panel-default text-center">
-                <div class="panel-heading">Queues</div>
-                <ul class="list-group scroller">
-                    <a class="list-group-item" ng-repeat="commission in vm.commissions|unique: 'queue'"
-                       ng-click="vm.setQueue(commission.queue)">{{ commission.queue_name }}</a>
-                </ul>
+        <div class="col-md-1 col-md-offset-1">
+            <select class="form-control">
+                <!-- TODO: Wire this up -->
+                <option>Unfinished</option>
+                <option>Paid & Unfinished</option>
+                <option>All</option>
+                <option>Custom</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 col-lg-2 text-center">
+            <div class="option-group">
+                <i class="material-icons">folder</i><span>Queue</span>
+                <list-builder builder-values='queues' builder-results="filter.queue"></list-builder>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">account_circle</i><span>User</span>
+                <input id="user" class="form-control">
+            </div>
+            <div class="option-group">
+                <i class="material-icons">date_range</i><span>Date</span>
+                <input class="form-control datepicker"
+                       date-range-picker
+                       class="form-control date-picker"
+                       type="text"
+                       options="datepicker"
+                       ng-model="filter.date">
+            </div>
+            <div class="option-group">
+                <i class="material-icons">toc</i><span>Type</span>
+                <list-builder builder-values='types' builder-results="filter.type"></list-builder>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">photo_size_select_large</i><span>Size</span>
+                <list-builder builder-values='sizes' builder-results="filter.size"></list-builder>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">assignment</i><span>Extras</span>
+                <list-builder builder-values='extras' builder-results="filter.extras"></list-builder>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">monetization_on</i><span>Payment Status</span>
+                <list-builder builder-values='paid_values' builder-results="filter.paid"></list-builder>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">hourglass_empty</i><span>Status</span>
+                <list-builder builder-values='status_values' builder-results="filter.status"></list-builder>
+            </div>
+            <div class="option-group">
+                <i class="material-icons">people</i><span>Characters</span>
+                <rzslider rz-slider-model="slider.min"
+                          rz-slider-high="slider.max"
+                          rz-slider-options="slider.options"
+                          ng-model-options="{debounce: 1000}"></rzslider>
             </div>
         </div>
-        <div class="col-md-3 col-lg-2" ng-hide="!vm.queue" style="height: 70vh;">
-            <div class="panel panel-default text-center">
-                <div class="panel-heading">{{ vm.queue_name }}
-                    <a class="badge pull-left" ng-click="vm.setCommission()" ng-hide="!vm.commission"><i
-                            class="fa fa-backward">Back</i></a></div>
-                <ul class="list-group scroller">
-                    <a class="list-group-item" ng-repeat="commission in vm.commissions|filter: {queue: vm.queue}"
-                       ng-click="vm.setCommission(commission)">{{ commission.date| amDateFormat: 'MMMM Do YYYY, h:mm a' }}</a>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-9" ng-hide="!vm.commission">
-            <div class="panel panel-default text-center">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <dl>
-                                <dt>Commission Claimed</dt>
-                                <dd>{{ vm.commission.date| amDateFormat: 'MMMM Do YYYY, h:mm a' }}</dd>
-                                <dt>Details submitted</dt>
-                                <dd>{{ vm.commission.details_date| amDateFormat: 'MMMM Do YYYY, h:mm a' }}</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-2">
-                            <dl>
-                                <dt>Type</dt>
-                                <dd>{{ vm.commission.type.name }}</dd>
-                                <dt>Size</dt>
-                                <dd>{{ vm.commission.size.name }}</dd>
-                                <dt ng-hide="!vm.commission.extras.length">Extras</dt>
-                                <dd ng-repeat="extra in vm.commission.extras">{{ extra.name }}</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-2">
-                            <dl>
-                                <dt>Characters</dt>
-                                <dd>{{ vm.commission.characters }}</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-2">
-                            <dl>
-                                <dt>Contacts</dt>
-                                <dd ng-repeat="contact in vm.commission.contacts">{{ contact }}</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-2">
-                            <dl>
-                                <dt>Status</dt>
-                                <dd>{{ vm.commission.status[1] }}</dd>
-                                <dt>Payment Status</dt>
-                                <dd>{{ vm.commission.paid[1] }}</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-2">
+        <div class="col-md-7 col-lg-10">
+            <table class="queue_table">
+                <thead>
 
-                            <dl>
-                                <dt>Paypal</dt>
-                                <dd>{{ vm.commission.paypal }}</dd>
-                                <dt>Total</dt>
-                                <dd>${{ vm.commission.total }}</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div ng-bind-html="vm.commission.description"></div>
-                </div>
-            </div>
+                </thead>
+                <tr ng-repeat="commission in commissions" ui-sref="commission({commissionid: commission.id})">
+                    <td style="width:10vw">
+                        <ul class="queue_table_ul">
+                            <li>
+                                <i class="material-icons md-48" title="User">account_circle</i>
+                                {{ commission.user }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td style="width:15vw">
+                        <ul class="queue_table_ul">
+                            <li>
+                                <i class="material-icons" title="Queue">folder</i>
+                                <span>{{ commission.queue_name }}</span>
+                            </li>
+                            <li>
+                                <i class="material-icons" title="Date">date_range</i>
+                                {{ commission.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td style="width:30vw">
+                    </td>
+                    <td style="width:15vw">
+                        <ul class="queue_table_ul">
+                            <li>
+                                <i class="material-icons" title="Type">toc</i>
+                                <span>{{ commission.type.name }}</span>
+                            </li>
+                            <li>
+                                <i class="material-icons" title="Size">photo_size_select_large</i>
+                                <span>{{ commission.size.name }}</span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td style="width:15vw">
+                        <ul class="queue_table_ul">
+                            <li ng-repeat="extra in commission.extras">
+                                <i class="material-icons" title="Extras">assignment</i>
+                                <span>{{ extra.name }}</span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td style="width:10vw">
+                        <ul class="queue_table_ul">
+                            <li>
+                                <i class="material-icons" title="{{ commission.status[1] }}">
+                                    {{ status_values[commission.status[0]].icon }}
+                                </i>
+                            </li>
+                            <li>
+                                <i class="material-icons"
+                                   aria-hidden="true"
+                                   ng-style="{'color': paid_values[commission.paid[0]].icon_color}"
+                                   title="{{ commission.paid[1] }}"
+                                >
+                                    monetization_on
+                                </i>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>
+

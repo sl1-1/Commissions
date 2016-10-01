@@ -1,4 +1,4 @@
-function TypeCtrl($rootScope, $scope, $uibModal, Type) {
+function SizeCtrl($rootScope, $scope, $uibModal, Size) {
     $scope.slider = {
         min: 0,
         max: 50,
@@ -15,13 +15,12 @@ function TypeCtrl($rootScope, $scope, $uibModal, Type) {
     };
 
     $scope.reload = function() {
-        $scope.options = Type.getall();
+        $scope.options = Size.getall();
     };
     $scope.reload();
 
-
     $scope.add = function() {
-        $scope.option = new Type;
+        $scope.option = new Size;
         var modalInstance = $uibModal.open({
             ariaLabelledBy: 'modal-title',
             ariaDescribedBy: 'modal-body',
@@ -34,13 +33,13 @@ function TypeCtrl($rootScope, $scope, $uibModal, Type) {
     };
 }
 
-app.controller('TypeCtrl',
+app.controller('SizeCtrl',
     [
         '$rootScope',
         '$scope',
         '$uibModal',
-        'Type',
-        TypeCtrl
+        'Size',
+        SizeCtrl
     ]
 );
 

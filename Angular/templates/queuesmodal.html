@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">{{ title }}</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <wizard on-finish="vm.finishWizard()" template="/templates/wizard.html">
+        <wz-step title="Step 1" canexit="vm.exitValidation(vm.forms.step1)">
+            <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
+                <h2>Step 1</h2>
+                <formly-form model="queue" fields="vm.fields.step1" form="vm.forms.step1">
+                    <div style="text-align:right">
+                    </div>
+                </formly-form>
+            </div>
+        </wz-step>
+        <wz-step title="Step 2" canexit="vm.exitValidation(vm.forms.step2)">
+            <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
+                <div class="row">
+                    <h2>Step 2</h2>
+                    <formly-form model="queue" fields="vm.fields.step2" form="vm.forms.step2">
+                        <div style="text-align:right">
+                        </div>
+                    </formly-form>
+                </div>
+            </div>
+        </wz-step>
+        <wz-step title="Step 3" canexit="vm.exitValidation(vm.forms.step3)">
+            <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
+                <div class="row">
+                    <h2>Step 3</h2>
+                    <formly-form model="queue" fields="vm.fields.step3" form="vm.forms.step3">
+                        <div style="text-align:right">
+                        </div>
+                    </formly-form>
+                </div>
+            </div>
+        </wz-step>
+    </wizard>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-disabled="!vm.wizard.currentStep().canexit" ng-click="vm.wizard.next()" ng-hide="vm.wizard.currentStepNumber() == 3">Next</button>
+    <button class="btn btn-primary" type="button" ng-disabled="!vm.wizard.currentStep().canexit" ng-click="add()" ng-hide="vm.wizard.currentStepNumber() != 3">Add</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>
