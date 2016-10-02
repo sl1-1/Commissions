@@ -96,6 +96,10 @@ UserService.factory('User', ['$resource',
             logout: {
                 method: 'GET',
                 url: '/api/user/logout/'
+            },
+            register: {
+                method: 'POST',
+                url: '/api/user/register/'
             }
         });
     }]);

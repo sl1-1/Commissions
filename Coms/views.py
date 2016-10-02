@@ -298,6 +298,25 @@ class UserViewSet(viewsets.ModelViewSet):
         logout(request)
         return Response("")
 
+    @list_route(methods=['post'])
+    def register(self, request):
+        """
+        TODO: recaptcha!
+        :param request:
+        :return:
+        """
+        username = request.data['username']
+        password = request.data['password']
+        email = request.data['email']
+        if email and User.objects.filter(email=email).count() > 0:
+            return Response(data='{"email": "Email Already used"}', status=403)
+        if username and User.objects.filter(username=username).count() > 0:
+            return Response(data='{"username": "Username already taken"}', status=403)
+        User.objects.create_user(username, email, password)
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        return Response(serializers.UserSerializer(user).data)
+
 
 class ContactMethodViewSet(OptionViewSet):
     serializer_class = serializers.ContactMethodSerializer

@@ -47,8 +47,7 @@
                 </p></li>
                 <li ng-hide="user.id == null"><a>Change password</a></li>
                 <li ng-hide="user.id == null"><a ng-click="logout()">Log out</a></li>
-                <li ng-hide="user.id != null"><a>Register</a></li>
-                <li ng-hide="user.id != null"><a ng-click="login()">Login</a></li>
+                <li ng-hide="user.id != null"><a ng-click="login()">Login/Register</a></li>
             </ul>
         </div>
     </div>
@@ -83,25 +82,5 @@
     </div>
 </script>
 
-<script type="text/ng-template" id="login.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Login</h3>
-    </div>
-    <div class="modal-body">
-        <formly-form model="vm.model" fields="vm.fields" form="vm.forms">
-        </formly-form>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ok()">Login</button>
-        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-    </div>
-</script>
-
-<!--
-
-<nav id="footer">
-    <div class="container">
-    </div>
-</nav> -->
 </body>
 </html>

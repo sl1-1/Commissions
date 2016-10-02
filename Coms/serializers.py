@@ -109,7 +109,6 @@ class CommissionReadSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     paid = serializers.SerializerMethodField()
     queue_name = serializers.SerializerMethodField()
-    history = serializers.SerializerMethodField()
     type = TypeSerializer()
     size = SizeSerializer()
     characters = serializers.IntegerField(default=CreateOnlyDefault(0))
@@ -119,38 +118,11 @@ class CommissionReadSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = models.Commission
         fields = ('id', 'user', 'date', 'locked', 'status', 'paid', 'submitted', 'expired', 'message_set',
-                  'type', 'size', 'extras', 'characters', 'queue', 'queue_name', 'details_date', 'history')
+                  'type', 'size', 'extras', 'characters', 'queue', 'queue_name', 'details_date')
 
     def __init__(self, *args, **kwargs):
         self.show_history = kwargs.pop('history', True)
         super(CommissionReadSerializer, self).__init__(*args, **kwargs)
-
-    def get_history(self, obj):
-        if not self.show_history:
-            return None
-        versions = list(reversion.get_for_object(obj).get_unique())
-        versions.reverse()
-        history = []
-        last = {}
-        for index, x in enumerate(versions):
-            print(x.id)
-            data = x.field_dict.copy()
-            for key in set(last.keys()).intersection(set(data.keys())):
-                if data[key] == last[key]:
-                    data.pop(key, None)
-                else:
-                    print(last[key], data[key])
-            try:
-                new = {'changes': data.keys(), 'user': x.revision.user.username, 'id': index,
-                       'date': x.revision.date_created}
-            except AttributeError:
-                new = {'changes': data.keys(), 'date': x.revision.date_created, 'id': index}
-            history.append(new)
-            last = x.field_dict
-        if history:
-            history[0]['latest'] = True
-            history.reverse()
-        return history
 
     @staticmethod
     def get_status(obj):
@@ -292,4 +264,4 @@ class CommissionFileSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active')
+        fields = ('id', 'username', 'email', 'is_staff', 'is_active')
