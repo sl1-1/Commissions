@@ -19,8 +19,6 @@ function CommissionCtrl($rootScope, $scope, $stateParams, Commission, Queue) {
     $scope.commission = Commission
         .get({CommissionId: $stateParams.commissionid});
 
-    console.log($scope.commission);
-
     $scope.commission.$promise.then(function(commission) {
         $scope.queue = Queue.get({QueueId: commission.queue});
         console.log($scope.queue);

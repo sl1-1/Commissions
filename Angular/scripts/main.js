@@ -91,8 +91,16 @@ function configUrlRouter($stateProvider, $urlRouterProvider) {
                 requireLogin: true
             }
         })
-        .state('commissions', {
+        .state('admin-commissions', {
             url: '/admin/queue/',
+            controller: 'CommissionsCtrl',
+            templateUrl: 'templates/commissions.html',
+            data: {
+                requireLogin: true
+            }
+        })
+        .state('user-commissions', {
+            url: '/user/commissions/',
             controller: 'CommissionsCtrl',
             templateUrl: 'templates/commissions.html',
             data: {
@@ -176,7 +184,6 @@ function runRootScope($rootScope, $state, loginModalService) {
         var requireLogin = toState.data.requireLogin;
         var requireAdmin = toState.data.requireAdmin;
         $rootScope.user.$promise.then(function() {
-            console.log($rootScope.user);
             if (requireLogin && (!$rootScope.user.id)) {
                 // var url = $state.href(toState.name, toParams);
                 // $window.location.href = '/account/login/?next=/' + url;

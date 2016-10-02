@@ -34,7 +34,7 @@ class ReversionViewMixin(object):
 
 
 class OptionViewSet(viewsets.ModelViewSet):
-    filter_backends = (filters.DjangoObjectPermissionsFilter, filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
     filter_fields = ('id', 'disabled')
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)

@@ -16,7 +16,7 @@
                 <i class="material-icons">folder</i><span>Queue</span>
                 <list-builder builder-values='queues' builder-results="filter.queue"></list-builder>
             </div>
-            <div class="option-group">
+            <div class="option-group" ng-hide="view == 'user-commissions'">
                 <i class="material-icons">account_circle</i><span>User</span>
                 <input id="user" class="form-control">
             </div>

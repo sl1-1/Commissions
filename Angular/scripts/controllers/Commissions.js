@@ -1,6 +1,5 @@
-function CommissionsCtrl($scope, Commission, Queue, Type, Size, Extra) {
-
-    $scope.commissions = Commission.getall();
+function CommissionsCtrl($rootScope, $scope, $state, Commission, Queue, Type, Size, Extra) {
+    $scope.view = $state.current.name;
     $scope.queues = Queue.getall();
     $scope.types = Type.getall();
     $scope.sizes = Size.getall();
@@ -115,8 +114,7 @@ function CommissionsCtrl($scope, Commission, Queue, Type, Size, Extra) {
         }
     };
 
-
-    $scope.$watch('filter', function() {
+    $scope.load = function() {
         var queues = [];
         var types = [];
         var sizes = [];
@@ -148,25 +146,39 @@ function CommissionsCtrl($scope, Commission, Queue, Type, Size, Extra) {
             startDate = $scope.filter.date.startDate.utc().format();
             endDate = $scope.filter.date.endDate.utc().format();
         }
-        $scope.commissions = Commission.getall(
-            {
-                queue: queues.join(),
-                type: types.join(),
-                size: sizes.join(),
-                extras: extras.join(),
-                paid: paids.join(),
-                status: statuses.join(),
-                characters_0: $scope.filter.char_min,
-                characters_1: $scope.filter.char_max,
-                date_0: startDate,
-                date_1: endDate
-            });
-    }, true);
+        var filter_values = {
+            queue: queues.join(),
+            type: types.join(),
+            size: sizes.join(),
+            extras: extras.join(),
+            paid: paids.join(),
+            status: statuses.join(),
+            characters_0: $scope.filter.char_min,
+            characters_1: $scope.filter.char_max,
+            date_0: startDate,
+            date_1: endDate
+        };
+        console.log($scope.view);
+        if ($scope.view == 'user-commissions') {
+            console.log($rootScope.user);
+            filter_values.user = $rootScope.user.username;
+        }
+        $scope.commissions = Commission.getall(filter_values);
+    };
+    $rootScope.$watch('user', function() {
+        $rootScope.user.$promise.then(function() {
+            $scope.$watch('filter', $scope.load, true);
+            $scope.load();
+        });
+    });
+
 }
 
 app.controller('CommissionsCtrl',
     [
+        '$rootScope',
         '$scope',
+        '$state',
         'Commission',
         'Queue',
         'Type',
