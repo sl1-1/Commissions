@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django_filters import Filter
 from django_filters.fields import Lookup, RangeField, IsoDateTimeField
@@ -286,7 +286,9 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(data='{"email": "Email Already used"}', status=403)
         if username and User.objects.filter(username=username).count() > 0:
             return Response(data='{"username": "Username already taken"}', status=403)
-        User.objects.create_user(username, email, password)
+        user = User.objects.create_user(username, email, password)
+        group = Group.objects.get(name="Commissioners")
+        user.groups.add(group)
         user = authenticate(username=username, password=password)
         login(request, user)
         return Response(serializers.UserSerializer(user).data)
