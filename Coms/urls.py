@@ -5,7 +5,7 @@ from rest_framework_nested import routers
 from Coms import views
 
 # router = DefaultRouter()
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 
 router.register(r'commissions', views.CommissionViewSet)
 commissions_router = routers.NestedSimpleRouter(router, r'commissions', lookup='commissions')
