@@ -37,8 +37,7 @@ var app = angular.module('Commissions',
         formlyConfigProvider.setType(
             {
                 name: 'richEditor',
-                template: '<text-angular' +
-                'ng-model="model[options.key]" required></text-angular>'
+                template: '<text-angular ng-model="model[options.key]" required></text-angular>'
             });
         formlyConfigProvider.setType(
             {
