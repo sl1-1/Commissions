@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.core import serializers as dserializers
 from django.http import HttpResponse
 from django_filters import Filter
 from django_filters.fields import Lookup, RangeField, IsoDateTimeField
@@ -80,32 +79,6 @@ class QueueViewSet(viewsets.ModelViewSet):
         return super(QueueViewSet, self).list(request, *args, **kwargs)
 
 
-# noinspection PyUnusedLocal
-class CommissionHistoryViewSet(viewsets.ViewSet):
-    # TODO: Secure me!
-    serializer_class = serializers.CommissionReadSerializer
-    queryset = models.Commission.objects.all()
-
-    # noinspection PyUnusedLocal, PyMethodMayBeStatic
-    def list(self, request, commissions_pk=None):
-        obj = models.Commission.objects.get(pk=commissions_pk)
-        versions = list(reversion.get_for_object(obj).get_unique())
-        versions.reverse()
-        return Response([{'date': x.revision.date_created, 'id': index} for index, x in enumerate(versions)])
-
-    # noinspection PyUnusedLocal, PyMethodMayBeStatic
-    def retrieve(self, request, pk=None, commissions_pk=None):
-        pk = int(pk)
-        obj = models.Commission.objects.get(pk=commissions_pk)
-        versions = list(reversion.get_for_object(obj).get_unique())
-        versions.reverse()
-        historical = dserializers.deserialize('json', versions[pk].serialized_data,
-                                              ignorenonexistent=True).next().object
-        historical.date = obj.date
-        historical.details_date = obj.details_date
-        return Response(serializers.CommissionReadSerializer(historical, history=False).data)
-
-
 class ListFilter(Filter):
     """
     Thanks https://github.com/carltongibson/django-filter/issues/137 !
@@ -127,6 +100,7 @@ class DateTimeRangeField(RangeField):
     """
     Django Filters do not support ISO 8601 date/time. This fixes that.
     """
+
     def __init__(self, *args, **kwargs):
         fields = (
             IsoDateTimeField(),
@@ -316,8 +290,3 @@ class UserViewSet(viewsets.ModelViewSet):
         user = authenticate(username=username, password=password)
         login(request, user)
         return Response(serializers.UserSerializer(user).data)
-
-
-class ContactMethodViewSet(OptionViewSet):
-    serializer_class = serializers.ContactMethodSerializer
-    queryset = models.ContactMethod.objects.all()

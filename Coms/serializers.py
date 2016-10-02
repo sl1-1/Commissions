@@ -247,11 +247,6 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
             return self.instance.paid
 
 
-class ContactMethodSerializer(serializers.ModelSerializer):
-    class Meta(object):
-        model = models.ContactMethod
-
-
 class CommissionFileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     imgname = serializers.CharField(read_only=True)
