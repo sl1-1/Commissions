@@ -124,10 +124,11 @@ class CommissionViewSetFilter(filters.FilterSet):
     status = ListFilter(name='status')
     characters = RangeFilter(name='characters')
     date = DateTimeFromToRangeFilter(name='date')
+    user = ListFilter(name='user__username')
 
     class Meta:
         model = models.Commission
-        fields = ['queue', 'type', 'size', 'extras', 'paid', 'status', 'characters', 'date']
+        fields = ['queue', 'type', 'size', 'extras', 'paid', 'status', 'characters', 'date', 'user']
 
 
 class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
@@ -136,7 +137,7 @@ class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
     filter_backends = (filters.DjangoObjectPermissionsFilter, filters.DjangoFilterBackend,)
     filter_class = CommissionViewSetFilter
     permission_classes = (permissions.CustomObjectPermissions,)
-    filter_fields = ('id', 'queue', 'type', 'size', 'extras', 'paid', 'status')
+    filter_fields = ('id', 'queue', 'type', 'size', 'extras', 'paid', 'status', 'user')
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -186,14 +187,14 @@ class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
             new = queue.commission_set.create(user=request.user)
             return Response(serializers.CommissionReadSerializer(new).data)
 
-    def list(self, request, queues_pk=None, **kwargs):
-        if queues_pk:
-            qs = models.Commission.objects.filter(queue=queues_pk)
-            if not (request.user.is_staff or request.user.is_superuser):
-                qs.filter(user=request.user)
-            return Response(serializers.CommissionReadSerializer(qs.all(), many=True).data)
-        else:
-            return super(CommissionViewSet, self).list(request, **kwargs)
+    # def list(self, request, queues_pk=None, **kwargs):
+    #     if queues_pk:
+    #         qs = models.Commission.objects.filter(queue=queues_pk)
+    #         if not (request.user.is_staff or request.user.is_superuser):
+    #             qs.filter(user=request.user)
+    #         return Response(serializers.CommissionReadSerializer(qs.all(), many=True).data)
+    #     else:
+    #         return super(CommissionViewSet, self).list(request, **kwargs)
 
 
 class CommissionFileViewSet(ReversionViewMixin, viewsets.ModelViewSet):
