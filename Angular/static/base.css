@@ -253,3 +253,47 @@ a[ng-click] {
     float: left;
     cursor: pointer;
 }
+
+.container-fluid {
+    /* Workaround for extremely large displays */
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1600px;
+}
+
+.queue_div {
+    /*border-top: 1px solid grey;*/
+    /*border-bottom: 1px solid grey;*/
+    /*border-collapse: collapse;*/
+    /*border-spacing: 0;*/
+    box-shadow:
+    0px 0 0 0 #888,
+    0 1px 0 0 #888,
+    0px 1px 0 0 #888,   /* Just to fix the corner */
+    0px 0 0 0 #888 inset,
+    0 1px 0 0 #888 inset;
+}
+
+.queue_user_icon i {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.queue_user_icon span {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.queue_commission_details {
+    height: 60px;
+    list-style-type: none;
+    vertical-align: middle;
+    line-height: 1;
+    display: flex;
+    flex-flow: column wrap;
+}
+
+.queue_commission_details i {
+    vertical-align: middle;
+    line-height: 1;
+}

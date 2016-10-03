@@ -1,17 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-1 col-md-offset-1">
-            <select class="form-control">
-                <!-- TODO: Wire this up -->
-                <option>Unfinished</option>
-                <option>Paid & Unfinished</option>
-                <option>All</option>
-                <option>Custom</option>
-            </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-5 col-lg-2 text-center">
+        <div class="col-md-3 col-lg-2 text-center">
             <div class="option-group">
                 <i class="material-icons">folder</i><span>Queue</span>
                 <list-builder builder-values='queues' builder-results="filter.queue"></list-builder>
@@ -57,74 +46,68 @@
                           ng-model-options="{debounce: 1000}"></rzslider>
             </div>
         </div>
-        <div class="col-md-7 col-lg-10">
-            <table class="queue_table">
-                <thead>
-
-                </thead>
-                <tr ng-repeat="commission in commissions" ui-sref="commission({commissionid: commission.id})">
-                    <td style="width:10vw">
-                        <ul class="queue_table_ul">
-                            <li>
-                                <i class="material-icons md-48" title="User">account_circle</i>
+        <div class="col-md-9 col-lg-10">
+            <div class="row">
+                <div class="col-md-4 col-lg-2">
+                    <select class="form-control">
+                        <!-- TODO: Wire this up -->
+                        <option>Unfinished</option>
+                        <option>Paid & Unfinished</option>
+                        <option>All</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="height:10px"></div>
+            <div class="row queue_div" ng-repeat="commission in commissions"
+                 ui-sref="commission({commissionid: commission.id})">
+                <div class="col-md-2 col-lg-1">
+                        <span class="queue_user_icon">
+                        <i class="material-icons md-48" title="User">account_circle</i>
                                 {{ commission.user }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td style="width:15vw">
-                        <ul class="queue_table_ul">
-                            <li>
-                                <i class="material-icons" title="Queue">folder</i>
-                                <span>{{ commission.queue_name }}</span>
-                            </li>
-                            <li>
-                                <i class="material-icons" title="Date">date_range</i>
-                                {{ commission.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td style="width:30vw">
-                    </td>
-                    <td style="width:15vw">
-                        <ul class="queue_table_ul">
-                            <li>
-                                <i class="material-icons" title="Type">toc</i>
-                                <span>{{ commission.type.name }}</span>
-                            </li>
-                            <li>
-                                <i class="material-icons" title="Size">photo_size_select_large</i>
-                                <span>{{ commission.size.name }}</span>
-                            </li>
-                        </ul>
-                    </td>
-                    <td style="width:15vw">
-                        <ul class="queue_table_ul">
-                            <li ng-repeat="extra in commission.extras">
-                                <i class="material-icons" title="Extras">assignment</i>
-                                <span>{{ extra.name }}</span>
-                            </li>
-                        </ul>
-                    </td>
-                    <td style="width:10vw">
-                        <ul class="queue_table_ul">
-                            <li>
-                                <i class="material-icons" title="{{ commission.status[1] }}">
-                                    {{ status_values[commission.status[0]].icon }}
-                                </i>
-                            </li>
-                            <li>
-                                <i class="material-icons"
-                                   aria-hidden="true"
-                                   ng-style="{'color': paid_values[commission.paid[0]].icon_color}"
-                                   title="{{ commission.paid[1] }}"
-                                >
-                                    monetization_on
-                                </i>
-                            </li>
-                        </ul>
-                    </td>
-                </tr>
-            </table>
+                        </span>
+                </div>
+                <div class="col-md-10 col-lg-11">
+                    <ul class="queue_commission_details">
+                        <li title="Queue">
+                            <i class="material-icons">folder</i>
+                            {{ commission.queue_name }}
+                        </li>
+                        <li title="Date">
+                            <i class="material-icons">date_range</i>
+                            {{ commission.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}
+                        </li>
+                        <li title="Type">
+                            <i class="material-icons">toc</i>
+                            {{ commission.type.name }}
+                        </li>
+                        <li title="Size">
+                            <i class="material-icons">photo_size_select_large</i>
+                            {{ commission.size.name }}
+                        </li>
+                        <li title="Extras">
+                            <i class="material-icons">assignment</i>
+                            {{ extra.name }}
+                        </li>
+                        <li title="Characters">
+                            <i class="material-icons">people</i>
+                            {{ commission.characters }}
+                        </li>
+                        <li title="Status: {{ commission.status[1] }}">
+                            <i class="material-icons">
+                                {{ status_values[commission.status[0]].icon }}
+                            </i>
+                        </li>
+                        <li title="{{ commission.paid[1] }}">
+                            <i class="material-icons"
+                               aria-hidden="true"
+                               ng-style="{'color': paid_values[commission.paid[0]].icon_color}">
+                                monetization_on
+                            </i>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
