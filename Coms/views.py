@@ -18,10 +18,12 @@ from Coms import permissions
 
 
 def csrf(request):
+    """Hack so we can get our CSRF cookie into the angular app"""
     return HttpResponse('csrf')
 
 
 class OptionViewSet(viewsets.ModelViewSet):
+    """Setup the defaults for our option viewsets"""
     filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
     filter_fields = ('id', 'disabled')
@@ -52,6 +54,7 @@ class QueueViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
 
     def get_serializer_class(self):
+        """Return the correct serializer if it is a read or write operation"""
         if self.action in ('list', 'retrieve'):
             return serializers.QueueSerializerJson
         else:
@@ -68,9 +71,7 @@ class QueueViewSet(viewsets.ModelViewSet):
 
 
 class ListFilter(Filter):
-    """
-    Thanks https://github.com/carltongibson/django-filter/issues/137 !
-    """
+    """Thanks https://github.com/carltongibson/django-filter/issues/137 !"""
 
     @staticmethod
     def sanitize(value_list):
@@ -86,9 +87,7 @@ class ListFilter(Filter):
 
 
 class DateTimeRangeField(RangeField):
-    """
-    Django Filters do not support ISO 8601 date/time. This fixes that.
-    """
+    """Django Filters do not support ISO 8601 date/time. This fixes that."""
 
     def __init__(self, *args, **kwargs):
         fields = (
@@ -98,13 +97,12 @@ class DateTimeRangeField(RangeField):
 
 
 class DateTimeFromToRangeFilter(RangeFilter):
-    """
-    Django Filters do not support ISO 8601 date/time. This fixes that.
-    """
+    """Django Filters do not support ISO 8601 date/time. This fixes that."""
     field_class = DateTimeRangeField
 
 
 class CommissionViewSetFilter(filters.FilterSet):
+    """Sets up our filters for the CommissionViewSet"""
     queue = ListFilter(name='queue')
     type = ListFilter(name='type')
     size = ListFilter(name='size')
@@ -129,12 +127,14 @@ class CommissionViewSet(viewsets.ModelViewSet):
     filter_fields = ('id', 'queue', 'type', 'size', 'extras', 'paid', 'status', 'user')
 
     def get_serializer_class(self):
+        """Return the correct serializer if it is a read or write operation"""
         if self.action in ('list', 'retrieve'):
             return serializers.CommissionReadSerializer
         else:
             return serializers.CommissionWriteSerializer
 
     def get_queryset(self):
+        """Override the queryset, so that users can only see their own commissions"""
         user = self.request.user
         if user.is_authenticated():
             if user.is_staff or user.is_superuser:
@@ -144,18 +144,8 @@ class CommissionViewSet(viewsets.ModelViewSet):
         else:
             return models.Commission.objects.none()
 
-    @list_route()
-    def ego(self, request):
-        user = request.user
-        print(user)
-        if user.is_authenticated():
-            serializer = serializers.CommissionReadSerializer(models.Commission.objects.filter(user=user), many=True)
-        else:
-            serializer = serializers.CommissionReadSerializer(models.Commission.objects.none(), many=True)
-
-        return Response(serializer.data)
-
     def create(self, request, *args, **kwargs):
+        """Override the default create login, as we need to validate some things"""
         if 'queue' not in request.data:
             raise ValidationError(detail="Queue must be set")
         if not request.data['queue']:
@@ -174,6 +164,7 @@ class CommissionViewSet(viewsets.ModelViewSet):
 
 
 class CommissionFileViewSet(viewsets.ModelViewSet):
+    # Todo: Rewrite this
     serializer_class = serializers.CommissionFileSerializer
     queryset = models.CommissionFiles.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
@@ -217,6 +208,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def get_queryset(self):
+        """Overrides the queryset to make sure only Admins can see all users"""
         if self.request.user.is_superuser:
             return User.objects.all()
         else:
@@ -229,11 +221,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['post'])
     def login(self, request):
-        """
-        TODO: FUCKING PROTECT THIS
-        :param request:
-        :return:
-        """
+        """Perform a login"""
+        # TODO: Add some protection to this
         username = request.data['username']
         password = request.data['password']
         user = authenticate(username=username, password=password)
@@ -251,11 +240,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['post'])
     def register(self, request):
-        """
-        TODO: recaptcha!
-        :param request:
-        :return:
-        """
+        """Our Registration method"""
+        # TODO: recaptcha?
         username = request.data['username']
         password = request.data['password']
         email = request.data['email']
@@ -263,9 +249,13 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(data='{"email": "Email Already used"}', status=403)
         if username and User.objects.filter(username=username).count() > 0:
             return Response(data='{"username": "Username already taken"}', status=403)
+
+        # Add user to the correct group
         user = User.objects.create_user(username, email, password)
         group = Group.objects.get(name="Commissioners")
         user.groups.add(group)
+
+        # Log them in after registration
         user = authenticate(username=username, password=password)
         login(request, user)
         return Response(serializers.UserSerializer(user).data)

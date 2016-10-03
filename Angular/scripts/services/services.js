@@ -53,11 +53,6 @@ commissionSave = function(data) {
 CommissionService.factory('Commission', ['$resource',
     function($resource) {
         return $resource('/api/commissions/', {}, {
-            query: {
-                method: 'GET',
-                url: '/api/commissions/ego/',
-                isArray: true
-            },
             create: {
                 method: 'POST',
                 url: '/api/commissions/'
