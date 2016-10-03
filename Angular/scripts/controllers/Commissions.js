@@ -1,4 +1,5 @@
-function CommissionsCtrl($rootScope, $scope, $state, Commission, Queue, Type, Size, Extra) {
+function CommissionsCtrl($rootScope, $scope, $state, Commission,
+                         Queue, Type, Size, Extra) {
     $scope.view = $state.current.name;
     $scope.queues = Queue.getall();
     $scope.types = Type.getall();
