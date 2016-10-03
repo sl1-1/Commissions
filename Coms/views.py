@@ -84,7 +84,8 @@ class ListFilter(Filter):
     Thanks https://github.com/carltongibson/django-filter/issues/137 !
     """
 
-    def sanitize(self, value_list):
+    @staticmethod
+    def sanitize(value_list):
         """
         remove empty items in case of ?number=1,,2
         """

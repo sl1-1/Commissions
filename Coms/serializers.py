@@ -1,12 +1,12 @@
+import decimal
+import json
+
 from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import metadata
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CreateOnlyDefault
-from reversion import revisions as reversion
-import json
-import decimal
 
 import models
 
@@ -104,7 +104,8 @@ class MessageSerializer(serializers.ModelSerializer):
         model = models.Message
         fields = ('id', 'user', 'date', 'type', 'message', 'status_changes')
 
-    def get_status_changes(self, obj):
+    @staticmethod
+    def get_status_changes(obj):
         return json.loads(obj.status_changes)
 
 
