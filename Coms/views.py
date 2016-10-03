@@ -127,7 +127,7 @@ class CommissionViewSetFilter(filters.FilterSet):
     date = DateTimeFromToRangeFilter(name='date')
     user = ListFilter(name='user__username')
 
-    class Meta:
+    class Meta(object):
         model = models.Commission
         fields = ['queue', 'type', 'size', 'extras', 'paid', 'status', 'characters', 'date', 'user']
 
