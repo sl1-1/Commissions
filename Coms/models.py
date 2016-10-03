@@ -10,7 +10,6 @@ from django.dispatch import receiver
 from django.utils.timezone import now
 from guardian.shortcuts import assign_perm
 from os import path
-from reversion import revisions as reversion
 
 
 class Option(models.Model):
