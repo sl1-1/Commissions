@@ -11,8 +11,6 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
-from reversion import revisions as reversion
-from reversion.revisions import transaction
 
 import models
 import serializers
@@ -21,16 +19,6 @@ from Coms import permissions
 
 def csrf(request):
     return HttpResponse('csrf')
-
-
-# noinspection PyUnresolvedReferences
-class ReversionViewMixin(object):
-    def dispatch(self, *args, **kwargs):
-        with transaction.atomic(), reversion.create_revision():
-            response = super(ReversionViewMixin, self).dispatch(*args, **kwargs)
-            if not self.request.user.is_anonymous():
-                reversion.set_user(self.request.user)
-            return response
 
 
 class OptionViewSet(viewsets.ModelViewSet):
@@ -132,7 +120,7 @@ class CommissionViewSetFilter(filters.FilterSet):
         fields = ['queue', 'type', 'size', 'extras', 'paid', 'status', 'characters', 'date', 'user']
 
 
-class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
+class CommissionViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CommissionReadSerializer
     queryset = models.Commission.objects.all()
     filter_backends = (filters.DjangoObjectPermissionsFilter, filters.DjangoFilterBackend,)
@@ -145,10 +133,6 @@ class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
             return serializers.CommissionReadSerializer
         else:
             return serializers.CommissionWriteSerializer
-
-    def initial(self, request, *args, **kwargs):
-        # print(request.data)
-        super(CommissionViewSet, self).initial(request, *args, **kwargs)
 
     def get_queryset(self):
         user = self.request.user
@@ -188,17 +172,8 @@ class CommissionViewSet(ReversionViewMixin, viewsets.ModelViewSet):
             new = queue.commission_set.create(user=request.user)
             return Response(serializers.CommissionReadSerializer(new).data)
 
-    # def list(self, request, queues_pk=None, **kwargs):
-    #     if queues_pk:
-    #         qs = models.Commission.objects.filter(queue=queues_pk)
-    #         if not (request.user.is_staff or request.user.is_superuser):
-    #             qs.filter(user=request.user)
-    #         return Response(serializers.CommissionReadSerializer(qs.all(), many=True).data)
-    #     else:
-    #         return super(CommissionViewSet, self).list(request, **kwargs)
 
-
-class CommissionFileViewSet(ReversionViewMixin, viewsets.ModelViewSet):
+class CommissionFileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CommissionFileSerializer
     queryset = models.CommissionFiles.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
