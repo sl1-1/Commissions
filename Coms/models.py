@@ -331,7 +331,7 @@ class Message(models.Model):
     type_choices = ((0, 'Initial'), (1, 'Reply'), (2, 'Status Update'))
     type = models.IntegerField(choices=type_choices, default=2)
     message = models.TextField(max_length=10000, blank=True, default='')
-    status_changes = JSONField(default=list)
+    status_changes = models.TextField()
 
     class Meta:
         default_permissions = ('add', 'view', 'change')

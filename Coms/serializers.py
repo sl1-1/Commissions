@@ -98,10 +98,14 @@ class QueueSerializerJson(QueueReadSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
+    status_changes = serializers.SerializerMethodField()
 
     class Meta(object):
         model = models.Message
         fields = ('id', 'user', 'date', 'type', 'message', 'status_changes')
+
+    def get_status_changes(self, obj):
+        return json.loads(obj.status_changes)
 
 
 class CommissionReadSerializer(serializers.ModelSerializer):
@@ -185,6 +189,7 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
         if status_changes:
             # Work around json field chocking on decimals
             status_changes = json.dumps(status_changes, cls=DecimalEncoder)
+            print(status_changes)
             if not message:
                 message = models.Message(user=self.context['request'].user, commission=instance, message="")
             message.status_changes = status_changes
