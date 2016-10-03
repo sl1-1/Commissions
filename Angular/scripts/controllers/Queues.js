@@ -171,6 +171,7 @@ function QueueModalCtrl($scope, $uibModalInstance, Type,
         return form && !form.$invalid;
     };
     $scope.$watch(function() {
+        // Watch for a wizard, then grab him!
         return WizardHandler.wizard();
     }, function(wizard) {
         if (wizard) {
