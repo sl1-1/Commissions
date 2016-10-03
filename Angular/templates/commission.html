@@ -92,8 +92,8 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-6 col-lg-6" ng-hide="!commission">
-            <div class="panel panel-default" ng-repeat="message in commission.message_set"
+        <div class="col-md-8 col-lg-10" ng-hide="!commission">
+            <div class="panel panel-default" ng-repeat="message in commission.message_set| orderBy: 'date'"
                  ng-class="{'message-commissioner': message.user == commission.user}">
                 <div class="panel-body">
                     <div class="message-user">
