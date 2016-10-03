@@ -104,13 +104,6 @@
                     <status-changes ng-hide="message.type !=1" changes="message.status_changes"></status-changes>
                     <div ng-bind-html="message.message"></div>
                 </div>
-                <!-- <div class="panel-footer" ng-hide="$index==0">
-                    <i class="material-icons">account_circle</i> {{ message.user }}
-                    <span style="float:right">
-                        <i class="material-icons">date_range</i>
-                        {{ message.date |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}
-                    </span>
-                </div> -->
             </div>
 
             <div class="panel panel-default">
