@@ -256,7 +256,6 @@ class ContactMethod(models.Model):
         return self.message_url.format
 
 
-@reversion.register(exclude=['id', 'date', 'details_date'])
 class Commission(models.Model):
     """
     Commission Model, Holds all the important bits for each commission
@@ -341,7 +340,6 @@ def file_name(instance, filename):
     return path.join(str(user), 'wip', str(uuid.uuid4()), filename)
 
 
-@reversion.register()
 class CommissionFiles(models.Model):
     """
     Commission Files Model, Holds our file uploads for commissions.
