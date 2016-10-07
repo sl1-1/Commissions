@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+import rollbar
 
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '%0951uw)u5*v84azua8hkddlg($#af)@-aab-4!egevy_8vnz%'
@@ -21,7 +23,6 @@ SECRET_KEY = '%0951uw)u5*v84azua8hkddlg($#af)@-aab-4!egevy_8vnz%'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -34,9 +35,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_filters',
     'Coms',
-    'sorl.thumbnail',
-    'hooks',
-    'tz_detect',
     'rest_framework',
     'guardian'
 )
@@ -79,13 +77,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'tz_detect.middleware.TimezoneMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 )
 
 ROOT_URLCONF = 'Commissions.urls'
 
 WSGI_APPLICATION = 'Commissions.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -99,7 +96,6 @@ DATABASES = {
         'NAME': 'commissions'
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -172,3 +168,12 @@ LOGGING = {
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False
 }
+
+# Rollbar stuff
+ROLLBAR = {
+    'access_token': 'a733c4b41bf64f538190dad15198b831',
+    'environment': 'development' if DEBUG else 'production',
+    'root': BASE_DIR,
+}
+
+rollbar.init(**ROLLBAR)

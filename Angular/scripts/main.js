@@ -31,7 +31,8 @@ var app = angular.module('Commissions',
         'ui.layout',
         'ui.grid',
         'ui.grid.resizeColumns',
-        'ui.grid.selection'
+        'ui.grid.selection',
+        'tandibar/ng-rollbar'
     ],
     ['formlyConfigProvider', function config(formlyConfigProvider) {
         formlyConfigProvider.setType(
@@ -240,6 +241,16 @@ app.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 }]);
 
+
+app.config(function(RollbarProvider) {
+  RollbarProvider.init({
+    accessToken: '69281d2c5f4d4c9f8b5cf7a6faf9235e',
+    captureUncaught: true,
+    payload: {
+      environment: 'development'
+    }
+  });
+});
 
 function MainCtrl($rootScope, $scope, User, CSRF, $cookies) {
     $rootScope.user = User.get();
