@@ -24,6 +24,8 @@ module.exports = function(grunt) {
         uglify: {
             bower: {
                 options: {
+                    sourceMap: true,
+                    sourceMapIncludeSources: true,
                     mangle: true,
                     compress: true
                 },

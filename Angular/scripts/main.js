@@ -193,7 +193,7 @@ function runRootScope($rootScope, $state, loginModalService) {
                 loginModalService().then(function() {
                     return $state.go(toState.name, toParams);
                 })
-                    .catch (function() {
+                    .catch(function() {
                         return $state.go('welcome');
                     });
             }
@@ -242,15 +242,15 @@ app.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-app.config(function(RollbarProvider) {
-  RollbarProvider.init({
-    accessToken: '69281d2c5f4d4c9f8b5cf7a6faf9235e',
-    captureUncaught: true,
-    payload: {
-      environment: 'development'
-    }
-  });
-});
+app.config(['RollbarProvider', function(RollbarProvider) {
+    RollbarProvider.init({
+        accessToken: '69281d2c5f4d4c9f8b5cf7a6faf9235e',
+        captureUncaught: true,
+        payload: {
+            environment: 'development'
+        }
+    });
+}]);
 
 function MainCtrl($rootScope, $scope, User, CSRF, $cookies) {
     $rootScope.user = User.get();
@@ -300,7 +300,53 @@ app.controller('NavCtrl',
     ]
 );
 
+app.factory('HttpInterceptor', ['$q', '$injector',
+    function($q, $injector) {
+        'use strict';
+
+        return function(promise) {
+            return promise.then(success, error);
+        };
+
+        function success(response) {
+            return response;
+        }
+
+        function error(response) {
+            console.log('Http Intercept');
+            return $q.reject(response);
+        }
+    }
+]);
+
+app.config(['$provide', '$httpProvider', function($provide, $httpProvider) {
+    $provide.factory('myHttpInterceptor', ['$q', 'Rollbar', function($q, Rollbar) {
+        return {
+            // optional method
+            'request': function(config) {
+                // do something on success
+                return config;
+            },
+
+            // optional method
+            'requestError': function(rejection) {
+                return $q.reject(rejection);
+            },
 
 
+            // optional method
+            'response': function(response) {
+                // do something on success
+                return response;
+            },
 
+            // optional method
+            'responseError': function(rejection) {
+                Rollbar.error('HTTP Error', rejection);
+                return $q.reject(rejection);
+            }
+        };
+    }]);
 
+    $httpProvider.interceptors.push('myHttpInterceptor');
+}]);
