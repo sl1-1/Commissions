@@ -7,3 +7,4 @@ six
 wsgiref
 rollbar
 psycopg2
+django-filters
