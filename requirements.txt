@@ -3,8 +3,10 @@ pytz
 Django
 Pillow
 djangorestframework
+djangorestframework-filters
 six
 wsgiref
 rollbar
 psycopg2
 django-filter
+drf-nested-routers
