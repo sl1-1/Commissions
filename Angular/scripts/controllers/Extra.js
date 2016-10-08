@@ -33,11 +33,11 @@ function ExtraCtrl($scope, $uibModal, Extra) {
     };
 }
 
-app.controller('SizeCtrl',
+app.controller('ExtraCtrl',
     [
         '$scope',
         '$uibModal',
-        'Size',
+        'Extra',
         ExtraCtrl
     ]
 );

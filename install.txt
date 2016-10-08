@@ -1,0 +1,9 @@
+yum groupinstall 'Development Tools'
+yum install uwsgi nginx python-devel
+rpm -i https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+yum install postgresql96-devel postgresql96 postgresql96-libs postgresql96-server
+create database commissions;
+create user coms with password 'coms';
+GRANT ALL PRIVILEGES ON DATABASE commissions to coms;
+
+npm install bower grunt-bower-concat grunt-contrib-clean grunt-contrib-concat grunt-contrib-uglify grunt-html2js ng-annotate
