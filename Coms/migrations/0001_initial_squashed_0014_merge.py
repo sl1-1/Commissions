@@ -202,9 +202,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE,
                                     to=settings.AUTH_USER_MODEL),
         ),
-        migrations.RunPython(
-            create_groups
-        ),
         migrations.AlterModelOptions(
             name='commission',
             options={'default_permissions': ('add', 'view', 'change')},
@@ -294,5 +291,8 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='commission',
             name='description',
+        ),
+        migrations.RunPython(
+            create_groups
         ),
     ]
