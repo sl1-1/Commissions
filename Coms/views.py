@@ -216,6 +216,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @list_route()
     def current(self, request):
+        print(request.user)
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
@@ -236,7 +237,8 @@ class UserViewSet(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def logout(self, request):
         logout(request)
-        return Response("")
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
     @list_route(methods=['post'])
     def register(self, request):
