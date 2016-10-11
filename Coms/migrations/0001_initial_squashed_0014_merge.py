@@ -25,13 +25,13 @@ from django.utils.timezone import utc
 
 def create_groups(apps, schema_editor):
     new_group = Group.objects.get_or_create(name="Commissioners")[0]
-    add_commission = Permission.objects.get(id=30)
+    add_commission = Permission.objects.get(codename="add_commission")
     new_group.permissions.add(add_commission)
 
     new_group.permissions.add(add_commission)
-    view_commission = Permission.objects.get(id=31)
+    view_commission = Permission.objects.get(codename="view_commission")
     new_group.permissions.add(view_commission)
-    change_commission = Permission.objects.get(id=32)
+    change_commission = Permission.objects.get(codename="change_commission")
     new_group.permissions.add(change_commission)
 
 
