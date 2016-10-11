@@ -42,12 +42,12 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-hide="user.id == null"><p class="navbar-text">Welcome,
+                <li ng-show="user.id"><p class="navbar-text">Welcome,
                     <strong>{{ user.username }}</strong>
                 </p></li>
-                <li ng-hide="user.id == null"><a>Change password</a></li>
-                <li ng-hide="user.id == null"><a ng-click="logout()">Log out</a></li>
-                <li ng-hide="user.id != null"><a ng-click="login()">Login/Register</a></li>
+                <li ng-show="user.id"><a>Change password</a></li>
+                <li ng-show="user.id"><a ng-click="logout()">Log out</a></li>
+                <li ng-hide="user.id"><a ng-click="login()">Login/Register</a></li>
             </ul>
         </div>
     </div>

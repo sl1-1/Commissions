@@ -42,7 +42,12 @@ module.exports = function(grunt) {
             },
             dist: {
                 // the files to concatenate
-                src: ['build/*.js', 'Angular/scripts/main.js', 'Angular/scripts/*/*.js'],
+                src: [
+                    'build/*.js',
+                    'Angular/scripts/main.js',
+                    'Angular/scripts/controllers/*.js',
+                    'Angular/scripts/services/*.js'
+                ],
                 // the location of the resulting JS file
                 dest: 'build/main.js'
             }
@@ -63,13 +68,15 @@ module.exports = function(grunt) {
                     removeScriptTypeAttributes: true,
                     removeStyleLinkTypeAttributes: true
                 }
-            },
+            }
+            ,
             main: {
                 src: ['Angular/templates/*.html'],
                 dest: 'build/templates.js'
             }
         }
-    });
+    })
+    ;
     grunt.loadNpmTasks('grunt-bower-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');

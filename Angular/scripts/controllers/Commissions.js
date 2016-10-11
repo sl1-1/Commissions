@@ -1,5 +1,6 @@
-function CommissionsCtrl($rootScope, $scope, $state, Commission,
-                         Queue, Type, Size, Extra) {
+function CommissionsCtrl($scope, $state, Commission,
+                         Queue, Type, Size, Extra, UserData) {
+    $scope.user = UserData;
     $scope.view = $state.current.name;
     $scope.queues = Queue.getall();
     $scope.types = Type.getall();
@@ -161,23 +162,19 @@ function CommissionsCtrl($rootScope, $scope, $state, Commission,
         };
         console.log($scope.view);
         if ($scope.view == 'user-commissions') {
-            console.log($rootScope.user);
-            filter_values.user = $rootScope.user.username;
+            filter_values.user = $scope.user.username;
         }
         $scope.commissions = Commission.getall(filter_values);
     };
-    $rootScope.$watch('user', function() {
-        $rootScope.user.$promise.then(function() {
-            $scope.$watch('filter', $scope.load, true);
-            $scope.load();
-        });
+    $scope.user.initial().then(function() {
+        $scope.$watch('filter', $scope.load, true);
+        $scope.load();
     });
 
 }
 
 app.controller('CommissionsCtrl',
     [
-        '$rootScope',
         '$scope',
         '$state',
         'Commission',
@@ -185,6 +182,7 @@ app.controller('CommissionsCtrl',
         'Type',
         'Size',
         'Extra',
+        'UserData',
         CommissionsCtrl
     ]
 );

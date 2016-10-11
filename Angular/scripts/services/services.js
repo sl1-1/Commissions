@@ -99,6 +99,48 @@ UserService.factory('User', ['$resource',
         });
     }]);
 
+function UserData($q, User) {
+    var userData = {};
+
+    userData.id = false;
+    userData.username = false;
+    userData.is_staff = false;
+    userData.logged_in = false;
+
+    function update(data) {
+        console.log(data);
+        userData.id = data.id;
+        userData.username = data.username;
+        userData.is_staff = data.is_staff;
+        userData.logged_in = Boolean(userData.id);
+        return userData;
+    }
+
+    var initial = User.get().$promise.then(update);
+
+    userData.login = function(login_data) {
+        // Returns a promise, so the caller can tell if this failed or not.
+        return User.login(login_data).$promise.then(update);
+    };
+
+    userData.register = function(register_data) {
+        // Returns a promise, so the caller can tell if this failed or not.
+        return User.register(register_data).$promise.then(update);
+    };
+
+    userData.logout = function() {
+        User.logout().$promise.then(update);
+    };
+
+    userData.initial = function() {
+        return initial;
+    };
+
+    return userData;
+}
+
+app.factory('UserData', ['$q', 'User', UserData]);
+
 var ContactService = angular.module('ContactService', ['ngResource']);
 
 ContactService.factory('Contact', ['$resource',

@@ -1,7 +1,8 @@
-function LoginModalCtrl($scope, User) {
+function LoginModalCtrl($scope, UserData) {
     vm = this;
 
     vm.login_form = {};
+    vm.login_form_error = false;
     vm.register_form = {};
 
     vm.login_fields = [
@@ -70,19 +71,23 @@ function LoginModalCtrl($scope, User) {
 
     vm.login = function() {
         console.log(vm.login_form);
-        User.login(vm.login_form)
-            .$promise.then(function(uservalue) {
-                $scope.$close(uservalue);
-            }
-        );
+        UserData.login(vm.login_form)
+            .then(function(uservalue) {
+                    $scope.$close(uservalue);
+                },
+                function(error) {
+                    console.log(error);
+                    vm.login_form_error = error.data;
+                }
+            );
     };
 
     vm.register = function() {
-        User.register(vm.register_form)
-            .$promise.then(function(uservalue) {
-                $scope.$close(uservalue);
-            }
-        );
+        UserData.register(vm.register_form)
+            .then(function(uservalue) {
+                    $scope.$close(uservalue);
+                }
+            );
     };
 
 }
@@ -90,7 +95,7 @@ function LoginModalCtrl($scope, User) {
 app.controller('LoginModalCtrl',
     [
         '$scope',
-        'User',
+        'UserData',
         LoginModalCtrl
     ]
 );

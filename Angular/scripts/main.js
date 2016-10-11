@@ -179,44 +179,6 @@ app.config(
     ]
 );
 
-function runRootScope($rootScope, $state, loginModalService) {
-
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-        var requireLogin = toState.data.requireLogin;
-        var requireAdmin = toState.data.requireAdmin;
-        $rootScope.user.$promise.then(function() {
-            if (requireLogin && (!$rootScope.user.id)) {
-                // var url = $state.href(toState.name, toParams);
-                // $window.location.href = '/account/login/?next=/' + url;
-                event.preventDefault();
-
-                loginModalService().then(function() {
-                    return $state.go(toState.name, toParams);
-                })
-                    .catch(function() {
-                        return $state.go('welcome');
-                    });
-            }
-            if (requireAdmin && (!$rootScope.user.is_staff)) {
-                // var url = $state.href(toState.name, toParams);
-                // $window.location.href = '/account/login/?next=/' + url;
-                event.preventDefault();
-                return $state.go('index');
-            }
-        });
-
-    });
-}
-
-app.run(
-    [
-        '$rootScope',
-        '$state',
-        'loginModalService',
-        runRootScope
-    ]
-);
-
 function config_xeditable(editableOptions, editableThemes) {
     // editableThemes.bs3.inputClass = 'input-sm';
     editableThemes.bs3.buttonsClass = 'btn-sm';
@@ -252,49 +214,64 @@ app.config(['RollbarProvider', function(RollbarProvider) {
     });
 }]);
 
-function MainCtrl($rootScope, $scope, User, CSRF, $cookies) {
-    $rootScope.user = User.get();
+function MainCtrl($rootScope, $scope, $state, UserData, CSRF, $cookies, loginModalService) {
     var csrftoken = $cookies.get('csrftoken');
     if (!csrftoken) {
         CSRF.get();
     }
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+        var requireLogin = toState.data.requireLogin;
+        var requireAdmin = toState.data.requireAdmin;
+        UserData.initial().then(function() {
+            if (requireLogin && (!UserData.id)) {
+                event.preventDefault();
+
+                loginModalService().then(function() {
+                    return $state.go(toState.name, toParams);
+                })
+                    .catch(function() {
+                        return $state.go('index');
+                    });
+            }
+            if (requireAdmin && (!UserData.is_staff)) {
+                event.preventDefault();
+                return $state.go('index');
+            }
+        });
+    });
 }
 
 app.controller('MainCtrl',
     [
         '$rootScope',
         '$scope',
-        'User',
+        '$state',
+        'UserData',
         'CSRF',
         '$cookies',
+        'loginModalService',
         MainCtrl
     ]
 );
 
-function NavCtrl($rootScope, $scope, User, loginModalService) {
-
-    $rootScope.$watch('user', function() {
-        console.log('User Change Detected');
-        $scope.user = $rootScope.user;
-    });
-    $scope.user = $rootScope.user;
+function NavCtrl($scope, $state, UserData, loginModalService) {
+    $scope.user = UserData;
 
     $scope.login = function() {
         loginModalService();
     };
 
     $scope.logout = function() {
-        User.logout().$promise.then(function(uservalue) {
-            $rootScope.user = uservalue;
-        });
+        $state.go('index');
+        UserData.logout();
     };
 }
 
 app.controller('NavCtrl',
     [
-        '$rootScope',
         '$scope',
-        'User',
+        '$state',
+        'UserData',
         'loginModalService',
         NavCtrl
     ]
