@@ -33,35 +33,44 @@ var app = angular.module('Commissions',
         'ui.grid.resizeColumns',
         'ui.grid.selection',
         'tandibar/ng-rollbar'
-    ],
-    ['formlyConfigProvider', function config(formlyConfigProvider) {
-        formlyConfigProvider.setType(
-            {
-                name: 'richEditor',
-                template: '<text-angular ng-model="model[options.key]" required></text-angular>'
-            });
-        formlyConfigProvider.setType(
-            {
-                name: 'datepicker',
-                templateUrl: 'templates/datepicker.html',
-                wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                defaultOptions: {
-                    templateOptions: {
-                        datepicker: {
-                            'autoUpdateInput': false,
-                            'singleDatePicker': true,
-                            'timePicker': true,
-                            'alwaysShowCalendars': true,
-                            'locale': {
-                                'format': 'YYYY/MM/DD h:mm A'
-                            }
+    ]
+);
+
+function formlyConfig(formlyConfigProvider) {
+    formlyConfigProvider.setType(
+        {
+            name: 'richEditor',
+            template: '<text-angular ng-model="model[options.key]" required></text-angular>'
+        });
+    formlyConfigProvider.setType(
+        {
+            name: 'datepicker',
+            templateUrl: 'templates/datepicker.html',
+            wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+            defaultOptions: {
+                templateOptions: {
+                    datepicker: {
+                        'autoUpdateInput': false,
+                        'singleDatePicker': true,
+                        'timePicker': true,
+                        'alwaysShowCalendars': true,
+                        'locale': {
+                            'format': 'YYYY/MM/DD h:mm A'
                         }
                     }
                 }
-            });
+            }
+        });
 
 
-    }]);
+}
+
+app.config(
+    [
+        'formlyConfigProvider',
+        formlyConfig
+    ]
+);
 
 function configUrlRouter($stateProvider, $urlRouterProvider) {
 
@@ -277,25 +286,6 @@ app.controller('NavCtrl',
     ]
 );
 
-app.factory('HttpInterceptor', ['$q', '$injector',
-    function($q, $injector) {
-        'use strict';
-
-        return function(promise) {
-            return promise.then(success, error);
-        };
-
-        function success(response) {
-            return response;
-        }
-
-        function error(response) {
-            console.log('Http Intercept');
-            return $q.reject(response);
-        }
-    }
-]);
-
 app.config(['$provide', '$httpProvider', function($provide, $httpProvider) {
     $provide.factory('myHttpInterceptor', ['$q', 'Rollbar', function($q, Rollbar) {
         return {
@@ -319,7 +309,13 @@ app.config(['$provide', '$httpProvider', function($provide, $httpProvider) {
 
             // optional method
             'responseError': function(rejection) {
-                Rollbar.error('HTTP Error', rejection);
+                switch (rejection.status) {
+                    case 403:
+                        break;
+                    default:
+                        Rollbar.error(
+                            'HTTP Error: ' + rejection.status, rejection);
+                }
                 return $q.reject(rejection);
             }
         };
