@@ -26,6 +26,7 @@ module.exports = function(grunt) {
                 options: {
                     sourceMap: true,
                     sourceMapIncludeSources: true,
+                    sourceMapIn: 'build/main.js.map',
                     mangle: true,
                     compress: true
                 },
