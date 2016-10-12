@@ -44,8 +44,10 @@ module.exports = function(grunt) {
             dist: {
                 // the files to concatenate
                 src: [
-                    'build/*.js',
+                    'build/bower.js',
+                    'build/templates.js',
                     'Angular/scripts/main.js',
+                    'build/config.js',
                     'Angular/scripts/controllers/*.js',
                     'Angular/scripts/services/*.js'
                 ],
@@ -75,19 +77,47 @@ module.exports = function(grunt) {
                 src: ['Angular/templates/*.html'],
                 dest: 'build/templates.js'
             }
-        }
-    })
-    ;
+        },
+        replace: {
+            dist: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'gitsha',
+                            replace: '<%= gitinfo.local.branch.current.SHA %>'
+                        },
+                        {
+                            match: 'environment',
+                            replace: 'development'
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: false,
+                        flatten: true,
+                        src: 'Angular/scripts/config.js',
+                        dest: 'build/config.js'
+                    }
+                    ]
+            }
+        },
+        gitinfo: {}
+    });
+    grunt.loadNpmTasks('grunt-gitinfo');
     grunt.loadNpmTasks('grunt-bower-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-replace');
 
     grunt.registerTask('default', [
+        'gitinfo',
         'clean',
         'bower_concat',
         'html2js',
+        'replace',
         'concat',
         'uglify'
     ]);

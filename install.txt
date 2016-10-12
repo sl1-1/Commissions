@@ -6,4 +6,4 @@ create database commissions;
 create user coms with password 'coms';
 GRANT ALL PRIVILEGES ON DATABASE commissions to coms;
 
-npm install bower grunt-bower-concat grunt-contrib-clean grunt-contrib-concat grunt-contrib-uglify grunt-html2js ng-annotate
+npm install bower grunt-bower-concat grunt-contrib-clean grunt-contrib-concat grunt-contrib-uglify grunt-html2js ng-annotate grunt-gitinfo grunt-replace
