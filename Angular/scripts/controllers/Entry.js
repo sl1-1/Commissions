@@ -1,4 +1,4 @@
-function EntryCtrl($scope, Commission, Queue, $state, $stateParams) {
+function EntryCtrl($scope, Commission, Queue, $state, $stateParams, $window) {
     var vm = this;
     vm.queue = {};
     console.log($stateParams);
@@ -131,6 +131,8 @@ function EntryCtrl($scope, Commission, Queue, $state, $stateParams) {
                 $state.go('commission', {commissionid: vm.commission_id});
             },
             function(response) {
+                Rollbar.error('Commission Form submission Error', response);
+                $window.alert('There was an error processing this form');
                 console.log(response);
             });
     }
@@ -143,6 +145,7 @@ app.controller('EntryCtrl',
         'Queue',
         '$state',
         '$stateParams',
+        '$window',
         EntryCtrl
     ]
 );
