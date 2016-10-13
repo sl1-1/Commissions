@@ -90,6 +90,10 @@ function LoginModalCtrl($scope, UserData) {
             );
     };
 
+    vm.close = function() {
+        $scope.close();
+    };
+
 }
 
 app.controller('LoginModalCtrl',
@@ -100,10 +104,9 @@ app.controller('LoginModalCtrl',
     ]
 );
 
-function LoginModalService($uibModal, $rootScope) {
+function LoginModalService($uibModal) {
 
     function assignCurrentUser(uservalue) {
-        $rootScope.user = uservalue;
         return uservalue;
     }
 
