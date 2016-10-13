@@ -162,6 +162,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'Coms': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
 

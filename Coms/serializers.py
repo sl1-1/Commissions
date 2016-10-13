@@ -14,7 +14,7 @@ import models
 import logging
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('Coms')
 
 
 class CustomMetaData(metadata.SimpleMetadata):
