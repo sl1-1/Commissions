@@ -113,7 +113,10 @@ class MessageSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_status_changes(obj):
         try:
-            return json.loads(obj.status_changes)
+            if obj.status_changes:
+                return json.loads(obj.status_changes)
+            else:
+                return {}
         except ValueError:
             logger.debug('Error in Message ID {}'.format(obj.id))
 
