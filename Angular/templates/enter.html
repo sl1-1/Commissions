@@ -48,6 +48,9 @@
                         </div>
                         <div class="option-group" ng-show="vm.queue.end">
                             <i class="material-icons">date_range</i>&nbsp;<span>Entries close on</span>
+                            <ul>
+                                <li>{{ vm.queue.end |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm' }}</li>
+                            </ul>
                         </div>
                     </div>
                     <div ng-hide="vm.queue.existing">
