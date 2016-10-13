@@ -20,7 +20,7 @@
                                 <b>Slots left:</b> {{ queue.max_commissions_in_queue-queue.submission_count| number:0 }}
                             </div>
                             <div style="float: right;" ng-hide="!queue.end">
-                                <b>Closes on:</b> {{ queue.end }}
+                                <b>Closes on:</b> {{ queue.end |amUtc |amLocal| amDateFormat:'YYYY.MM.DD HH:mm'}}
                             </div>
                         </div>
                     </div>
