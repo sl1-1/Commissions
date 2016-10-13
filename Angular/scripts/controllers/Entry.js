@@ -1,7 +1,10 @@
-function EntryCtrl($scope, Commission, Queue, $state, $stateParams, $window) {
+function EntryCtrl($scope, Commission, Queue, $state,
+                   $stateParams, $window, UserData,
+                   loginModalService, WizardHandler) {
     var vm = this;
     vm.queue = {};
-    console.log($stateParams);
+    vm.user = UserData;
+    console.log('User', vm.user);
     if ('queue_id' in $stateParams) {
         vm.queue = Queue.get({QueueId: $stateParams.queue_id});
     }
@@ -136,6 +139,16 @@ function EntryCtrl($scope, Commission, Queue, $state, $stateParams, $window) {
                 console.log(response);
             });
     }
+
+    vm.login = function() {
+        loginModalService().then(function() {
+            var wz = WizardHandler.wizard();
+            vm.new_commission();
+            wz.next();
+        }, function() {
+            return false;
+        });
+    };
 }
 
 app.controller('EntryCtrl',
@@ -146,6 +159,9 @@ app.controller('EntryCtrl',
         '$state',
         '$stateParams',
         '$window',
+        'UserData',
+        'loginModalService',
+        'WizardHandler',
         EntryCtrl
     ]
 );

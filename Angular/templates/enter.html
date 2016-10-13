@@ -48,10 +48,17 @@
                         </h5>
                     </div>
 
-                    <div style="text-align:right">
+                    <div ng-show="vm.user.id" style="text-align:right">
                         <button type="submit" wz-next="vm.new_commission()"
                                 class="btn btn-primary submit-button"
-                                ng-disabled="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">Next
+                                ng-disabled="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">
+                            Next
+                        </button>
+                    </div>
+                    <div ng-hide="vm.user.id" style="text-align:right">
+                        <button type="submit" ng-click="vm.login()"
+                                class="btn btn-primary submit-button">
+                            Login
                         </button>
                     </div>
                 </div>
