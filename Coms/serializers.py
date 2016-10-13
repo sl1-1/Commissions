@@ -114,8 +114,8 @@ class MessageSerializer(serializers.ModelSerializer):
     def get_status_changes(obj):
         try:
             return json.loads(obj.status_changes)
-        except ValueError as e:
-            logger.debug(e, obj.status_changes)
+        except ValueError:
+            logger.debug('Error in Message ID {}'.format(obj.id))
 
 
 class CommissionReadSerializer(serializers.ModelSerializer):
