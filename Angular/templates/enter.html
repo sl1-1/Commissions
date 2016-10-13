@@ -3,41 +3,61 @@
         <wizard on-finish="vm.finishWizard()" template="/templates/wizard.html">
             <wz-step title="Enter">
                 <div class="col-xs-12 col-s-12 col-md-4 col-l-4 col-md-offset-4 well">
-                    <h2>Enter</h2>
-
-                    <div>
-                        <dl>
-                            <dt>Types</dt>
-                            <dd ng-repeat="type in vm.queue.types">
-                                {{ type.name }} - {{ type.price }}
-                            </dd>
-                            <dt>Sizes</dt>
-                            <dd ng-repeat="size in vm.queue.sizes">
-                                {{ size.name }} - {{ size.price }}
-                            </dd>
-                            <dt ng-hide="!vm.queue.extras">Extras</dt>
-                            <dd ng-repeat="extra in vm.queue.extras" ng-hide="!vm.queue.extras">
-                                {{ extra.name }} - {{ extra.price }}
-                            </dd>
-                            <dt>Max characters</dt>
-                            <dd>{{ vm.queue.max_characters }}</dd>
-                            <dt ng-hide="!vm.queue.character_cost">Character cost</dt>
-                            <dd ng-hide="!vm.queue.character_cost">{{ vmqueue.character_cost }}</dd>
-                            <dt>Max commissions per person</dt>
-                            <dd>{{ vm.queue.max_commissions_per_person }}</dd>
-                            <dt ng-hide="!vm.queue.end">Closes on</dt>
-                            <dd ng-hide="!vm.queue.end">{{ vm.queue.end }} at {{ vm.queue.end }}</dd>
-                        </dl>
-
+                    <div class="text-center">
+                        <h3>{{ vm.queue.name }}</h3>
+                    </div>
+                    <div class="option-group">
+                        <div>
+                            <i class="material-icons">toc</i>&nbsp;<span>Types</span>
+                            <ul>
+                                <li ng-repeat="type in vm.queue.types">
+                                    {{ type.name }} - ${{ type.price }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="option-group">
+                            <i class="material-icons">photo_size_select_large</i>&nbsp;<span>Sizes</span>
+                            <ul>
+                                <li ng-repeat="size in vm.queue.sizes">
+                                    {{ size.name }} - ${{ size.price }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="option-group" ng-show="vm.queue.extras.length > 0">
+                            <i class="material-icons">assignment</i>&nbsp;<span>Extras</span>
+                            <ul>
+                                <li ng-repeat="extra in vm.queue.extras">
+                                    {{ extra.name }} - ${{ extra.price }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="option-group">
+                            <i class="material-icons">people</i>&nbsp;<span>Characters</span>
+                            <ul>
+                                <li>{{ vm.queue.max_characters }}</li>
+                                <li ng-show="vm.queue.character_cost">{
+                                    ${{ vmqueue.character_cost }} per extra character
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="option-group">
+                            <i class="material-icons">inbox</i>&nbsp;<span>Commissions per person</span>
+                            <ul>
+                                <li>{{ vm.queue.max_commissions_per_person }}</li>
+                            </ul>
+                        </div>
+                        <div class="option-group" ng-show="vm.queue.end">
+                            <i class="material-icons">date_range</i>&nbsp;<span>Entries close on</span>
+                        </div>
                     </div>
                     <div ng-hide="vm.queue.existing">
                         <h5 ng-hide="!vm.queue.full">
                             Sorry, Commissions are currently full.
                             <br/>
-                                <span ng-hide="vm.queue.expire">
+                            <span ng-hide="vm.queue.expire">
                                     Better Luck next time
                                 </span>
-                                <span ng-hide="!vm.queue.expire">
+                            <span ng-hide="!vm.queue.expire">
                                     There is a chance that a spot may free up, check back later
                                 </span>
                         </h5>
