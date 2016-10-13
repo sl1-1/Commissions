@@ -10,6 +10,12 @@ from rest_framework.fields import CreateOnlyDefault
 
 import models
 
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 
 class CustomMetaData(metadata.SimpleMetadata):
     def determine_metadata(self, request, view):
@@ -106,7 +112,10 @@ class MessageSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_status_changes(obj):
-        return json.loads(obj.status_changes)
+        try:
+            return json.loads(obj.status_changes)
+        except ValueError as e:
+            logger.error(e, obj.status_changes)
 
 
 class CommissionReadSerializer(serializers.ModelSerializer):
