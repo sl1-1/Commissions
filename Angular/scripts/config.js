@@ -53,7 +53,7 @@ function configUrlRouter($stateProvider, $urlRouterProvider) {
             controller: 'EntryCtrl as vm',
             templateUrl: 'templates/enter.html',
             data: {
-                requireLogin: true
+                requireLogin: false
             }
         })
         .state('detailform', {
