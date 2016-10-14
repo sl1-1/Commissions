@@ -44,6 +44,10 @@ function EntryCtrl($scope, Commission, Queue, $state,
             com.$create(function(commission) {
                 vm.commission_id = commission.id;
                 vm.updateCommission();
+            }, function(data) {
+                Rollbar.error('Error creating new Commission', data);
+                $window.alert('An error occured, please report it');
+
             });
         }
         console.log(vm.model);
@@ -52,7 +56,7 @@ function EntryCtrl($scope, Commission, Queue, $state,
     vm.finishWizard = finishWizard;
 
     vm.exitValidation = function(form) {
-        return form && !form.$invalid;
+        return form && !form.$invalid && Boolean(vm.user.id);
     };
     vm.fields = {
         step1: [
@@ -130,14 +134,20 @@ function EntryCtrl($scope, Commission, Queue, $state,
 
 // function definition
     function finishWizard() {
-        vm.model.$save({CommissionId: vm.commission_id}, function() {
-                $state.go('commission', {commissionid: vm.commission_id});
-            },
-            function(response) {
-                Rollbar.error('Commission Form submission Error', response);
-                $window.alert('There was an error processing this form');
-                console.log(response);
-            });
+        if (vm.user.id) {
+            vm.model.$save({CommissionId: vm.commission_id}, function() {
+                    $state.go('commission', {commissionid: vm.commission_id});
+                },
+                function(response) {
+                    Rollbar.error('Commission Form submission Error', response);
+                    $window.alert('There was an error processing this form');
+                    console.log(response);
+                });
+        }
+        else {
+            Rollbar.error('Attempted to submit Commission' +
+                ' form without being logged in');
+        }
     }
 
     vm.login = function() {
