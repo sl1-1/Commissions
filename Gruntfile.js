@@ -74,7 +74,10 @@ module.exports = function(grunt) {
             }
             ,
             main: {
-                src: ['Angular/templates/*.html'],
+                src: [
+                    'Angular/templates/*.html',
+                    'Angular/templates/formly/*.html'
+                ],
                 dest: 'build/templates.js'
             }
         },

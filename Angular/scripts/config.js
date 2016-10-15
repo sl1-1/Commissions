@@ -2,12 +2,12 @@ function formlyConfig(formlyConfigProvider) {
     formlyConfigProvider.setType(
         {
             name: 'richEditor',
-            template: '<text-angular ng-model="model[options.key]" required></text-angular>'
+            templateUrl: 'templates/formly/richEditor.html'
         });
     formlyConfigProvider.setType(
         {
             name: 'datepicker',
-            templateUrl: 'templates/datepicker.html',
+            templateUrl: 'templates/formly/datepicker.html',
             wrapper: ['bootstrapLabel', 'bootstrapHasError'],
             defaultOptions: {
                 templateOptions: {
@@ -24,6 +24,12 @@ function formlyConfig(formlyConfigProvider) {
             }
         });
 
+    formlyConfigProvider.setType(
+        {
+            name: 'slider',
+            templateUrl: 'templates/formly/slider.html'
+        }
+    );
 
 }
 

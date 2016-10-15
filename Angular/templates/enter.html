@@ -72,7 +72,7 @@
                     </div>
 
                     <div ng-show="vm.user.id" style="text-align:right">
-                        <button type="submit" wz-next="vm.new_commission()"
+                        <button type="submit" ng-click="vm.new_commission()"
                                 class="btn btn-primary submit-button"
                                 ng-disabled="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">
                             Next
@@ -91,7 +91,7 @@
                     <h2>Step 1</h2>
                     <formly-form model="vm.model" fields="vm.fields.step1" form="vm.forms.step1">
                         <div style="text-align:right">
-                            <button type="submit" ng-disabled="vm.forms.step1.$invalid" wz-next
+                            <button type="submit" ng-disabled="vm.forms.step1.$invalid" ng-click="vm.next()"
                                     class="btn btn-primary submit-button">Next
                             </button>
                         </div>
@@ -104,7 +104,7 @@
                         <h2>Step 2</h2>
                         <formly-form model="vm.model" fields="vm.fields.step2" form="vm.forms.step2">
                             <div style="text-align:right">
-                                <button type="submit" ng-disabled="vm.forms.step2.$invalid" wz-next
+                                <button type="submit" ng-disabled="vm.forms.step2.$invalid" ng-click="vm.next()"
                                         class="btn btn-primary submit-button">
                                     Finish
                                 </button>

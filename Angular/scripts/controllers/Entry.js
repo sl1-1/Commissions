@@ -1,8 +1,8 @@
 function EntryCtrl($scope, Commission, Queue, $state,
                    $stateParams, $window, UserData,
-                   loginModalService, WizardHandler) {
+                   loginModalService, WizardHandler, $timeout) {
     var vm = this;
-    vm.queue = {};
+    // vm.queue = {};
     vm.user = UserData;
     console.log('User', vm.user);
     if ('queue_id' in $stateParams) {
@@ -50,6 +50,7 @@ function EntryCtrl($scope, Commission, Queue, $state,
 
             });
         }
+        vm.next();
         console.log(vm.model);
     };
 
@@ -58,6 +59,7 @@ function EntryCtrl($scope, Commission, Queue, $state,
     vm.exitValidation = function(form) {
         return form && !form.$invalid && Boolean(vm.user.id);
     };
+
     vm.fields = {
         step1: [
             {
@@ -109,16 +111,21 @@ function EntryCtrl($scope, Commission, Queue, $state,
             },
             {
                 key: 'characters',
-                type: 'input',
+                type: 'slider',
                 templateOptions: {
                     label: 'Characters',
                     type: 'number',
                     required: true,
                     min: 1,
-                    step: 1
+                    step: 1,
+                    slider: {
+                        floor: 1,
+                        ceil: 1,
+                        step: 1
+                    }
                 },
                 expressionProperties: {
-                    'templateOptions.max': function() {
+                    'templateOptions.slider.ceil': function() {
                         return vm.queue.max_characters;
                     }
                 }
@@ -131,6 +138,7 @@ function EntryCtrl($scope, Commission, Queue, $state,
             }
         ]
     };
+
 
 // function definition
     function finishWizard() {
@@ -159,7 +167,19 @@ function EntryCtrl($scope, Commission, Queue, $state,
             return false;
         });
     };
+
+    vm.next = function() {
+        // This is a clumsy fix for the min/max slider labels no showing
+        var wz = WizardHandler.wizard();
+        wz.next();
+        $timeout(function() {
+            // $scope.$broadcast('rzSliderForceRender');
+            $scope.$broadcast('reCalcViewDimensions');
+        }, 50);
+
+    };
 }
+
 
 app.controller('EntryCtrl',
     [
@@ -172,6 +192,7 @@ app.controller('EntryCtrl',
         'UserData',
         'loginModalService',
         'WizardHandler',
+        '$timeout',
         EntryCtrl
     ]
 );
