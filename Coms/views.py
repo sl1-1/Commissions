@@ -224,6 +224,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def login(self, request):
         """Perform a login"""
         # TODO: Add some protection to this
+        if 'username' not in request.data or 'password' not in request.data:
+            return Response(data="Invalid Username or Password", status=403)
         username = request.data['username']
         password = request.data['password']
         user = authenticate(username=username, password=password)
