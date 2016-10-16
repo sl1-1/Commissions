@@ -70,19 +70,20 @@
                             Better Luck next time
                         </h5>
                     </div>
-
-                    <div ng-show="vm.user.id" style="text-align:right">
-                        <button type="submit" ng-click="vm.new_commission()"
-                                class="btn btn-primary submit-button"
-                                ng-disabled="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">
-                            Next
-                        </button>
-                    </div>
-                    <div ng-hide="vm.user.id" style="text-align:right">
-                        <button type="submit" ng-click="vm.login()"
-                                class="btn btn-primary submit-button">
-                            Login
-                        </button>
+                    <div ng-hide="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">
+                        <div ng-show="vm.user.id" style="text-align:right">
+                            <button type="submit" ng-click="vm.new_commission()"
+                                    class="btn btn-primary submit-button"
+                                    ng-disabled="(vm.queue.full||vm.queue.ended) && (!vm.queue.existing)">
+                                Next
+                            </button>
+                        </div>
+                        <div ng-hide="vm.user.id" style="text-align:right">
+                            <button type="submit" ng-click="vm.login()"
+                                    class="btn btn-primary submit-button">
+                                Login
+                            </button>
+                        </div>
                     </div>
                 </div>
             </wz-step>
