@@ -136,13 +136,24 @@ class CommissionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Override the queryset, so that users can only see their own commissions"""
         user = self.request.user
-        if user.is_authenticated():
-            if user.is_staff or user.is_superuser:
-                return models.Commission.objects.all().exclude(details_date__isnull=True)
+
+        if self.action == 'list':
+            if user.is_authenticated():
+                if user.is_staff or user.is_superuser:
+                    return models.Commission.objects.all().exclude(details_date__isnull=True)
+                else:
+                    return models.Commission.objects.filter(user=user).exclude(details_date__isnull=True)
             else:
-                return models.Commission.objects.filter(user=user).exclude(details_date__isnull=True)
+                return models.Commission.objects.none()
+
         else:
-            return models.Commission.objects.none()
+            if user.is_authenticated():
+                if user.is_staff or user.is_superuser:
+                    return models.Commission.objects.all()
+                else:
+                    return models.Commission.objects.filter(user=user)
+            else:
+                return models.Commission.objects.none()
 
     def create(self, request, *args, **kwargs):
         """Override the default create login, as we need to validate some things"""
