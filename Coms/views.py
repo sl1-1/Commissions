@@ -138,9 +138,9 @@ class CommissionViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_authenticated():
             if user.is_staff or user.is_superuser:
-                return models.Commission.objects.all()
+                return models.Commission.objects.all().exclude(details_date__isnull=True)
             else:
-                return models.Commission.objects.filter(user=user)
+                return models.Commission.objects.filter(user=user).exclude(details_date__isnull=True)
         else:
             return models.Commission.objects.none()
 

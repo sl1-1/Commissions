@@ -102,13 +102,23 @@ class QueueSerializerJson(QueueReadSerializer):
     extras = ExtraSerializer(many=True)
 
 
+class CommissionFileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    imgname = serializers.CharField(read_only=True)
+
+    class Meta(object):
+        model = models.CommissionFiles
+        fields = ('id', 'user', 'commission', 'date', 'imgname', 'img', 'user_deleted', 'deleted')
+
+
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     status_changes = serializers.SerializerMethodField()
+    commissionfiles_set = CommissionFileSerializer(many=True, required=False)
 
     class Meta(object):
         model = models.Message
-        fields = ('id', 'user', 'date', 'type', 'message', 'status_changes')
+        fields = ('id', 'user', 'date', 'type', 'message', 'status_changes', 'commissionfiles_set')
 
     @staticmethod
     def get_status_changes(obj):
@@ -263,15 +273,6 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
             return value
         else:
             return self.instance.paid
-
-
-class CommissionFileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
-    imgname = serializers.CharField(read_only=True)
-
-    class Meta(object):
-        model = models.CommissionFiles
-        fields = ('id', 'user', 'commission', 'date', 'note', 'imgname', 'img', 'user_deleted', 'deleted')
 
 
 class UserSerializer(serializers.ModelSerializer):
