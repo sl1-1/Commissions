@@ -14,72 +14,15 @@
 
 </head>
 <body ng-app="Commissions" ng-controller="MainCtrl" ng-strict-di>
-<nav class="navbar navbar-default" ng-controller="NavCtrl">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Username</a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li ng-show="user.id">
-                    <a ui-sref="user-panel">
-                        User
-                    </a>
-                </li>
-                <li ng-show="user.is_staff">
-                    <a ui-sref="admin-panel" >
-                        Admin
-                    </a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li ng-show="user.id"><p class="navbar-text">Welcome,
-                    <strong>{{ user.username }}</strong>
-                </p></li>
-                <li ng-show="user.id"><a ng-click="logout()">Log out</a></li>
-                <li ng-hide="user.id"><a ng-click="login()">Login/Register</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+
+<div ng-if="false" style="margin:auto;width:50%;text-align: center">
+    <div class="loader"></div>
+    <p>Loading...</p>
+    <p style="font-size: 75%">This is dedicated to those on slow connections!</p>
+</div>
+<nav-bar></nav-bar>
 <ng-view></ng-view>
 <div ui-view></div>
-<script type="text/ng-template" id="commissions.html">
-
-</script>
-<script type="text/ng-template" id="repeatSection.html">
-    <div>
-        <!--loop through each element in model array-->
-        <div class="{{ hideRepeat }}">
-            <div class="repeatsection" ng-repeat="element in model[options.key]"
-                 ng-init="fields = copyFields(to.fields)">
-                <formly-form fields="fields"
-                             model="element"
-                             form="form">
-                </formly-form>
-                <div style="margin-bottom:20px;">
-                    <button type="button" class="btn btn-sm btn-danger"
-                            ng-click="model[options.key].splice($index, 1)">
-                        Remove
-                    </button>
-                </div>
-                <hr>
-            </div>
-        </div>
-        <p class="AddNewButton">
-            <button type="button" class="btn btn-primary" ng-click="addNew()">{{ to.btnText }}</button>
-        </p>
-    </div>
-</script>
 
 </body>
 </html>
