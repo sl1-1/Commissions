@@ -36,7 +36,8 @@ INSTALLED_APPS = (
     'django_filters',
     'Coms',
     'rest_framework',
-    'guardian'
+    'guardian',
+    'sorl.thumbnail',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -180,5 +181,9 @@ ROLLBAR = {
     'environment': 'development' if DEBUG else 'production',
     'root': BASE_DIR,
 }
+
+USE_X_FORWARDED_HOST = True
+
+THUMBNAIL_KVSTORE = 'sorl.thumbnail.kvstores.cached_db_kvstore.KVStore'
 
 rollbar.init(**ROLLBAR)

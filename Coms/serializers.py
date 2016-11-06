@@ -1,5 +1,6 @@
 import decimal
 import json
+import logging
 
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -7,11 +8,9 @@ from rest_framework import metadata
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CreateOnlyDefault
+from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
 import models
-
-# import the logging library
-import logging
 
 # Get an instance of a logger
 logger = logging.getLogger('Coms')
@@ -39,16 +38,19 @@ class OptionSerializer(serializers.ModelSerializer):
 class TypeSerializer(OptionSerializer):
     class Meta(object):
         model = models.Type
+        fields = ('id', 'name', 'price', 'extra_character_price', 'description')
 
 
 class SizeSerializer(OptionSerializer):
     class Meta(object):
         model = models.Size
+        fields = ('id', 'name', 'price', 'extra_character_price', 'description')
 
 
 class ExtraSerializer(OptionSerializer):
     class Meta(object):
         model = models.Extra
+        fields = ('id', 'name', 'price', 'extra_character_price', 'description')
 
 
 class QueueReadSerializer(serializers.ModelSerializer):
@@ -104,21 +106,36 @@ class QueueSerializerJson(QueueReadSerializer):
 
 class CommissionFileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
+    commission = serializers.CharField()
     imgname = serializers.CharField(read_only=True)
+    token = serializers.CharField(write_only=True)
+    thumb = HyperlinkedSorlImageField(
+        '600',
+        options={"crop": "center"},
+        source='img',
+        read_only=True)
 
     class Meta(object):
         model = models.CommissionFiles
-        fields = ('id', 'user', 'commission', 'date', 'imgname', 'img', 'user_deleted', 'deleted')
+        fields = ('id', 'user', 'commission', 'date', 'imgname', 'img', 'token', 'thumb')
+
+    def create(self, validated_data):
+        commission = models.Commission.objects.get(pk=validated_data.pop('commission'))
+        message = commission.message_set.filter(token=validated_data.pop('token')).first()
+        com_file = models.CommissionFiles(commission=commission, message=message, **validated_data)
+        com_file.save()
+        return com_file
 
 
 class MessageSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     status_changes = serializers.SerializerMethodField()
     commissionfiles_set = CommissionFileSerializer(many=True, required=False)
+    token = serializers.CharField(write_only=True)
 
     class Meta(object):
         model = models.Message
-        fields = ('id', 'user', 'date', 'type', 'message', 'status_changes', 'commissionfiles_set')
+        fields = ('id', 'user', 'date', 'type', 'message', 'status_changes', 'commissionfiles_set', 'token')
 
     @staticmethod
     def get_status_changes(obj):
@@ -193,11 +210,12 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
         print()
         print(original)
         print(validated_data)
-        message = None
+
         if 'message' in validated_data:
-            message = models.Message(user=self.context['request'].user,
-                                     commission=instance,
-                                     **validated_data.pop('message'))
+            message = message = models.Message(user=self.context['request'].user, commission=instance,
+                                               **validated_data.pop('message'))
+        else:
+            message = message = models.Message(user=self.context['request'].user, commission=instance, token='')
 
         updated = super(CommissionWriteSerializer, self).update(instance, validated_data)
         up = dict(CommissionReadSerializer(updated).data)
@@ -213,14 +231,13 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
             # Work around json field chocking on decimals
             status_changes = json.dumps(status_changes, cls=DecimalEncoder)
             print(status_changes)
-            if not message:
-                message = models.Message(user=self.context['request'].user, commission=instance, message="")
             message.status_changes = status_changes
             message.type = 1
         if message:
             if not updated.message_set.count():
                 message.type = 0
             message.save()
+        print(type(updated))
         return updated
 
     def validate_characters(self, value):

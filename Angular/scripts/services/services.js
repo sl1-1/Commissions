@@ -47,6 +47,13 @@ commissionSave = function(data) {
     if (typeof data.status != 'number') {
         data.status = data.status[0];
     }
+    if (!('message' in data)) {
+        data.message = {};
+    }
+    if (!('token' in data.message)) {
+        // Worst way to do this? Possibly
+        data.message.token = data.id + '-' + moment();
+    }
     return angular.toJson(data);
 };
 
@@ -74,6 +81,7 @@ CommissionService.factory('Commission', ['$resource',
             }
         });
     }]);
+
 
 var UserService = angular.module('UserService', ['ngResource']);
 
@@ -202,3 +210,53 @@ CSRFService.factory('CSRF', ['$resource',
         });
     }]);
 
+function progressModal($uibModal) {
+    var self = {};
+
+    function modalCtrl($scope, status) {
+        //This does nothing right now...
+        //Reserved for future use?
+    }
+
+    function open(progress, status) {
+        self.status = {};
+        self.status.progress = progress;
+        self.status.message = status;
+        self.modalInstance = $uibModal.open({
+            templateUrl: 'templates/progressmodal.html',
+            controller: ['$scope', 'status', modalCtrl],
+            resolve: {
+                status: function() {
+                    return self.status;
+                }
+            }
+        });
+    }
+
+    function update(progress, status) {
+        self.status.progress = progress;
+        self.status.message = status;
+    }
+
+    function updateProgress(progress) {
+        self.status.progress = progress;
+    }
+
+    function updateStatus(status) {
+        self.status.message = status;
+    }
+
+    function close() {
+        self.modalInstance.close();
+    }
+
+    self.open = open;
+    self.update = update;
+    self.updateProgress = updateProgress;
+    self.updateStatus = updateStatus;
+    self.close = close;
+
+    return self;
+}
+
+app.factory('ProgressModal', ['$uibModal', progressModal]);

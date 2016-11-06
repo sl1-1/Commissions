@@ -1,12 +1,16 @@
-function CommissionCtrl($rootScope, $scope, $stateParams, Commission, Queue) {
-    $scope.user = $rootScope.user;
-    $scope.paid_values = [
+function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
+                        ProgressModal, FileUploader, UserData) {
+    // TODO: Switch from $scope to vm
+    var vm = this;
+    vm.user = UserData;
+    vm.total = 0;
+    vm.paid_values = [
         [0, 'Not Yet Requested'],
         [1, 'Invoiced'],
         [2, 'Paid'],
         [3, 'Refunded']
     ];
-    $scope.status_values = [
+    vm.status_values = [
         [0, 'Waiting'],
         [1, 'Sketched'],
         [2, 'Lined'],
@@ -16,36 +20,111 @@ function CommissionCtrl($rootScope, $scope, $stateParams, Commission, Queue) {
         [6, 'Please Revise'],
         [7, 'Rejected']
     ];
-    $scope.commission = Commission
-        .get({CommissionId: $stateParams.commissionid});
 
-    $scope.commission.$promise.then(function(commission) {
-        $scope.queue = Queue.get({QueueId: commission.queue});
-        console.log($scope.queue);
+    var csrftoken = $cookies.get('csrftoken');
+    vm.token = moment().valueOf();
+    vm.uploader = new FileUploader({
+        url: '/api/commissionfiles/',
+        alias: 'img',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        removeAfterUpload: false
     });
 
-    $scope.update = function() {
-        console.log($scope.commission.status);
-        $scope.commission.$save(
+    vm.uploader.onProgressAll = function(progress) {
+        progress = (progress / 1.11) + 10;
+        ProgressModal.updateProgress(progress);
+    };
+
+    vm.uploader.onBeforeUploadItem = function(item) {
+        ProgressModal.updateStatus('Uploading: ' + item.file.name);
+        item.formData = [
+            {token: vm.token},
+            {commission: vm.commission.id}
+        ];
+    };
+
+    vm.uploader.onCompleteAll = function() {
+        ProgressModal.close();
+        angular.forEach(vm.uploader.queue, function(item) {
+            item.remove();
+        });
+        vm.commission = Commission
+            .get({CommissionId: $stateParams.commissionid});
+
+    };
+
+    vm.commission = Commission
+        .get({CommissionId: $stateParams.commissionid});
+
+
+    vm.commission.$promise.then(function(commission) {
+        vm.queue = Queue.get({QueueId: commission.queue});
+    });
+
+    vm.fields = [
+        {
+            key: 'message.message',
+            type: 'richEditorFile',
+            templateOptions: {
+                uploader: vm.uploader
+            }
+        }
+    ];
+
+    vm.update = function() {
+        vm.token = moment().valueOf();
+        ProgressModal.open(0, 'I just got started');
+        vm.commission.message.token = vm.token;
+        vm.commission.$save(
             {CommissionId: $stateParams.commissionid},
             function() {
-                $scope.commission = Commission
-                    .get({CommissionId: $stateParams.commissionid});
+                ProgressModal.update(10, 'Details Submitted');
+                if (vm.uploader.queue.length > 0) {
+                    vm.uploader.uploadAll();
+                }
+                else {
+                    ProgressModal.close();
+                    vm.commission = Commission
+                        .get({CommissionId: $stateParams.commissionid});
+                }
             },
             function(response) {
                 console.log(response);
             }
         );
     };
+
+    vm.update_total = function() {
+        var total;
+        total = vm.commission.type.price;
+        total += vm.commission.type.extra_character_price * vm.commission.characters;
+        total += vm.commission.size.price;
+        total += vm.commission.size.extra_character_price * vm.commission.characters;
+        angular.forEach(vm.commission.extras, function(extra) {
+            total += extra.price;
+            total += extra.extra_character_price * vm.commission.characters;
+        });
+        vm.total = total;
+    };
+
+    $scope.$watch('vm.commission', function() {
+        console.log('vm.commission changed');
+        vm.update_total();
+    }, true);
 }
 
 app.controller('CommissionCtrl',
     [
-        '$rootScope',
         '$scope',
         '$stateParams',
+        '$cookies',
         'Commission',
         'Queue',
+        'ProgressModal',
+        'FileUploader',
+        'UserData',
         CommissionCtrl
     ]
 );

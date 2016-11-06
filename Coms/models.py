@@ -330,6 +330,7 @@ class Message(models.Model):
     type = models.IntegerField(choices=type_choices, default=2)
     message = models.TextField(max_length=10000, blank=True, default='')
     status_changes = models.TextField()
+    token = models.CharField(max_length=255)
 
     class Meta:
         default_permissions = ('add', 'view', 'change')

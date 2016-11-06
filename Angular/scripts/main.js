@@ -28,10 +28,7 @@ var app = angular.module('Commissions',
         'ngSanitize',
         'angularMoment',
         'ui.bootstrap',
-        'ui.layout',
-        'ui.grid',
-        'ui.grid.resizeColumns',
-        'ui.grid.selection',
+        'angularFileUpload',
         'tandibar/ng-rollbar'
     ]
 );

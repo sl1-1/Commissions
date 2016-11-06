@@ -2,7 +2,68 @@ function formlyConfig(formlyConfigProvider) {
     formlyConfigProvider.setType(
         {
             name: 'richEditor',
-            templateUrl: 'templates/formly/richEditor.html'
+            templateUrl: 'templates/formly/richEditor.html',
+            defaultOptions: {
+                templateOptions: {
+                    'toolbar': [
+                        [
+                            'h1',
+                            'h2',
+                            'h3'
+                        ],
+                        [
+                            'bold',
+                            'italics',
+                            'strikeThrough'
+                        ],
+                        [
+                            'ul'
+                        ],
+                        [
+                            'justifyLeft',
+                            'justifyCenter',
+                            'justifyRight'
+                        ],
+                        [
+                            'insertImage',
+                            'insertLink'
+                        ]
+                    ]
+                }
+            }
+        });
+    formlyConfigProvider.setType(
+        {
+            name: 'richEditorFile',
+            templateUrl: 'templates/formly/richEditor_file.html',
+            defaultOptions: {
+                templateOptions: {
+                    'toolbar': [
+                        [
+                            'h1',
+                            'h2',
+                            'h3'
+                        ],
+                        [
+                            'bold',
+                            'italics',
+                            'strikeThrough'
+                        ],
+                        [
+                            'ul'
+                        ],
+                        [
+                            'justifyLeft',
+                            'justifyCenter',
+                            'justifyRight'
+                        ],
+                        [
+                            'insertImage',
+                            'insertLink'
+                        ]
+                    ]
+                }
+            }
         });
     formlyConfigProvider.setType(
         {

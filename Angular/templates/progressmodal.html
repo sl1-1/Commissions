@@ -1,0 +1,11 @@
+<div class="modal-body" id="modal-body">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{ $resolve.status.progress }}"
+             aria-valuemin="0" aria-valuemax="100" style="width:{{ $resolve.status.progress }}%">
+            <span class="sr-only">{{ $resolve.status.progress }}% Complete</span>
+        </div>
+    </div>
+    <div class="progress-status">
+        {{ $resolve.status.message }}
+    </div>
+</div>

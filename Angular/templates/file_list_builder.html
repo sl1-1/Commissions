@@ -1,0 +1,21 @@
+<div style="display:table; width:100%">
+    <div class="option-group" style="display: table-row; width:100%">
+        <label class="btn btn-default file-upload-button">
+            <input
+                    type="file"
+                    nv-file-select
+                    multiple
+                    uploader="uploader"
+                    style="display: none"
+            />
+            <i class="material-icons">attachment</i>
+        </label>
+        <ul class="listbuilder" id="listbuilder-{{ id }}" ng-click="filter_focus()"
+            style="width:90% !important; display: table-cell">
+            <li class="listbuilder-entry" ng-repeat="item in uploader.queue">
+                <span>{{ item.file.name }}</span>
+                <a ng-click="item.remove()" class="listbuilder-entry-remove">&times;</a>
+            </li>
+        </ul>
+    </div>
+</div>

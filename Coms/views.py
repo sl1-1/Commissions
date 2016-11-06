@@ -173,6 +173,23 @@ class CommissionViewSet(viewsets.ModelViewSet):
             new = queue.commission_set.create(user=request.user)
             return Response(serializers.CommissionReadSerializer(new).data)
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # refresh the instance from the database.
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+
+        update = serializer.data
+        print(update)
+        return Response(update)
+
 
 class CommissionFileViewSet(viewsets.ModelViewSet):
     # Todo: Rewrite this
