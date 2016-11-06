@@ -51,24 +51,26 @@ function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
             item.remove();
         });
         vm.commission = Commission
-            .get({CommissionId: $stateParams.commissionid});
+            .get({CommissionId: $stateParams.commissionid}, vm.load);
 
     };
 
-    vm.commission = Commission
-        .get({CommissionId: $stateParams.commissionid});
+    vm.commission_watch = function() {
+        //Placeholder
+    };
 
-
-    vm.commissionOriginal = {};
-
-    vm.commission.$promise.then(function() {
+    vm.load = function() {
+        vm.commissionOriginal = {};
         vm.queue = Queue.get({QueueId: vm.commission.queue});
         vm.commission.message = {message: undefined};
         angular.copy(vm.commission, vm.commissionOriginal);
-        $scope.$watch('vm.commission', function() {
+        vm.commission_watch = $scope.$watch('vm.commission', function() {
             vm.update_total();
         }, true);
-    });
+    };
+
+    vm.commission = Commission
+        .get({CommissionId: $stateParams.commissionid}, vm.load);
 
     vm.fields = [
         {
@@ -84,6 +86,8 @@ function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
         vm.token = moment().valueOf();
         ProgressModal.open(0, 'I just got started');
         vm.commission.message.token = vm.token;
+        //Unregister our watch
+        vm.commission_watch();
         vm.commission.$save(
             {CommissionId: $stateParams.commissionid},
             function() {
@@ -94,7 +98,9 @@ function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
                 else {
                     ProgressModal.close();
                     vm.commission = Commission
-                        .get({CommissionId: $stateParams.commissionid});
+                        .get({
+                            CommissionId: $stateParams.commissionid
+                        }, vm.load);
                 }
             },
             function(response) {
@@ -106,9 +112,17 @@ function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
     vm.update_total = function() {
         var total;
         total = vm.commission.type.price;
-        total += vm.commission.type.extra_character_price * vm.commission.characters;
+
+        total +=
+            vm.commission.type.extra_character_price *
+            vm.commission.characters;
+
         total += vm.commission.size.price;
-        total += vm.commission.size.extra_character_price * vm.commission.characters;
+
+        total +=
+            vm.commission.size.extra_character_price *
+            vm.commission.characters;
+
         angular.forEach(vm.commission.extras, function(extra) {
             total += extra.price;
             total += extra.extra_character_price * vm.commission.characters;

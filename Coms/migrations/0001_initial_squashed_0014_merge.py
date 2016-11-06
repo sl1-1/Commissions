@@ -34,6 +34,12 @@ def create_groups(apps, schema_editor):
     change_commission = Permission.objects.get(codename="change_commission")
     new_group.permissions.add(change_commission)
 
+    # new_group = Group.objects.get(name="Commissioners")
+    # add_file = Permission.objects.get(codename="add_commissionfiles")
+    # new_group.permissions.add(add_file)
+    # view_file = Permission.objects.get(codename="view_commissionfiles")
+    # new_group.permissions.add(view_file)
+
 
 class Migration(migrations.Migration):
     replaces = [(b'Coms', '0001_initial'), (b'Coms', '0013_create_permissions'), (b'Coms', '0002_auto_20160319_0418'),
