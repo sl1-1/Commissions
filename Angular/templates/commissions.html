@@ -59,8 +59,12 @@
                 </div>
             </div>
             <div class="row" style="height:10px"></div>
-            <div class="row queue_div" ng-repeat="commission in commissions"
-                 ui-sref="commission({commissionid: commission.id})">
+            <div ng-show="loading" style="margin:auto;width:50%;text-align: center">
+                <div class="loader"></div>
+                <p>Loading...</p>
+            </div>
+            <div class="row queue_div" ng-repeat="commission in commissions track by commission.id"
+                 ui-sref="commission({commissionid: commission.id})" ng-hide="loading">
                 <div class="col-md-2 col-lg-1">
                         <span class="queue_user_icon">
                         <i class="material-icons md-48" title="User">account_circle</i>
