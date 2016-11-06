@@ -76,6 +76,7 @@ module.exports = function(grunt) {
                     'bower_components/textAngular/dist/textAngularSetup.js',
                     'bower_components/textAngular/dist/textAngular.js',
                     'bower_components/angular-file-upload/angular-file-upload.js',
+                    'bower_components/checklist-model/checklist-model.js',
                     'build/templates.js',
                     'Angular/scripts/main.js',
                     'build/config.js',

@@ -59,8 +59,15 @@ function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
         .get({CommissionId: $stateParams.commissionid});
 
 
-    vm.commission.$promise.then(function(commission) {
+    vm.commissionOriginal = {};
+
+    vm.commission.$promise.then(function() {
         vm.queue = Queue.get({QueueId: commission.queue});
+        vm.commission.message = {message: undefined};
+        angular.copy(vm.commission, vm.commissionOriginal);
+        $scope.$watch('vm.commission', function() {
+            vm.update_total();
+        }, true);
     });
 
     vm.fields = [
@@ -109,10 +116,22 @@ function CommissionCtrl($scope, $stateParams, $cookies, Commission, Queue,
         vm.total = total;
     };
 
-    $scope.$watch('vm.commission', function() {
-        console.log('vm.commission changed');
-        vm.update_total();
-    }, true);
+    var changewarning = 'You have unsaved changes, do you still want to leave?';
+
+    window.onbeforeunload = function() {
+        if (!angular.equals(vm.commission, vm.commissionOriginal)) {
+            return changewarning;
+        }
+    };
+
+    $scope.$on('$stateChangeStart', function(event) {
+        if (!angular.equals(vm.commission, vm.commissionOriginal)) {
+            if (!window.confirm(changewarning)) {
+                event.preventDefault();
+            }
+        }
+    });
+
 }
 
 app.controller('CommissionCtrl',

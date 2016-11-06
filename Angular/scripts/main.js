@@ -29,6 +29,7 @@ var app = angular.module('Commissions',
         'angularMoment',
         'ui.bootstrap',
         'angularFileUpload',
+        'checklist-model',
         'tandibar/ng-rollbar'
     ]
 );
