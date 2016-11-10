@@ -13,7 +13,10 @@ from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
 
 import models
-import serializers
+import serializers.commission
+import serializers.options
+import serializers.queue
+import serializers.user
 from Coms import permissions
 
 
@@ -31,22 +34,22 @@ class OptionViewSet(viewsets.ModelViewSet):
 
 
 class TypeViewSet(OptionViewSet):
-    serializer_class = serializers.TypeSerializer
+    serializer_class = serializers.options.TypeSerializer
     queryset = models.Type.objects.all()
 
 
 class SizeViewSet(OptionViewSet):
-    serializer_class = serializers.SizeSerializer
+    serializer_class = serializers.options.SizeSerializer
     queryset = models.Size.objects.all()
 
 
 class ExtraViewSet(OptionViewSet):
-    serializer_class = serializers.ExtraSerializer
+    serializer_class = serializers.options.ExtraSerializer
     queryset = models.Extra.objects.all()
 
 
 class QueueViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.QueueSerializerJson
+    serializer_class = serializers.queue.QueueSerializerJson
     queryset = models.Queue.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
@@ -56,9 +59,9 @@ class QueueViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Return the correct serializer if it is a read or write operation"""
         if self.action in ('list', 'retrieve'):
-            return serializers.QueueSerializerJson
+            return serializers.queue.QueueSerializerJson
         else:
-            return serializers.QueueWriteSerializer
+            return serializers.queue.QueueWriteSerializer
 
     def list(self, request, *args, **kwargs):
         user = self.request.user
@@ -119,7 +122,7 @@ class CommissionViewSetFilter(filters.FilterSet):
 
 
 class CommissionViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.CommissionReadSerializer
+    serializer_class = serializers.commission.CommissionReadSerializer
     queryset = models.Commission.objects.all()
     filter_backends = (filters.DjangoObjectPermissionsFilter, filters.DjangoFilterBackend,)
     filter_class = CommissionViewSetFilter
@@ -129,9 +132,9 @@ class CommissionViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Return the correct serializer if it is a read or write operation"""
         if self.action in ('list', 'retrieve'):
-            return serializers.CommissionReadSerializer
+            return serializers.commission.CommissionReadSerializer
         else:
-            return serializers.CommissionWriteSerializer
+            return serializers.commission.CommissionWriteSerializer
 
     def get_queryset(self):
         """Override the queryset, so that users can only see their own commissions"""
@@ -165,13 +168,13 @@ class CommissionViewSet(viewsets.ModelViewSet):
         queue = models.Queue.objects.get(pk=request.data['queue'])
         existing = queue.existing(request.user)
         if existing:
-            return Response(serializers.CommissionReadSerializer(existing).data)
+            return Response(serializers.commission.CommissionReadSerializer(existing).data)
         elif queue.is_full or queue.ended or queue.usermax(request.user):
             # Todo GIVE BETTER ERROR
             raise PermissionDenied(detail="You aren't allowed!")
         else:
             new = queue.commission_set.create(user=request.user)
-            return Response(serializers.CommissionReadSerializer(new).data)
+            return Response(serializers.commission.CommissionReadSerializer(new).data)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -193,7 +196,7 @@ class CommissionViewSet(viewsets.ModelViewSet):
 
 class CommissionFileViewSet(viewsets.ModelViewSet):
     # Todo: Rewrite this
-    serializer_class = serializers.CommissionFileSerializer
+    serializer_class = serializers.commission.CommissionFileSerializer
     queryset = models.CommissionFiles.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (permissions.CustomObjectPermissions,)
@@ -232,7 +235,7 @@ class CommissionFileViewSet(viewsets.ModelViewSet):
 
 # todo RESTRICT THIS!
 class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.user.UserSerializer
     queryset = User.objects.all()
 
     def get_queryset(self):
@@ -290,4 +293,4 @@ class UserViewSet(viewsets.ModelViewSet):
         # Log them in after registration
         user = authenticate(username=username, password=password)
         login(request, user)
-        return Response(serializers.UserSerializer(user).data)
+        return Response(serializers.user.UserSerializer(user).data)
