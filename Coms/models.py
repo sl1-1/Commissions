@@ -206,7 +206,7 @@ class Queue(models.Model):
         """
         expiry = now() - timedelta(minutes=self.expire)
         query = self.commission_set.filter(user=user).filter(date__gt=expiry) | \
-            self.commission_set.filter(user=user).filter(details_date__isnull=False)
+                self.commission_set.filter(user=user).filter(details_date__isnull=False)
         return query.count()
 
     def existing(self, user):
@@ -384,3 +384,50 @@ def commissionfiles_post_save(sender, **kwargs):
     if created:
         assign_perm("view_commissionfiles", commissionfile.user, commissionfile)
         assign_perm("change_commissionfiles", commissionfile.user, commissionfile)
+
+
+class QueueTypes(models.Model):
+    """
+    This is for our types that have been used in a queue.
+    They will mostly be copies of entries from the Queue Table
+    """
+    queue = models.ForeignKey(Queue)
+    reference = models.ForeignKey(Type)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+
+    @property
+    def description(self):
+        return self.reference.description
+
+
+class QueueSizes(models.Model):
+    """
+    This is for our sizes that have been used in a queue.
+    They will mostly be copies of entries from the Queue Table
+    """
+    queue = models.ForeignKey(Queue)
+    type = models.ForeignKey(QueueTypes)
+    reference = models.ForeignKey(Size)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+
+    @property
+    def description(self):
+        return self.reference.description
+
+
+class QueueExtras(models.Model):
+    """
+    This is for our extras that have been used in a queue.
+    They will mostly be copies of entries from the Queue Table
+    """
+    queue = models.ForeignKey(Queue)
+    size = models.ForeignKey(QueueSizes)
+    reference = models.ForeignKey(Size)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+
+    @property
+    def description(self):
+        return self.reference.description
