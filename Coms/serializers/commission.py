@@ -157,23 +157,16 @@ class CommissionWriteSerializer(serializers.ModelSerializer):
         return value
 
     def validate_type(self, value):
-        if value not in self.instance.queue.types.all():
+        if value not in self.instance.queue.queuetypes_set.all():
             raise ValidationError('{id} is not valid'.format(id=value.id))
         return value
 
-    def validate_size(self, value):
-        print(type(value))
-        if value not in self.instance.queue.sizes.all():
-            raise ValidationError('{id} is not valid'.format(id=value.id))
-        return value
-
-    def validate_extras(self, value):
-        valid_extras = self.instance.queue.extras.all()
-        for extra in value:
-            print(dir(extra))
-            if extra not in valid_extras:
-                raise ValidationError('{id} is not valid'.format(id=extra.id))
-        return value
+    def validate(self, data):
+        if data['size'] not in data['type'].queuesizes_set.all():
+            raise ValidationError('Specified size not avalilble with this type')
+        if any(extra not in data['size'].queueextras_set.all() for extra in data['extras']):
+            raise ValidationError('Specified extra(s) not avalilble with this size')
+        return data
 
     def validate_status(self, value):
         """

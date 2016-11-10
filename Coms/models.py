@@ -119,11 +119,8 @@ class Queue(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     date = models.DateTimeField('date created', auto_now_add=True)
-    types = models.ManyToManyField(Type)
-    sizes = models.ManyToManyField(Size)
     max_characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     character_cost = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-    extras = models.ManyToManyField(Extra, blank=True)
     max_commissions_in_queue = models.IntegerField(default=1)
     max_commissions_per_person = models.IntegerField(default=1)
     expire = models.IntegerField(default=15)
@@ -218,42 +215,61 @@ class Queue(models.Model):
         return self.user_submission_count(user) >= self.max_commissions_per_person
 
 
-class ContactMethod(models.Model):
+class QueueTypes(models.Model):
     """
-    ContactMethod Model, Holds our contact methods
+    This is for our types that have been used in a queue.
+    They will mostly be copies of entries from the Queue Table
     """
-
-    class Meta(object):
-        verbose_name = "Contact Method"
-        default_permissions = ('view',)
-
-    def __unicode__(self):
-        return self.name
-
-    def __str__(self):
-        return self.name
-
-    name = models.CharField(max_length=200)
-    message_url = models.URLField(blank=True)
-    profile_url = models.URLField(blank=True)
-    description = models.CharField(max_length=500, blank=True)
-    disabled = models.BooleanField(default=False)
+    queue = models.ForeignKey(Queue)
+    reference = models.ForeignKey(Type)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
 
     @property
-    def profile(self):
-        """
-        Returns ``str.format`` of the profile_url field
-        :return: ``str.format`` method
-        """
-        return self.profile_url.format
+    def name(self):
+        return self.reference.name
 
     @property
-    def message(self):
-        """
-        Returns ``str.format`` of the profile_url field
-        :return: ``str.format`` method
-        """
-        return self.message_url.format
+    def description(self):
+        return self.reference.description
+
+
+class QueueSizes(models.Model):
+    """
+    This is for our sizes that have been used in a queue.
+    They will mostly be copies of entries from the Queue Table
+    """
+    type = models.ForeignKey(QueueTypes)
+    reference = models.ForeignKey(Size)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+
+    @property
+    def name(self):
+        return self.reference.name
+
+    @property
+    def description(self):
+        return self.reference.description
+
+
+class QueueExtras(models.Model):
+    """
+    This is for our extras that have been used in a queue.
+    They will mostly be copies of entries from the Queue Table
+    """
+    size = models.ForeignKey(QueueSizes)
+    reference = models.ForeignKey(Extra)
+    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
+
+    @property
+    def name(self):
+        return self.reference.name
+
+    @property
+    def description(self):
+        return self.reference.description
 
 
 class Commission(models.Model):
@@ -278,10 +294,10 @@ class Commission(models.Model):
     paid_choices = ((0, 'Not Yet Requested'), (1, 'Invoiced'), (2, 'Paid'), (3, 'Refunded'))
     paid = models.IntegerField(choices=paid_choices, default=0)
 
-    type = models.ForeignKey(Type, blank=True, null=True, default=None)
-    size = models.ForeignKey(Size, blank=True, null=True, default=None)
+    type = models.ForeignKey(QueueTypes, blank=True, null=True, default=None)
+    size = models.ForeignKey(QueueSizes, blank=True, null=True, default=None)
     characters = models.IntegerField(default=1, validators=[MinValueValidator(1)])
-    extras = models.ManyToManyField(Extra, blank=True)
+    extras = models.ManyToManyField(QueueExtras, blank=True)
     details_date = models.DateTimeField('Details Submitted', null=True)
     submitted = models.BooleanField(default=False)
 
@@ -369,7 +385,6 @@ class CommissionFiles(models.Model):
 # noinspection PyUnusedLocal
 @receiver(post_save, sender=Commission)
 def commission_post_save(sender, **kwargs):
-    print(kwargs)
     commission, created = kwargs["instance"], kwargs["created"]
     if created:
         assign_perm("view_commission", commission.user, commission)
@@ -379,55 +394,7 @@ def commission_post_save(sender, **kwargs):
 # noinspection PyUnusedLocal
 @receiver(post_save, sender=CommissionFiles)
 def commissionfiles_post_save(sender, **kwargs):
-    print(kwargs)
     commissionfile, created = kwargs["instance"], kwargs["created"]
     if created:
         assign_perm("view_commissionfiles", commissionfile.user, commissionfile)
         assign_perm("change_commissionfiles", commissionfile.user, commissionfile)
-
-
-class QueueTypes(models.Model):
-    """
-    This is for our types that have been used in a queue.
-    They will mostly be copies of entries from the Queue Table
-    """
-    queue = models.ForeignKey(Queue)
-    reference = models.ForeignKey(Type)
-    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-
-    @property
-    def description(self):
-        return self.reference.description
-
-
-class QueueSizes(models.Model):
-    """
-    This is for our sizes that have been used in a queue.
-    They will mostly be copies of entries from the Queue Table
-    """
-    queue = models.ForeignKey(Queue)
-    type = models.ForeignKey(QueueTypes)
-    reference = models.ForeignKey(Size)
-    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-
-    @property
-    def description(self):
-        return self.reference.description
-
-
-class QueueExtras(models.Model):
-    """
-    This is for our extras that have been used in a queue.
-    They will mostly be copies of entries from the Queue Table
-    """
-    queue = models.ForeignKey(Queue)
-    size = models.ForeignKey(QueueSizes)
-    reference = models.ForeignKey(Size)
-    price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-    extra_character_price = models.DecimalField(default=0.00, decimal_places=2, max_digits=5)
-
-    @property
-    def description(self):
-        return self.reference.description

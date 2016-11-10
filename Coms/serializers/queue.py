@@ -4,19 +4,31 @@ import Coms.models as models
 import Coms.serializers.options as options
 
 
-class QueueReadSerializer(serializers.ModelSerializer):
-    start = serializers.DateTimeField(style={'base_template': 'date.html'}, required=False)
-    end = serializers.DateTimeField(style={'base_template': 'date.html'}, required=False)
+class QueueSerializer(serializers.ModelSerializer):
+    start = serializers.DateTimeField(required=False)
+    end = serializers.DateTimeField(required=False)
     open = serializers.SerializerMethodField()
     submissions_by_user = serializers.SerializerMethodField()
     full = serializers.SerializerMethodField()
     existing = serializers.SerializerMethodField()
+    types = options.QueueTypes(source="queuetypes_set", many=True)
 
     class Meta(object):
         model = models.Queue
-        fields = ('id', 'name', 'date', 'types', 'sizes', 'extras', 'max_characters', 'max_commissions_in_queue',
+        fields = ('id', 'name', 'date', 'max_characters', 'max_commissions_in_queue',
                   'max_commissions_per_person', 'expire', 'closed', 'hidden', 'start', 'end', 'submission_count',
-                  'open', 'submissions_by_user', 'full', 'ended', 'existing')
+                  'open', 'submissions_by_user', 'full', 'ended', 'existing', 'types')
+
+    def create(self, validated_data):
+        types = validated_data.pop('queuetypes_set')
+        obj = models.Queue(**validated_data)
+        obj.save()
+        for item in types:
+            item['queue'] = obj
+            print(item)
+            options.QueueTypes().create(item)
+        print(obj)
+        return obj
 
     @staticmethod
     def get_open(obj):
@@ -37,19 +49,3 @@ class QueueReadSerializer(serializers.ModelSerializer):
                 return existing.id
             else:
                 return None
-
-
-class QueueWriteSerializer(serializers.ModelSerializer):
-    start = serializers.DateTimeField(required=True)
-    end = serializers.DateTimeField(required=False)
-
-    class Meta(object):
-        model = models.Queue
-        fields = ('id', 'name', 'date', 'types', 'sizes', 'extras', 'max_characters', 'max_commissions_in_queue',
-                  'max_commissions_per_person', 'expire', 'closed', 'hidden', 'start', 'end')
-
-
-class QueueSerializerJson(QueueReadSerializer):
-    types = options.TypeSerializer(many=True)
-    sizes = options.SizeSerializer(many=True)
-    extras = options.ExtraSerializer(many=True)

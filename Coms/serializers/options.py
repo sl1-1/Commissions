@@ -31,3 +31,54 @@ class ExtraSerializer(OptionSerializer):
     class Meta(object):
         model = models.Extra
         fields = ('id', 'name', 'price', 'extra_character_price', 'description')
+
+
+class QueueExtras(serializers.ModelSerializer):
+    size = serializers.IntegerField(write_only=True, required=False)
+    # reference = serializers.IntegerField(write_only=True)
+
+    class Meta(object):
+        model = models.QueueExtras
+        fields = ('id', 'size', 'reference', 'name', 'price', 'extra_character_price', 'description')
+
+
+class QueueSizes(serializers.ModelSerializer):
+    extras = QueueExtras(source="queueextras_set", many=True)
+    type = serializers.IntegerField(write_only=True, required=False)
+    # reference = serializers.IntegerField(write_only=True)
+
+    class Meta(object):
+        model = models.QueueSizes
+        fields = ('id', 'type', 'reference', 'name', 'price', 'extra_character_price', 'description', 'extras')
+
+    def create(self, validated_data):
+        extras = validated_data.pop('queueextras_set')
+        obj = self.Meta.model(**validated_data)
+        print(validated_data)
+        print(obj)
+        obj.save()
+        for extra in extras:
+            extra['size'] = obj
+            QueueExtras().create(extra)
+        return obj
+
+
+class QueueTypes(serializers.ModelSerializer):
+    sizes = QueueSizes(source="queuesizes_set", many=True)
+    queue = serializers.UUIDField(source="queue.id", required=False)
+    # reference = serializers.IntegerField(write_only=True)
+
+    class Meta(object):
+        model = models.QueueTypes
+        fields = ('id', 'queue', 'reference', 'name', 'price', 'extra_character_price', 'description', 'sizes',)
+
+    def create(self, validated_data):
+        sizes = validated_data.pop('queuesizes_set')
+        obj = self.Meta.model(**validated_data)
+        print(validated_data)
+        print(obj)
+        obj.save()
+        for size in sizes:
+            size['type'] = obj
+            QueueSizes().create(size)
+        return obj

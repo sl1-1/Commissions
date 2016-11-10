@@ -49,19 +49,19 @@ class ExtraViewSet(OptionViewSet):
 
 
 class QueueViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.queue.QueueSerializerJson
+    serializer_class = serializers.queue.QueueSerializer
     queryset = models.Queue.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
     filter_fields = ('id',)
     renderer_classes = (JSONRenderer, BrowsableAPIRenderer)
 
-    def get_serializer_class(self):
-        """Return the correct serializer if it is a read or write operation"""
-        if self.action in ('list', 'retrieve'):
-            return serializers.queue.QueueSerializerJson
-        else:
-            return serializers.queue.QueueWriteSerializer
+    # def get_serializer_class(self):
+    #     """Return the correct serializer if it is a read or write operation"""
+    #     if self.action in ('list', 'retrieve'):
+    #         return serializers.queue.QueueSerializerJson
+    #     else:
+    #         return serializers.queue.QueueWriteSerializer
 
     def list(self, request, *args, **kwargs):
         user = self.request.user
